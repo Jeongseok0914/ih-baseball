@@ -1,1 +1,23 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-chalk: #f3f5ef;
+  --color-board: #17402e;
+  --color-board-deep: #0f2c20;
+  --color-ink: #16211b;
+  --color-stitch: #c81e2b;
+  --color-dust: #d8c9a8;
+  --font-display: var(--font-black-han-sans), sans-serif;
+  --font-sans: var(--font-plex-kr), system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-chalk);
+  color: var(--color-ink);
+  word-break: keep-all;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-stitch);
+  outline-offset: 3px;
+}
