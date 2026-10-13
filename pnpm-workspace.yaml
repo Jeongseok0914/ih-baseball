@@ -1,0 +1,12 @@
+packages:
+  - '.'
+
+# 공급망 보안: 신규 배포 버전 쿨다운(7일), exotic(비레지스트리) 전이 의존성 차단,
+# 신뢰도 하락 버전 설치 차단.
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+
+onlyBuiltDependencies:
+  - sharp
+  - unrs-resolver

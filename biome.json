@@ -1,0 +1,126 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "lineEnding": "lf"
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "es5",
+      "semicolons": "always",
+      "bracketSpacing": true,
+      "arrowParentheses": "asNeeded"
+    }
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "parser": {
+      "cssModules": true,
+      "tailwindDirectives": true
+    },
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn",
+        "noUnusedFunctionParameters": "warn",
+        "useHookAtTopLevel": "error",
+        "useExhaustiveDependencies": "warn",
+        "useJsxKeyInIterable": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noDebugger": "error",
+        "noDoubleEquals": "error",
+        "noEmptyBlockStatements": "warn",
+        "noImplicitAnyLet": "warn",
+        "noSelfCompare": "error",
+        "noVar": "error",
+        "noArrayIndexKey": "warn",
+        "noConfusingVoidType": "warn",
+        "noGlobalIsNan": "error",
+        "noGlobalIsFinite": "error",
+        "noShadowRestrictedNames": "warn"
+      },
+      "style": {
+        "useConst": "error",
+        "noInferrableTypes": "error",
+        "useDefaultParameterLast": "error",
+        "noUselessElse": "warn",
+        "useSelfClosingElements": "warn",
+        "useImportType": "warn",
+        "noUnusedTemplateLiteral": "warn",
+        "noNonNullAssertion": "warn",
+        "useNodejsImportProtocol": "error"
+      },
+      "complexity": {
+        "noUselessCatch": "error",
+        "noUselessTypeConstraint": "error",
+        "useFlatMap": "warn",
+        "noUselessStringConcat": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off",
+        "noGlobalEval": "error"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "warn",
+        "useSemanticElements": "warn",
+        "noStaticElementInteractions": "warn",
+        "useKeyWithClickEvents": "warn",
+        "noNoninteractiveElementToInteractiveRole": "warn",
+        "noInteractiveElementToNoninteractiveRole": "warn",
+        "noLabelWithoutControl": "warn",
+        "useIframeTitle": "warn",
+        "useButtonType": "warn"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.css"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noInvalidPositionAtImportRule": "off"
+          },
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
+    }
+  ],
+  "files": {
+    "includes": [
+      "**",
+      "!.next",
+      "!out",
+      "!build",
+      "!dist",
+      "!coverage",
+      "!pnpm-lock.yaml",
+      "!assets",
+      "!scripts"
+    ]
+  }
+}

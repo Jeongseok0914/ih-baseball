@@ -1,0 +1,52 @@
+{
+  "name": "ih-baseball",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "pnpm dlx serve out",
+    "clean": "node -e \"for (const d of ['.next', 'out']) require('node:fs').rmSync(d, { recursive: true, force: true })\"",
+    "type-check": "tsc --noEmit",
+    "check": "biome check ./src",
+    "check:fix": "biome check --write ./src",
+    "deps:check": "depcruise src --config .dependency-cruiser.cjs",
+    "health:check": "node scripts/harness/check-project-health.js",
+    "harness:check": "node scripts/harness/check-static-rules.js && pnpm deps:check && pnpm health:check",
+    "harness:test": "node --test scripts/harness/*.node-test.mjs",
+    "verify": "pnpm harness:check && pnpm check && pnpm type-check",
+    "verify:full": "pnpm verify && pnpm harness:test && pnpm build",
+    "security:quick": "pnpm audit --audit-level high",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,css}": [
+      "biome check --write"
+    ],
+    "src/**/*.json": [
+      "biome format --write"
+    ]
+  },
+  "dependencies": {
+    "next": "^16.3.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.19.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "dependency-cruiser": "^18.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,3 @@
+pnpm lint-staged
+# lint-staged 는 src 만 본다. scripts/.github/docs 변경은 정적룰이 잡는다.
+node scripts/harness/check-static-rules.js
