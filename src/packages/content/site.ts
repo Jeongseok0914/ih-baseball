@@ -7,7 +7,7 @@ export const SITE = {
 };
 
 export const COACH = {
-  name: '강제훈',
+  name: '강재훈',
   title: '감독',
   // 숫자만 적는다. 비어 있으면 화면에 "번호 준비 중"으로 표시된다.
   phone: '',
