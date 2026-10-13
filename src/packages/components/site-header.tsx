@@ -7,7 +7,7 @@ import { SITE } from '~content/site';
 export function SiteHeader() {
   return (
     <header className="bg-grass text-white">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 pt-3 pb-2 sm:py-3">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 py-3">
         <Link href="/" className="flex items-center gap-3">
           <Image
             src={emblem}

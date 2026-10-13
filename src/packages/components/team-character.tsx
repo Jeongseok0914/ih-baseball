@@ -342,17 +342,20 @@ export function CoachCharacter({ className }: { className?: string }) {
         strokeWidth="2"
         transform="rotate(28 38 150)"
       />
-      <ellipse
-        cx="164"
-        cy="118"
-        rx="15"
-        ry="30"
-        fill={JERSEY}
-        stroke={JERSEY_SHADE}
-        strokeWidth="2"
-        transform="rotate(-38 164 118)"
-      />
-      <circle cx="178" cy="92" r="12" fill={SKIN} />
+      {/* 인사하는 오른팔. 처음 보일 때 세 번 흔든다. */}
+      <g className="animate-wave">
+        <ellipse
+          cx="164"
+          cy="118"
+          rx="15"
+          ry="30"
+          fill={JERSEY}
+          stroke={JERSEY_SHADE}
+          strokeWidth="2"
+          transform="rotate(-38 164 118)"
+        />
+        <circle cx="178" cy="92" r="12" fill={SKIN} />
+      </g>
       <circle cx="28" cy="176" r="12" fill={SKIN} />
       <circle cx="22" cy="186" r="11" fill="#fff" stroke="#ddd" />
       <path

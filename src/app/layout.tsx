@@ -3,6 +3,7 @@ import { Gowun_Dodum, Jua } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { SiteFooter } from '~components/site-footer';
 import { SiteHeader } from '~components/site-header';
+import { BottomTabs } from '~components/site-nav';
 import { SEARCH_VERIFICATION, SITE } from '~content/site';
 import './globals.css';
 
@@ -44,10 +45,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko" className={`${display.variable} ${body.variable}`}>
-      <body className="font-sans">
+      <body className="pb-[calc(80px+env(safe-area-inset-bottom))] font-sans sm:pb-0">
         <SiteHeader />
         {children}
         <SiteFooter />
+        <BottomTabs />
       </body>
     </html>
   );

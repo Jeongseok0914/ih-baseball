@@ -88,6 +88,8 @@ function ChalkDiamond() {
         fill="none"
         stroke="#ffffff"
         strokeWidth="5"
+        pathLength={1}
+        className="animate-draw"
       />
       <circle cx="200" cy="220" r="26" fill="#8f4b20" />
       {[
@@ -129,27 +131,27 @@ export async function Home() {
         <ChalkDiamond />
         <div className="relative mx-auto max-w-5xl px-4 pt-12 pb-14 sm:pt-20 sm:pb-24">
           <p className="flex flex-wrap gap-2">
-            <span className="rotate-[-4deg] rounded-xl bg-sun px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+            <span className="animate-pop rotate-[-4deg] rounded-xl bg-sun [animation-delay:250ms] px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
               1980 창단
             </span>
-            <span className="rotate-[3deg] rounded-xl bg-white px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+            <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
               {ACHIEVEMENTS[0].year} 교육감배 준우승
             </span>
           </p>
           <h1
             id="hero-title"
-            className="mt-4 font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.18)] sm:text-7xl"
+            className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.18)] sm:text-7xl"
           >
             같이 공 던질
             <br />
             친구 찾아요!
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed sm:text-xl">
+          <p className="mt-5 max-w-xl animate-rise text-lg leading-relaxed [animation-delay:120ms] sm:text-xl">
             {SITE.description}
           </p>
           <Link
             href="/join"
-            className="mt-7 inline-flex min-h-14 items-center rounded-2xl bg-white px-7 font-display text-dirt text-xl shadow-[0_5px_0_#6e3815]"
+            className="mt-7 inline-flex min-h-14 animate-rise items-center rounded-2xl bg-white px-7 font-display text-dirt text-xl shadow-[0_5px_0_#6e3815] transition-transform [animation-delay:220ms] hover:-translate-y-0.5 active:translate-y-1"
           >
             체험하러 갈래요
           </Link>
@@ -167,7 +169,7 @@ export async function Home() {
           {ALUMNI.map((name, index) => (
             <li
               key={name}
-              className={`rounded-xl px-4 py-2 font-display text-lg ${CHIP_STYLES[index % CHIP_STYLES.length]}`}
+              className={`reveal rounded-xl px-4 py-2 font-display text-lg ${CHIP_STYLES[index % CHIP_STYLES.length]}`}
             >
               {name}
             </li>
@@ -177,7 +179,7 @@ export async function Home() {
           {ACHIEVEMENTS.map(item => (
             <li
               key={item.year}
-              className="chunky flex items-center gap-4 bg-sun px-4 py-3"
+              className="chunky reveal flex items-center gap-4 bg-sun px-4 py-3"
             >
               <span className="font-display text-3xl text-dirt tabular-nums">
                 {item.year}
@@ -197,10 +199,10 @@ export async function Home() {
       <section aria-label="둘러보기" className="mx-auto max-w-5xl px-4 pt-16">
         <ul className="grid gap-4 sm:grid-cols-3 sm:gap-5">
           {GUIDE.map(item => (
-            <li key={item.href}>
+            <li key={item.href} className="reveal">
               <Link
                 href={item.href}
-                className={`chunky flex h-full items-center gap-4 p-4 sm:flex-col sm:items-start sm:p-5 ${item.tone}`}
+                className={`chunky flex h-full items-center gap-4 p-4 sm:flex-col sm:items-start sm:p-5 transition-transform duration-200 hover:-translate-y-1 ${item.tone}`}
               >
                 <span className="grid h-18 w-18 shrink-0 place-items-center rounded-xl bg-ink/8 font-display text-2xl text-dirt sm:h-24 sm:w-full sm:text-4xl">
                   {item.badge ? (
@@ -264,12 +266,12 @@ export async function Home() {
         {videos.length > 0 ? (
           <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
             {videos.map(video => (
-              <li key={video.id}>
+              <li key={video.id} className="reveal">
                 <a
                   href={`https://www.youtube.com/watch?v=${video.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="chunky block h-full overflow-hidden bg-white"
+                  className="chunky block h-full overflow-hidden bg-white transition-transform duration-200 hover:-translate-y-1"
                 >
                   {/* biome-ignore lint/performance/noImgElement: 정적 export 라 외부 썸네일은 그대로 쓴다 */}
                   <img
@@ -278,7 +280,7 @@ export async function Home() {
                     loading="lazy"
                     width={320}
                     height={180}
-                    className="aspect-video w-full border-ink border-b-[3px] object-cover"
+                    className="skeleton aspect-video w-full border-ink border-b-[3px] object-cover"
                   />
                   <span className="block p-3">
                     <span className="line-clamp-2 font-display leading-snug sm:text-lg">

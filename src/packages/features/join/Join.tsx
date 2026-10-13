@@ -20,7 +20,7 @@ export function Join() {
             {JOIN_STEPS.map((step, index) => (
               <li
                 key={step.title}
-                className={`chunky flex gap-4 p-4 sm:block sm:p-6 ${
+                className={`chunky reveal flex gap-4 p-4 sm:block sm:p-6 ${
                   index === JOIN_STEPS.length - 1 ? 'bg-sun' : 'bg-white'
                 }`}
               >
@@ -50,7 +50,7 @@ export function Join() {
             {FAQ.map(item => (
               <details
                 key={item.q}
-                className="group chunky bg-white px-5 py-4 shadow-none"
+                className="group chunky reveal bg-white px-5 py-4 shadow-none"
               >
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg sm:text-xl">
                   {item.q}

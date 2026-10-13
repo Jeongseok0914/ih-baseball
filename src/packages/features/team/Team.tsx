@@ -32,7 +32,7 @@ function ProfileCard({
 }: CardProps) {
   return (
     <li
-      className={`chunky relative flex flex-col p-4 sm:p-5 ${isStaff ? 'bg-grass text-white' : 'bg-white'}`}
+      className={`chunky reveal relative flex flex-col p-4 sm:p-5 ${isStaff ? 'bg-grass text-white' : 'bg-white'}`}
     >
       {/* 오른쪽 위 작은 원. 동의받은 사진이 있으면 사진, 없으면 캐릭터. */}
       <span className="absolute top-3 right-3 size-14 overflow-hidden rounded-full border-[3px] border-ink bg-sun/60 sm:size-16">
@@ -40,7 +40,7 @@ function ProfileCard({
           <Image
             src={photo}
             alt={`${name} 사진`}
-            className="size-full object-cover"
+            className="skeleton size-full object-cover"
           />
         ) : (
           <CharacterFace

@@ -53,3 +53,105 @@ body {
   outline: 3px solid var(--color-stitch);
   outline-offset: 3px;
 }
+
+/* ---- 움직임 ----
+   페이지에 들어올 때 한 번 떠오르고, 스크롤로 카드가 화면에 들어올 때 차례로 떠오른다.
+   첫 화면만 스티커가 톡 붙고 백묵 다이아몬드가 그려지는 순간을 준다. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-16deg);
+  }
+}
+
+@utility animate-rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@utility animate-pop {
+  animation: pop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@utility animate-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.2s 0.3s ease-out forwards;
+}
+
+/* 손 흔들기: 세 번 흔들고 멈춘다. */
+@utility animate-wave {
+  transform-box: view-box;
+  transform-origin: 150px 140px;
+  animation: wave 0.8s 0.6s ease-in-out 3;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* 로딩 중 자리 표시. 흙빛이 옆으로 반짝이며 지나간다. 이미지가 뜨면 그 위를 덮는다. */
+@utility skeleton {
+  background:
+    linear-gradient(90deg, #e8e2d6 0%, #f3eee4 40%, #e8e2d6 80%) 0 0 / 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* 스크롤 등장. 지원하지 않는 브라우저에서는 그냥 보인다. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .animate-draw {
+    stroke-dashoffset: 0;
+  }
+  .skeleton {
+    background: #e8e2d6;
+  }
+}

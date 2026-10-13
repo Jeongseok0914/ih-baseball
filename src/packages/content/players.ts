@@ -87,7 +87,7 @@ export const PLAYERS: Player[] = [
     number: 23,
     name: '변주하',
     grade: 5,
-    positions: ['외야수', '투수'],
+    positions: ['내야수', '투수'],
     hand: '우투우타',
   },
   {

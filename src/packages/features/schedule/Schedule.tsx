@@ -50,13 +50,13 @@ function FieldIllustration() {
 
 function PlaceCard({ place, days }: { place: Place; days: string }) {
   return (
-    <article className="chunky flex h-full flex-col overflow-hidden bg-white">
+    <article className="chunky reveal flex h-full flex-col overflow-hidden bg-white">
       {place.photo ? (
         <figure className="relative border-ink border-b-[3px]">
           <Image
             src={place.photo.src}
             alt={place.photo.alt}
-            className="aspect-video w-full object-cover"
+            className="skeleton aspect-video w-full object-cover"
           />
           {/* 사진 파일은 손대지 않는다(공공누리 변경금지). 출처만 위에 얹는다. */}
           <figcaption className="absolute right-2 bottom-2 rounded-md bg-black/55 px-2 py-0.5 text-[11px] text-white">
@@ -114,7 +114,7 @@ export function Schedule() {
             {WEEK.map(d => (
               <li
                 key={d.day}
-                className={`chunky flex min-h-15 items-center gap-4 px-3 py-2 sm:min-h-36 sm:flex-col sm:justify-start sm:gap-5 sm:py-4 sm:text-center ${KIND_STYLE[d.kind]}`}
+                className={`chunky reveal flex min-h-15 items-center gap-4 px-3 py-2 sm:min-h-36 sm:flex-col sm:justify-start sm:gap-5 sm:py-4 sm:text-center ${KIND_STYLE[d.kind]}`}
               >
                 <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/85 font-display text-ink text-xl">
                   {d.day}
