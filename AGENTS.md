@@ -56,8 +56,9 @@ workflow 위치는 `docs/harness/`입니다. 코드를 고치는 요청이면 �
    ISR/revalidate, 미리 알 수 없는 dynamic route)을 쓰지 않습니다.
    `output: 'export'`가 깨집니다.
 3. 콘텐츠는 컴포넌트에 하드코딩하지 않고 `~content/*` 데이터에서 읽습니다.
-4. 이미지는 `public/`에 두고, 학생 사진·이름 등 개인정보는 보호자 동의 범위만
-   게시합니다.
+4. 이미지는 `src/packages/content/images`에 두고 static import(`import x from
+   '~content/images/x.jpg'`)로 씁니다. basePath가 자동으로 붙습니다. 학생 사진·이름 등
+   개인정보는 보호자 동의 범위만 게시합니다.
 5. alias import를 사용하며 부모 상대 import는 금지합니다.
 6. `console.log`, `var`, `any`, `==`, `!=`, ESLint를 추가하지 않습니다.
 7. Node.js import는 `node:` protocol을 사용합니다.
@@ -82,12 +83,11 @@ workflow 위치는 `docs/harness/`입니다. 코드를 고치는 요청이면 �
 
 - `pnpm harness:check`: 정적 룰 + dependency-cruiser + project health
 - `pnpm verify`: harness + Biome + TypeScript
-- `pnpm verify:full`: verify + harness tests + 정적 build(`out/`)
+- `pnpm test`: `src/**/*.node-test.ts` (Node 내장 테스트, 타입 스트리핑)
+- `pnpm verify:full`: verify + harness tests + test + 정적 build(`out/`)
 - `pnpm preview`: build 결과(`out/`)를 로컬 정적 서버로 확인
 - `pnpm clean`: dev process를 멈춘 뒤 `.next`, `out` 제거
 - 배포: `master` push → `deploy-pages.yml` → GitHub Pages. 기본 브랜치는 `master`
-- `public/` 이미지 경로에는 basePath가 자동으로 붙지 않는다. 커스텀 도메인 연결 전에
-  이미지를 추가하면 basePath 처리를 함께 넣는다
 
 커밋 요청 시 status와 diff를 확인하고 요청 파일만 stage합니다. 검증 실패 시
 커밋하지 않습니다.

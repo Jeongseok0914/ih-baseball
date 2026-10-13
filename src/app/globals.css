@@ -1,14 +1,46 @@
 @import 'tailwindcss';
 
+/* 시안 C "흙먼지 운동장": 내야 흙, 잔디, 백묵, 노란 스티커. 금색·빨강은 엠블럼과 캐릭터 색. */
 @theme {
-  --color-chalk: #f3f5ef;
-  --color-board: #17402e;
-  --color-board-deep: #0f2c20;
-  --color-ink: #16211b;
-  --color-stitch: #c81e2b;
-  --color-dust: #d8c9a8;
-  --font-display: var(--font-black-han-sans), sans-serif;
-  --font-sans: var(--font-plex-kr), system-ui, sans-serif;
+  --color-chalk: #f4f4ee;
+  --color-ink: #2a1d14;
+  --color-dirt: #a65a2a;
+  --color-grass: #2f6b3f;
+  --color-sun: #f2c14e;
+  --color-gold: #d0b45a;
+  --color-stitch: #b3261e;
+  --font-display: var(--font-jua), sans-serif;
+  --font-sans: var(--font-gowun), system-ui, sans-serif;
+}
+
+/* 흙바닥: 밝은 알갱이와 어두운 알갱이를 엇갈려 뿌린다. */
+@utility bg-dirt {
+  background-color: var(--color-dirt);
+  background-image:
+    radial-gradient(rgb(255 255 255 / 0.08) 1.2px, transparent 1.4px),
+    radial-gradient(rgb(0 0 0 / 0.1) 1.2px, transparent 1.4px);
+  background-size:
+    14px 14px,
+    22px 22px;
+  background-position:
+    0 0,
+    7px 11px;
+}
+
+/* 잔디 깎은 줄무늬 */
+@utility bg-grass {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-grass) 0 48px,
+    #367a48 48px 96px
+  );
+}
+
+/* 두꺼운 테두리와 아래로 떨어지는 그림자. 스티커처럼 붙은 카드. */
+@utility chunky {
+  border: 3px solid var(--color-ink);
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--color-ink);
 }
 
 body {

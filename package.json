@@ -19,9 +19,10 @@
     "harness:check": "node scripts/harness/check-static-rules.js && pnpm deps:check && pnpm health:check",
     "harness:test": "node --test scripts/harness/*.node-test.mjs",
     "verify": "pnpm harness:check && pnpm check && pnpm type-check",
-    "verify:full": "pnpm verify && pnpm harness:test && pnpm build",
+    "verify:full": "pnpm verify && pnpm harness:test && pnpm test && pnpm build",
     "security:quick": "pnpm audit --audit-level high",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "node --test 'src/**/*.node-test.ts'"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,css}": [

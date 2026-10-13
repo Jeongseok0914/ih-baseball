@@ -3,6 +3,9 @@ name: Deploy Pages
 on:
   push:
     branches: [master]
+  # 유튜브 최근 영상은 빌드할 때 가져오므로 매일 아침 6시(KST)에 다시 빌드한다.
+  schedule:
+    - cron: '0 21 * * *'
   workflow_dispatch:
 
 permissions:
@@ -34,6 +37,7 @@ jobs:
       - run: pnpm verify:full
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PAGES_ORIGIN: ${{ steps.pages.outputs.origin }}
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: out

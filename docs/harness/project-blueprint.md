@@ -25,7 +25,6 @@ src/
     content/                  -> 사이트 콘텐츠 데이터 (DB 대체)
     components/               -> 2곳 이상 재사용되는 UI (필요할 때 생성)
     lib/                      -> 2곳 이상 재사용되는 유틸 (필요할 때 생성)
-public/                       -> 이미지 등 정적 파일
 ```
 
 의존 방향: app → features → components/lib/content. 역방향과 feature 간
@@ -52,7 +51,8 @@ export default function SchedulePage() {
 - 콘텐츠 타입과 데이터를 같은 파일에 둡니다. 예: `players.ts`에 `Player` 타입과
   `PLAYERS` 배열.
 - 날짜는 ISO 문자열(`'2026-10-13'`)로 저장하고 표시할 때만 포맷합니다.
-- 이미지 경로는 `public/` 기준 절대 경로(`/images/...`)로 저장합니다.
+- 이미지는 `src/packages/content/images`에 두고 데이터 파일에서 static import 합니다.
+  문자열 경로를 쓰면 GitHub Pages basePath가 붙지 않아 깨집니다.
 - 학생 개인정보는 보호자 동의 범위만 넣습니다. 동의가 철회되면 데이터와 이미지를
   함께 지웁니다.
 - 마크다운/CMS가 필요해지면 그때 도입합니다. 먼저 TS 데이터로 시작합니다.

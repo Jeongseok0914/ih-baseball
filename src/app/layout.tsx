@@ -1,29 +1,41 @@
 import type { Metadata } from 'next';
-import { Black_Han_Sans, IBM_Plex_Sans_KR } from 'next/font/google';
+import { Gowun_Dodum, Jua } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { SiteFooter } from '~components/site-footer';
 import { SiteHeader } from '~components/site-header';
-import { SITE } from '~content/site';
+import { SEARCH_VERIFICATION, SITE } from '~content/site';
 import './globals.css';
 
-const display = Black_Han_Sans({
+const display = Jua({
   weight: '400',
   subsets: ['latin'],
-  variable: '--font-black-han-sans',
+  variable: '--font-jua',
 });
 
-const body = IBM_Plex_Sans_KR({
-  weight: ['400', '600'],
+const body = Gowun_Dodum({
+  weight: '400',
   subsets: ['latin'],
-  variable: '--font-plex-kr',
+  variable: '--font-gowun',
 });
 
 export const metadata: Metadata = {
+  // 공유 썸네일은 절대 URL이어야 한다. CI가 configure-pages 의 origin 을 주입하고 basePath 는 Next가 붙인다.
+  metadataBase: new URL(process.env.PAGES_ORIGIN || 'http://localhost:3000'),
   title: { default: SITE.fullName, template: `%s | ${SITE.name}` },
   description: SITE.description,
+  keywords: SITE.keywords,
+  applicationName: SITE.fullName,
+  formatDetection: { telephone: false },
+  verification: {
+    google: SEARCH_VERIFICATION.google || undefined,
+    other: SEARCH_VERIFICATION.naver
+      ? { 'naver-site-verification': SEARCH_VERIFICATION.naver }
+      : undefined,
+  },
   openGraph: {
     title: SITE.fullName,
     description: SITE.description,
+    siteName: SITE.fullName,
     locale: 'ko_KR',
     type: 'website',
   },
