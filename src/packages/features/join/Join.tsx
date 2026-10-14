@@ -1,5 +1,7 @@
+import { KakaoButton } from '~components/contact-links';
 import { PageHero } from '~components/page-hero';
 import { FAQ, JOIN_STEPS } from '~content/join';
+import { KAKAO_CHANNEL } from '~content/recruit';
 
 const STEP_COLORS = ['bg-grass', 'bg-dirt', 'bg-ink'];
 
@@ -36,6 +38,10 @@ export function Join() {
                   <span className="mt-1 block leading-relaxed">
                     {step.text}
                   </span>
+                  {/* 첫 단계에서 바로 상담을 시작할 수 있게 한다. */}
+                  {index === 0 && KAKAO_CHANNEL ? (
+                    <KakaoButton className="mt-3" />
+                  ) : null}
                 </span>
               </li>
             ))}

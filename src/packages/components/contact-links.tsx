@@ -1,3 +1,4 @@
+import { KAKAO_CHANNEL } from '~content/recruit';
 import { COACH } from '~content/site';
 
 function PhoneIcon() {
@@ -54,5 +55,33 @@ export function ContactButtons() {
         문자 보내기
       </a>
     </div>
+  );
+}
+
+export function KakaoIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="size-6"
+      fill="currentColor"
+    >
+      <path d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.2-2.8c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z" />
+    </svg>
+  );
+}
+
+// 카카오톡 채널 상담. 휴대폰·PC 모두 채팅창이 열린다.
+export function KakaoButton({ className = '' }: { className?: string }) {
+  return (
+    <a
+      href={KAKAO_CHANNEL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#fee500] px-5 font-display text-[#191919] text-lg shadow-[0_4px_0_#b8a200] active:translate-y-0.5 ${className}`}
+    >
+      <KakaoIcon />
+      카카오톡으로 상담하기
+    </a>
   );
 }
