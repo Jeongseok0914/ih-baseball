@@ -38,6 +38,8 @@ jobs:
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           PAGES_ORIGIN: ${{ steps.pages.outputs.origin }}
+          # 매일 자동 빌드에서 영상을 못 받으면 빌드를 실패시켜 기존 배포본을 유지한다.
+          REQUIRE_VIDEOS: ${{ github.event_name == 'schedule' }}
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: out

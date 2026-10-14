@@ -30,16 +30,28 @@ const TEAM_JSON_LD = {
   sameAs: [YOUTUBE_CHANNEL.url],
 };
 
-// 빌드할 때 한 번 읽는다. 실패하면 영상 목록 없이 채널 링크만 보여 준다.
+const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL.id}`;
+
+// 빌드할 때 읽는다. 유튜브 피드는 가끔 404/500 을 주므로 몇 번 다시 시도하고,
+// 그래도 실패하면 영상 목록 없이 채널 링크만 보여 준다.
+// 매일 자동 빌드(REQUIRE_VIDEOS)에서는 빌드를 실패시켜 어제 배포본을 그대로 둔다.
 async function fetchRecentVideos(): Promise<Video[]> {
-  try {
-    const res = await fetch(
-      `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL.id}`
-    );
-    return res.ok ? parseFeed(await res.text(), VIDEO_COUNT) : [];
-  } catch {
-    return [];
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(FEED_URL, {
+        signal: AbortSignal.timeout(10_000),
+      });
+      const videos = res.ok ? parseFeed(await res.text(), VIDEO_COUNT) : [];
+      if (videos.length > 0) return videos;
+    } catch {
+      // 네트워크 오류나 시간 초과면 아래에서 다시 시도한다.
+    }
+    if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 2_000));
   }
+  if (process.env.REQUIRE_VIDEOS === 'true') {
+    throw new Error('유튜브 피드에서 영상을 받지 못해 배포를 건너뜁니다.');
+  }
+  return [];
 }
 
 // 홈에서 각 메뉴로 바로 가는 안내. 숫자와 요일은 데이터에서 읽는다.
