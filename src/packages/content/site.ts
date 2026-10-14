@@ -50,5 +50,5 @@ export const NAV = [
 // <meta> 태그로 들어간다. 비어 있으면 넣지 않는다.
 export const SEARCH_VERIFICATION = {
   google: 'Oa65YQSJ_izoQ-147HOjNY7tp-jhnLXvPtkOJ8RLVwE',
-  naver: '',
+  naver: 'a1bd8bac58272f6ad27c02aec4be116165d839dd',
 };
