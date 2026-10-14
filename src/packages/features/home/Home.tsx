@@ -303,7 +303,7 @@ export function Home() {
         </ul>
       </section>
 
-      {/* 후기가 있을 때만 보인다. 예시 글에는 '예시' 표시가 붙는다. */}
+      {/* 후기가 있을 때만 보인다. */}
       {TESTIMONIALS.length > 0 ? (
         <section
           aria-labelledby="voice-title"
@@ -314,17 +314,7 @@ export function Home() {
           </h2>
           <ul className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
             {TESTIMONIALS.map(item => (
-              <li
-                key={item.quote}
-                className="chunky reveal relative bg-white p-5"
-              >
-                {/* 목업을 보는 로컬 개발 화면(pnpm dev)에서는 숨기고, 배포된 사이트에는 항상 붙인다.
-                    공개 사이트에서 예시 글이 실제 후기로 읽히지 않게 한다. */}
-                {item.sample && process.env.NODE_ENV === 'production' ? (
-                  <span className="absolute -top-3 right-4 rounded-lg border-2 border-ink bg-sun px-2 font-display text-sm">
-                    예시
-                  </span>
-                ) : null}
+              <li key={item.quote} className="chunky reveal bg-white p-5">
                 <blockquote>
                   <p className="font-display text-xl leading-snug">
                     “{item.quote}”
