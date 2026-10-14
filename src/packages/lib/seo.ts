@@ -6,8 +6,9 @@ import { SITE } from '~content/site';
 // 커스텀 도메인을 연결하면 basePath 는 빈 값이 되어 자동으로 새 주소를 쓴다.
 export const SITE_URL = `${process.env.PAGES_ORIGIN || 'http://localhost:3000'}${process.env.PAGES_BASE_PATH ?? ''}`;
 
+// 페이지 주소는 trailingSlash 설정과 같게 끝에 / 를 붙인다. 파일(sitemap.xml 등)은 그대로 둔다.
 export const absoluteUrl = (path: string) =>
-  `${SITE_URL}${path === '/' ? '' : path}` || '/';
+  `${SITE_URL}${path.endsWith('/') || path.includes('.') ? path : `${path}/`}`;
 
 // 공유 썸네일. static import 라 파일 이름에 내용 해시가 붙는다(/_next/static/media/og-image.<해시>.jpg).
 // 이미지를 바꾸면 주소 자체가 바뀌어 카카오톡·페이스북 등이 예전 썸네일 캐시를 쓰지 않는다.
