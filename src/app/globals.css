@@ -98,6 +98,17 @@ body {
   }
 }
 
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 모집 띠. 같은 줄 두 개를 이어 붙여 왼쪽으로 끝없이 흐른다. */
+@utility animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
 @utility animate-rise {
   animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }

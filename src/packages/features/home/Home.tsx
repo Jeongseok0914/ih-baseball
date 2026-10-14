@@ -1,10 +1,13 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { CharacterFace } from '~components/team-character';
 import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
+import { HERO_PHOTO, INSTAGRAM, RECRUIT, TESTIMONIALS } from '~content/recruit';
 import { daysAt, PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
+import { ShareButton } from '~features/home/ui/ShareButton';
 import { absoluteUrl } from '~lib/seo';
 
 // 검색엔진이 이 사이트를 '초등학교 야구팀'으로 이해하도록 돕는 구조화 데이터(schema.org).
@@ -96,6 +99,64 @@ function ChalkDiamond() {
   );
 }
 
+// 사진·영상·후기가 아직 없을 때 자리를 잡아 두는 상자.
+function Placeholder({
+  label,
+  className,
+}: {
+  label: string;
+  className: string;
+}) {
+  return (
+    <div
+      className={`grid place-items-center rounded-[18px] border-[3px] border-dashed p-4 text-center ${className}`}
+    >
+      <span>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="mx-auto size-9 opacity-70"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <circle cx="12" cy="13" r="3.5" />
+        </svg>
+        <span className="mt-2 block font-display text-lg">{label}</span>
+      </span>
+    </div>
+  );
+}
+
+function RecruitTicker() {
+  const items = [
+    `${RECRUIT.season} 신입 부원 모집 중`,
+    RECRUIT.grades,
+    ...RECRUIT.ticker,
+  ];
+  // 끊김 없이 흐르도록 같은 줄을 두 번 이어 붙인다. 두 번째 줄은 화면 읽기에서 뺀다.
+  return (
+    <div className="overflow-hidden border-ink border-b-[3px] bg-sun py-2 font-display text-ink text-lg">
+      <p className="sr-only">{items.join(', ')}</p>
+      <div aria-hidden="true" className="flex w-max animate-marquee">
+        {[0, 1].map(copy => (
+          <ul key={copy} className="flex shrink-0">
+            {items.map(item => (
+              <li key={item} className="flex items-center gap-6 pr-6">
+                {item}
+                <span className="text-dirt">⚾</span>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Home() {
   return (
     <main>
@@ -107,37 +168,57 @@ export function Home() {
           __html: JSON.stringify(TEAM_JSON_LD).replace(/</g, '\\u003c'),
         }}
       />
+      <RecruitTicker />
       <section
         aria-labelledby="hero-title"
         className="relative overflow-hidden bg-dirt text-white"
       >
         <ChalkDiamond />
-        <div className="relative mx-auto max-w-5xl px-4 pt-12 pb-14 sm:pt-20 sm:pb-24">
-          <p className="flex flex-wrap gap-2">
-            <span className="animate-pop rotate-[-4deg] rounded-xl bg-sun [animation-delay:250ms] px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
-              1980 창단
-            </span>
-            <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
-              {ACHIEVEMENTS[0].year} 교육감배 준우승
-            </span>
-          </p>
-          <h1
-            id="hero-title"
-            className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.18)] sm:text-7xl"
-          >
-            같이 공 던질
-            <br />
-            친구 찾아요!
-          </h1>
-          <p className="mt-5 max-w-xl animate-rise text-lg leading-relaxed [animation-delay:120ms] sm:text-xl">
-            {SITE.description}
-          </p>
-          <Link
-            href="/join"
-            className="mt-7 inline-flex min-h-14 animate-rise items-center rounded-2xl bg-white px-7 font-display text-dirt text-xl shadow-[0_5px_0_#6e3815] transition-transform [animation-delay:220ms] hover:-translate-y-0.5 active:translate-y-1"
-          >
-            체험하러 갈래요
-          </Link>
+        <div className="relative mx-auto grid max-w-5xl items-center gap-10 px-4 pt-12 pb-14 sm:pt-20 sm:pb-24 md:grid-cols-[1.15fr_1fr]">
+          <div>
+            <p className="flex flex-wrap gap-2">
+              <span className="animate-pop rotate-[-4deg] rounded-xl bg-sun [animation-delay:250ms] px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+                1980 창단
+              </span>
+              <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+                {ACHIEVEMENTS[0].year} 교육감배 준우승
+              </span>
+            </p>
+            <h1
+              id="hero-title"
+              className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.18)] sm:text-7xl"
+            >
+              같이 공 던질
+              <br />
+              친구 찾아요!
+            </h1>
+            <p className="mt-5 max-w-xl animate-rise text-lg leading-relaxed [animation-delay:120ms] sm:text-xl">
+              {SITE.description}
+            </p>
+            <div className="mt-7 flex animate-rise flex-wrap gap-3 [animation-delay:220ms]">
+              <Link
+                href="/join"
+                className="inline-flex min-h-14 items-center rounded-2xl bg-white px-7 font-display text-dirt text-xl shadow-[0_5px_0_#6e3815] transition-transform hover:-translate-y-0.5 active:translate-y-1"
+              >
+                체험하러 갈래요
+              </Link>
+              <ShareButton title={SITE.fullName} text={SITE.description} />
+            </div>
+          </div>
+          {HERO_PHOTO ? (
+            <Image
+              src={HERO_PHOTO.src}
+              alt={HERO_PHOTO.alt}
+              priority
+              sizes="(min-width: 768px) 460px, 100vw"
+              className="chunky aspect-[4/3] w-full rotate-2 animate-rise object-cover [animation-delay:300ms]"
+            />
+          ) : (
+            <Placeholder
+              label="훈련 사진이 들어갈 자리"
+              className="aspect-[4/3] rotate-2 animate-rise border-white/70 bg-[#94501f] [animation-delay:300ms]"
+            />
+          )}
         </div>
       </section>
 
@@ -218,6 +299,79 @@ export function Home() {
               </Link>
             </li>
           ))}
+        </ul>
+      </section>
+
+      {/* 실제로 받은 후기가 있을 때만 보인다. 지어낸 후기는 넣지 않는다. */}
+      {TESTIMONIALS.length > 0 ? (
+        <section
+          aria-labelledby="voice-title"
+          className="mx-auto max-w-5xl px-4 pt-16"
+        >
+          <h2 id="voice-title" className="font-display text-3xl">
+            먼저 해 본 가족들 이야기
+          </h2>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
+            {TESTIMONIALS.map(item => (
+              <li key={item.quote} className="chunky reveal bg-white p-5">
+                <blockquote>
+                  <p className="font-display text-xl leading-snug">
+                    “{item.quote}”
+                  </p>
+                  <footer className="mt-3 text-ink/70">{item.who}</footer>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section
+        aria-labelledby="shorts-title"
+        className="mx-auto max-w-5xl px-4 pt-16"
+      >
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="shorts-title" className="font-display text-3xl">
+            짧은 영상
+          </h2>
+          {INSTAGRAM.url ? (
+            <a
+              href={INSTAGRAM.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="chunky inline-flex min-h-12 items-center gap-2 bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-4 font-display text-lg text-white shadow-none"
+            >
+              인스타그램 가기
+            </a>
+          ) : null}
+        </div>
+        {/* 휴대폰은 옆으로 넘겨 보고, 태블릿·PC는 세 개를 나란히 둔다. */}
+        <ul className="-mx-4 mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0">
+          {INSTAGRAM.reels.length > 0
+            ? INSTAGRAM.reels.map((code, index) => (
+                <li
+                  key={code}
+                  className="w-[78%] shrink-0 snap-center sm:w-auto"
+                >
+                  <iframe
+                    src={`https://www.instagram.com/reel/${code}/embed`}
+                    title={`인헌초 야구부 인스타그램 릴스 ${index + 1}`}
+                    loading="lazy"
+                    className="chunky h-[560px] w-full bg-white"
+                  />
+                </li>
+              ))
+            : [0, 1, 2].map(slot => (
+                <li
+                  key={slot}
+                  className="w-[78%] shrink-0 snap-center sm:w-auto"
+                >
+                  <Placeholder
+                    label="릴스가 들어갈 자리"
+                    className="aspect-[9/16] border-ink/30 text-ink/50"
+                  />
+                </li>
+              ))}
         </ul>
       </section>
 
