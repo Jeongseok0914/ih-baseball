@@ -44,7 +44,8 @@ const ICONS: Record<string, ReactNode> = {
 
 const useActiveHref = () => {
   const pathname = usePathname();
-  return (href: string) => pathname === href;
+  // trailingSlash 때문에 pathname 이 /team/ 로 온다. 끝의 / 를 떼고 메뉴 주소와 비교한다.
+  return (href: string) => (pathname.replace(/\/$/, '') || '/') === href;
 };
 
 // 태블릿·PC: 상단 메뉴. 현재 페이지는 흰 알약 위에 잔디색 글씨.
