@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CharacterFace } from '~components/team-character';
 import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
+import emblem from '~content/images/emblem.jpg';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
 import { HERO_PHOTO, INSTAGRAM, RECRUIT, TESTIMONIALS } from '~content/recruit';
 import { daysAt, PLACES } from '~content/schedule';
@@ -340,38 +341,30 @@ export function Home() {
         aria-labelledby="shorts-title"
         className="mx-auto max-w-5xl px-4 pt-16"
       >
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="shorts-title" className="font-display text-3xl">
-            짧은 영상
-          </h2>
-          {INSTAGRAM.url ? (
-            <a
-              href={INSTAGRAM.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="chunky inline-flex min-h-12 items-center gap-2 bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-4 font-display text-lg text-white shadow-none"
-            >
-              인스타그램 가기
-            </a>
-          ) : null}
-        </div>
-        {/* 쇼츠 화면처럼 세로 표지 세 개를 한 줄에 둔다. 누르면 인스타그램에서 재생된다. */}
-        <ul className="mx-auto mt-5 grid max-w-2xl grid-cols-3 gap-2.5 sm:gap-5">
+        <h2 id="shorts-title" className="font-display text-3xl">
+          짧은 영상
+        </h2>
+        {/* 릴스를 차례로 두고 맨 끝에 '더 보기' 카드를 둔다. 많아지면 옆으로 넘겨 본다.
+            휴대폰은 다음 카드가 살짝 보여서 넘길 수 있다는 걸 알 수 있다. */}
+        <ul className="-mx-4 mt-5 flex scroll-px-4 snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 sm:gap-5 md:mx-0 md:scroll-px-0 md:px-0">
           {INSTAGRAM.reels.length > 0
             ? INSTAGRAM.reels.map((reel, index) => (
-                <li key={reel.code} className="reveal">
+                <li
+                  key={reel.code}
+                  className="w-[28%] shrink-0 snap-start md:w-[calc((100%-3.75rem)/4)]"
+                >
                   <a
                     href={`https://www.instagram.com/reel/${reel.code}/`}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`인스타그램 릴스 ${index + 1} 보기`}
-                    className="chunky group relative block overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+                    className="chunky group relative block overflow-hidden"
                   >
                     <Image
                       src={reel.thumb}
                       alt=""
-                      sizes="(min-width: 640px) 210px, 33vw"
-                      className="skeleton aspect-[9/16] w-full object-cover"
+                      sizes="(min-width: 768px) 240px, 28vw"
+                      className="skeleton aspect-[9/16] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <span className="absolute inset-0 grid place-items-center bg-black/10">
                       <span className="grid size-11 place-items-center rounded-full bg-white/90 text-ink shadow-[0_3px_0_rgb(0_0_0/0.25)] transition-transform group-hover:scale-110 sm:size-14">
@@ -389,13 +382,43 @@ export function Home() {
                 </li>
               ))
             : [0, 1, 2].map(slot => (
-                <li key={slot}>
+                <li
+                  key={slot}
+                  className="w-[28%] shrink-0 md:w-[calc((100%-3.75rem)/4)]"
+                >
                   <Placeholder
                     label="릴스 자리"
                     className="aspect-[9/16] border-ink/30 text-ink/50"
                   />
                 </li>
               ))}
+          {INSTAGRAM.url ? (
+            <li className="w-[28%] shrink-0 snap-start md:w-[calc((100%-3.75rem)/4)]">
+              <a
+                href={INSTAGRAM.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="chunky flex h-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af] p-3 text-center text-white transition-transform duration-200 hover:-translate-y-1 sm:gap-3"
+              >
+                <Image
+                  src={emblem}
+                  alt=""
+                  width={64}
+                  height={64}
+                  className="size-10 rounded-full border-[3px] border-white sm:size-16"
+                />
+                <span className="font-display text-sm sm:text-xl">
+                  @{INSTAGRAM.url.split('/').filter(Boolean).at(-1)}
+                </span>
+                <span className="hidden leading-relaxed sm:block">
+                  훈련하고 경기하는 순간을 릴스로 올려요.
+                </span>
+                <span className="rounded-xl bg-white px-2 py-1 font-display text-[#c13584] text-sm sm:px-4 sm:py-2 sm:text-lg">
+                  더 보기 →
+                </span>
+              </a>
+            </li>
+          ) : null}
         </ul>
       </section>
 
