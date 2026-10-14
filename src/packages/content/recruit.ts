@@ -41,7 +41,7 @@ export const INSTAGRAM: {
 };
 
 // 카카오톡 채널 상담 주소(예: https://pf.kakao.com/_xxxx/chat). 비어 있으면 '준비 중'으로 보인다.
-export const KAKAO_CHANNEL = 'http://pf.kakao.com/_EAAmX/chat';
+export const KAKAO_CHANNEL = 'https://pf.kakao.com/_EAAmX/chat';
 
 // 학부모님 후기. 비어 있으면 홈의 후기 구역이 숨겨진다.
 // 학부모님께 문구와 학년 표시를 확인받은 뒤 넣는다.
