@@ -35,11 +35,11 @@ export const PLAYERS: Player[] = [
     hand: '우투우타',
   },
   {
-    number: 21,
-    name: '이준희',
+    number: 31,
+    name: '강병준',
     grade: 6,
-    positions: ['외야수', '투수'],
-    hand: '우투우타',
+    positions: ['내야수', '투수'],
+    hand: '우투좌타',
   },
   {
     number: 6,
@@ -49,17 +49,17 @@ export const PLAYERS: Player[] = [
     hand: '우투우타',
   },
   {
-    number: 17,
-    name: '오민준',
+    number: 21,
+    name: '이준희',
     grade: 6,
     positions: ['외야수', '투수'],
     hand: '우투우타',
   },
   {
-    number: 31,
-    name: '강병준',
+    number: 17,
+    name: '오민준',
     grade: 6,
-    positions: ['내야수', '투수'],
+    positions: ['외야수', '투수'],
     hand: '우투좌타',
   },
   {
