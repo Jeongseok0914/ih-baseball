@@ -49,6 +49,6 @@ export const NAV = [
 // 검색 등록 확인 코드. Google Search Console, 네이버 서치어드바이저에서 받은 값을 넣으면
 // <meta> 태그로 들어간다. 비어 있으면 넣지 않는다.
 export const SEARCH_VERIFICATION = {
-  google: '',
+  google: 'Oa65YQSJ_izoQ-147HOjNY7tp-jhnLXvPtkOJ8RLVwE',
   naver: '',
 };
