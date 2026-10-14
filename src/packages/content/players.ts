@@ -13,10 +13,10 @@ export type Player = {
 };
 
 // 현역(재학생) 라인업 기준 시즌. 졸업생은 추후 별도로 분류한다.
-export const ROSTER_SEASON = 2027;
+export const ROSTER_SEASON = 2026;
 
 // 보호자 동의를 받은 선수만 넣는다. 동의가 철회되면 바로 지운다.
-// 학년 안에서는 이 배열 순서대로 화면에 나온다.
+// 학년 안에서는 이 배열 순서(입단 순서)대로 화면에 나온다.
 export const PLAYERS: Player[] = [
   {
     number: 33,
@@ -42,17 +42,17 @@ export const PLAYERS: Player[] = [
     hand: '우투좌타',
   },
   {
-    number: 6,
-    name: '강민호',
-    grade: 6,
-    positions: ['내야수'],
-    hand: '우투우타',
-  },
-  {
     number: 21,
     name: '이준희',
     grade: 6,
     positions: ['외야수'],
+    hand: '우투우타',
+  },
+  {
+    number: 6,
+    name: '강민호',
+    grade: 6,
+    positions: ['내야수'],
     hand: '우투우타',
   },
   {

@@ -3,11 +3,11 @@ import heroTeam from '~content/images/hero-team.jpg';
 import reelDdTt from '~content/images/reels/DdTtGQmuaFb.jpg';
 import reelDZiA from '~content/images/reels/DZiAyWbzpF7.jpg';
 import reelDZXq from '~content/images/reels/DZXqCu9TTfw.jpg';
-import { ROSTER_SEASON } from '~content/players';
 
 // 신입 부원 모집 안내. 모든 페이지 위 띠와 홈 첫 화면에 쓴다.
 export const RECRUIT = {
-  season: ROSTER_SEASON,
+  // 다음 해 입단 모집이라 현역 라인업 시즌과 따로 둔다.
+  season: 2027,
   grades: '1~5학년',
   // 띠에 차례로 흐르는 짧은 문구.
   ticker: [
