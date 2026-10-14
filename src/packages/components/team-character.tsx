@@ -1,4 +1,4 @@
-// 야구부 캐릭터. 모두 같은 IH 팀 모자를 쓴다.
+// 야구부 캐릭터. 모두 같은 인헌 팀 모자를 쓴다.
 // - CoachCharacter: 강재훈 감독님 전신(수염, 배가 나온 71번). 하단 연락처에 쓴다.
 // - CharacterFace: 카드 원에 들어가는 얼굴. 감독님, 젊은 코치, 학년별 아이.
 const SKIN = '#f3c9a1';
@@ -30,13 +30,14 @@ function Cap() {
         x="100"
         y="60"
         textAnchor="middle"
-        fontSize="24"
-        fontStyle="italic"
-        fontWeight="700"
+        fontSize="20"
+        fontWeight="900"
         fill="var(--color-gold)"
-        style={{ fontFamily: 'Georgia, serif' }}
+        stroke="var(--color-gold)"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
       >
-        IH
+        인헌
       </text>
       <path
         d="M54 68 q46 -8 92 0 q-4 13 -46 13 q-42 0 -46 -13 z"
@@ -322,7 +323,7 @@ export function CoachCharacter({ className }: { className?: string }) {
     <svg
       viewBox="0 0 200 260"
       role="img"
-      aria-label="IH 야구부 모자를 쓰고 수염이 난 강재훈 감독님 캐릭터"
+      aria-label="인헌 야구부 모자를 쓰고 수염이 난 강재훈 감독님 캐릭터"
       className={className}
     >
       {/* 다리와 신발 */}
