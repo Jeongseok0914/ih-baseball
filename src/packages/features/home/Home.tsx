@@ -4,11 +4,8 @@ import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
 import { daysAt, PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
-import { YOUTUBE_CHANNEL } from '~content/youtube';
-import { parseFeed, type Video } from '~features/home/youtube-feed';
+import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
 import { absoluteUrl } from '~lib/seo';
-
-const VIDEO_COUNT = 6;
 
 // 검색엔진이 이 사이트를 '초등학교 야구팀'으로 이해하도록 돕는 구조화 데이터(schema.org).
 const TEAM_JSON_LD = {
@@ -29,30 +26,6 @@ const TEAM_JSON_LD = {
   },
   sameAs: [YOUTUBE_CHANNEL.url],
 };
-
-const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL.id}`;
-
-// 빌드할 때 읽는다. 유튜브 피드는 가끔 404/500 을 주므로 몇 번 다시 시도하고,
-// 그래도 실패하면 영상 목록 없이 채널 링크만 보여 준다.
-// 매일 자동 빌드(REQUIRE_VIDEOS)에서는 빌드를 실패시켜 어제 배포본을 그대로 둔다.
-async function fetchRecentVideos(): Promise<Video[]> {
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const res = await fetch(FEED_URL, {
-        signal: AbortSignal.timeout(10_000),
-      });
-      const videos = res.ok ? parseFeed(await res.text(), VIDEO_COUNT) : [];
-      if (videos.length > 0) return videos;
-    } catch {
-      // 네트워크 오류나 시간 초과면 아래에서 다시 시도한다.
-    }
-    if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 2_000));
-  }
-  if (process.env.REQUIRE_VIDEOS === 'true') {
-    throw new Error('유튜브 피드에서 영상을 받지 못해 배포를 건너뜁니다.');
-  }
-  return [];
-}
 
 // 홈에서 각 메뉴로 바로 가는 안내. 숫자와 요일은 데이터에서 읽는다.
 const GUIDE = [
@@ -123,9 +96,7 @@ function ChalkDiamond() {
   );
 }
 
-export async function Home() {
-  const videos = await fetchRecentVideos();
-
+export function Home() {
   return (
     <main>
       <script
@@ -275,42 +246,33 @@ export async function Home() {
             유튜브 채널 가기
           </a>
         </div>
-        {videos.length > 0 ? (
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-            {videos.map(video => (
-              <li key={video.id} className="reveal">
-                <a
-                  href={`https://www.youtube.com/watch?v=${video.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="chunky block h-full overflow-hidden bg-white transition-transform duration-200 hover:-translate-y-1"
-                >
-                  {/* biome-ignore lint/performance/noImgElement: 정적 export 라 외부 썸네일은 그대로 쓴다 */}
-                  <img
-                    src={`https://i.ytimg.com/vi/${video.id}/mqdefault.jpg`}
-                    alt=""
-                    loading="lazy"
-                    width={320}
-                    height={180}
-                    className="skeleton aspect-video w-full border-ink border-b-[3px] object-cover"
-                  />
-                  <span className="block p-3">
-                    <span className="line-clamp-2 font-display leading-snug sm:text-lg">
-                      {video.title}
-                    </span>
-                    <span className="mt-1 block text-ink/60 text-sm">
-                      {video.published}
-                    </span>
+        <ul className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
+          {VIDEOS.map(video => (
+            <li key={video.id} className="reveal">
+              <a
+                href={`https://www.youtube.com/watch?v=${video.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="chunky block h-full overflow-hidden bg-white transition-transform duration-200 hover:-translate-y-1"
+              >
+                {/* biome-ignore lint/performance/noImgElement: 정적 export 라 외부 썸네일은 그대로 쓴다 */}
+                <img
+                  src={`https://i.ytimg.com/vi/${video.id}/mqdefault.jpg`}
+                  alt=""
+                  loading="lazy"
+                  width={320}
+                  height={180}
+                  className="skeleton aspect-video w-full border-ink border-b-[3px] object-cover"
+                />
+                <span className="block p-3">
+                  <span className="line-clamp-2 font-display leading-snug sm:text-lg">
+                    {video.title}
                   </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="chunky mt-5 bg-white p-5 shadow-none">
-            경기 영상은 {YOUTUBE_CHANNEL.name} 유튜브 채널에서 볼 수 있어요.
-          </p>
-        )}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   );
