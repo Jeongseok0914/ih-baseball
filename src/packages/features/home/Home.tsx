@@ -4,7 +4,7 @@ import { CharacterFace } from '~components/team-character';
 import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
-import { HERO_PHOTO, INSTAGRAM, RECRUIT, TESTIMONIALS } from '~content/recruit';
+import { HERO_PHOTO, INSTAGRAM, TESTIMONIALS } from '~content/recruit';
 import { daysAt, PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
@@ -132,32 +132,6 @@ function Placeholder({
   );
 }
 
-function RecruitTicker() {
-  const items = [
-    `${RECRUIT.season} 신입 부원 모집 중`,
-    RECRUIT.grades,
-    ...RECRUIT.ticker,
-  ];
-  // 끊김 없이 흐르도록 같은 줄을 두 번 이어 붙인다. 두 번째 줄은 화면 읽기에서 뺀다.
-  return (
-    <div className="overflow-hidden border-ink border-b-[3px] bg-sun py-2 font-display text-ink text-lg">
-      <p className="sr-only">{items.join(', ')}</p>
-      <div aria-hidden="true" className="flex w-max animate-marquee">
-        {[0, 1].map(copy => (
-          <ul key={copy} className="flex shrink-0">
-            {items.map(item => (
-              <li key={item} className="flex items-center gap-6 pr-6">
-                {item}
-                <span className="text-dirt">⚾</span>
-              </li>
-            ))}
-          </ul>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function Home() {
   return (
     <main>
@@ -169,7 +143,6 @@ export function Home() {
           __html: JSON.stringify(TEAM_JSON_LD).replace(/</g, '\\u003c'),
         }}
       />
-      <RecruitTicker />
       <section
         aria-labelledby="hero-title"
         className="relative overflow-hidden bg-dirt text-white"

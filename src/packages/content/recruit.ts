@@ -5,7 +5,7 @@ import reelDZiA from '~content/images/reels/DZiAyWbzpF7.jpg';
 import reelDZXq from '~content/images/reels/DZXqCu9TTfw.jpg';
 import { ROSTER_SEASON } from '~content/players';
 
-// 신입 부원 모집 안내. 홈 맨 위 띠와 첫 화면에 쓴다.
+// 신입 부원 모집 안내. 모든 페이지 위 띠와 홈 첫 화면에 쓴다.
 export const RECRUIT = {
   season: ROSTER_SEASON,
   grades: '1~5학년',

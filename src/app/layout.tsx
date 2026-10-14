@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Gowun_Dodum, Jua } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { RecruitTicker } from '~components/recruit-ticker';
 import { SiteFooter } from '~components/site-footer';
 import { SiteHeader } from '~components/site-header';
 import { BottomTabs } from '~components/site-nav';
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ko" className={`${display.variable} ${body.variable}`}>
       <body className="pb-[calc(80px+env(safe-area-inset-bottom))] font-sans sm:pb-0">
         <SiteHeader />
+        <RecruitTicker />
         {children}
         <SiteFooter />
         <BottomTabs />
