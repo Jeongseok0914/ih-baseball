@@ -1,4 +1,8 @@
 import type { StaticImageData } from 'next/image';
+import heroTeam from '~content/images/hero-team.jpg';
+import reelDdTt from '~content/images/reels/DdTtGQmuaFb.jpg';
+import reelDZiA from '~content/images/reels/DZiAyWbzpF7.jpg';
+import reelDZXq from '~content/images/reels/DZXqCu9TTfw.jpg';
 import { ROSTER_SEASON } from '~content/players';
 
 // 신입 부원 모집 안내. 홈 맨 위 띠와 첫 화면에 쓴다.
@@ -15,14 +19,25 @@ export const RECRUIT = {
 
 // 첫 화면 사진. 보호자 동의를 받은 사진을 content/images 에 넣고 static import 한다.
 // null 이면 사진 자리 표시가 보인다.
-export const HERO_PHOTO: { src: StaticImageData; alt: string } | null = null;
+export const HERO_PHOTO: { src: StaticImageData; alt: string } | null = {
+  src: heroTeam,
+  alt: '2025 서울특별시 교육감배 U12 야구대회 준우승 현수막과 트로피를 들고 운동장에 모인 인헌초 야구부',
+};
 
-// 인스타그램. reels 에는 릴스 주소(instagram.com/reel/여기/)의 코드를 넣는다.
+// 인스타그램. reels 의 code 는 릴스 주소(instagram.com/reel/여기/)의 코드,
+// thumb 는 표지 이미지(instagram.com/p/코드/media/?size=l 에서 받아 content/images/reels 에 둔다).
 // 비어 있으면 짧은 영상 자리 표시가 보인다.
-export const INSTAGRAM = {
+export const INSTAGRAM: {
+  url: string;
+  reels: { code: string; thumb: StaticImageData }[];
+} = {
   url: 'https://www.instagram.com/inhunyagu',
   // 최근 릴스 3개(고정 게시물 제외). 최신이 앞.
-  reels: ['DdTtGQmuaFb', 'DZiAyWbzpF7', 'DZXqCu9TTfw'],
+  reels: [
+    { code: 'DdTtGQmuaFb', thumb: reelDdTt },
+    { code: 'DZiAyWbzpF7', thumb: reelDZiA },
+    { code: 'DZXqCu9TTfw', thumb: reelDZXq },
+  ],
 };
 
 // 카카오톡 채널 상담 주소(예: https://pf.kakao.com/_xxxx/chat). 비어 있으면 '준비 중'으로 보인다.

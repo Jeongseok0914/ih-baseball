@@ -355,29 +355,43 @@ export function Home() {
             </a>
           ) : null}
         </div>
-        {/* 휴대폰은 옆으로 넘겨 보고, 태블릿·PC는 세 개를 나란히 둔다. */}
-        <ul className="-mx-4 mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0">
+        {/* 쇼츠 화면처럼 세로 표지 세 개를 한 줄에 둔다. 누르면 인스타그램에서 재생된다. */}
+        <ul className="mx-auto mt-5 grid max-w-2xl grid-cols-3 gap-2.5 sm:gap-5">
           {INSTAGRAM.reels.length > 0
-            ? INSTAGRAM.reels.map((code, index) => (
-                <li
-                  key={code}
-                  className="w-[78%] shrink-0 snap-center sm:w-auto"
-                >
-                  <iframe
-                    src={`https://www.instagram.com/reel/${code}/embed`}
-                    title={`인헌초 야구부 인스타그램 릴스 ${index + 1}`}
-                    loading="lazy"
-                    className="chunky h-[560px] w-full bg-white"
-                  />
+            ? INSTAGRAM.reels.map((reel, index) => (
+                <li key={reel.code} className="reveal">
+                  <a
+                    href={`https://www.instagram.com/reel/${reel.code}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`인스타그램 릴스 ${index + 1} 보기`}
+                    className="chunky group relative block overflow-hidden transition-transform duration-200 hover:-translate-y-1"
+                  >
+                    <Image
+                      src={reel.thumb}
+                      alt=""
+                      sizes="(min-width: 640px) 210px, 33vw"
+                      className="skeleton aspect-[9/16] w-full object-cover"
+                    />
+                    <span className="absolute inset-0 grid place-items-center bg-black/10">
+                      <span className="grid size-11 place-items-center rounded-full bg-white/90 text-ink shadow-[0_3px_0_rgb(0_0_0/0.25)] transition-transform group-hover:scale-110 sm:size-14">
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 24 24"
+                          className="ml-0.5 size-5 sm:size-7"
+                          fill="currentColor"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </span>
+                    </span>
+                  </a>
                 </li>
               ))
             : [0, 1, 2].map(slot => (
-                <li
-                  key={slot}
-                  className="w-[78%] shrink-0 snap-center sm:w-auto"
-                >
+                <li key={slot}>
                   <Placeholder
-                    label="릴스가 들어갈 자리"
+                    label="릴스 자리"
                     className="aspect-[9/16] border-ink/30 text-ink/50"
                   />
                 </li>
