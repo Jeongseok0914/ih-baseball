@@ -314,7 +314,15 @@ export function Home() {
           </h2>
           <ul className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
             {TESTIMONIALS.map(item => (
-              <li key={item.quote} className="chunky reveal bg-white p-5">
+              <li
+                key={item.quote}
+                className="chunky reveal relative bg-white p-5"
+              >
+                {item.mock ? (
+                  <span className="absolute -top-3 right-4 rounded-lg border-2 border-ink bg-sun px-2 font-display text-sm">
+                    MOCK
+                  </span>
+                ) : null}
                 <blockquote>
                   <p className="font-display text-xl leading-snug">
                     “{item.quote}”

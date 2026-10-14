@@ -45,20 +45,24 @@ export const KAKAO_CHANNEL = 'https://pf.kakao.com/_weyFX/chat';
 
 // 학부모님 후기. 비어 있으면 홈의 후기 구역이 숨겨진다.
 // 학부모님께 문구와 학년 표시를 확인받은 뒤 넣는다.
-export const TESTIMONIALS: { quote: string; who: string }[] = [
+// mock: true 는 실제 후기가 아닌 mock 글이라 카드에 'MOCK' 표시가 붙는다. 실제 후기로 바꿀 때 지운다.
+export const TESTIMONIALS: { quote: string; who: string; mock?: boolean }[] = [
   {
     quote:
       '야구를 한 번도 안 해 본 아이였는데, 이제는 주말만 기다려요. 운동장에서 친구들이 생긴 게 제일 좋아요.',
     who: '3학년 학부모',
+    mock: true,
   },
   {
     quote:
       '공부랑 같이 할 수 있을지 걱정했는데, 수업 끝나고 훈련하니 생활 리듬이 오히려 잡혔어요.',
     who: '5학년 학부모',
+    mock: true,
   },
   {
     quote:
       '감독님이 아이 하나하나 기본기부터 봐 주셔서 믿고 보내요. 경기 영상은 온 가족이 같이 봐요.',
     who: '6학년 학부모',
+    mock: true,
   },
 ];
