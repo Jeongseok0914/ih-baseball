@@ -5,6 +5,7 @@ import { SiteFooter } from '~components/site-footer';
 import { SiteHeader } from '~components/site-header';
 import { BottomTabs } from '~components/site-nav';
 import { SEARCH_VERIFICATION, SITE } from '~content/site';
+import { OG_IMAGES } from '~lib/seo';
 import './globals.css';
 
 const display = Jua({
@@ -39,7 +40,9 @@ export const metadata: Metadata = {
     siteName: SITE.fullName,
     locale: 'ko_KR',
     type: 'website',
+    images: OG_IMAGES,
   },
+  twitter: { card: 'summary_large_image', images: OG_IMAGES },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
