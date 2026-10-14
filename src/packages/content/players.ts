@@ -19,6 +19,48 @@ export const ROSTER_SEASON = 2027;
 // 학년 안에서는 이 배열 순서대로 화면에 나온다.
 export const PLAYERS: Player[] = [
   {
+    number: 33,
+    name: '이승하',
+    grade: 6,
+    positions: ['포수'],
+    hand: '우투우타',
+  },
+  {
+    number: 22,
+    name: '박보영',
+    grade: 6,
+    positions: ['포수'],
+    hand: '우투우타',
+  },
+  {
+    number: 21,
+    name: '이준희',
+    grade: 6,
+    positions: ['외야수'],
+    hand: '우투우타',
+  },
+  {
+    number: 6,
+    name: '강민호',
+    grade: 6,
+    positions: ['내야수'],
+    hand: '우투우타',
+  },
+  {
+    number: 17,
+    name: '오민준',
+    grade: 6,
+    positions: ['외야수'],
+    hand: '우투우타',
+  },
+  {
+    number: 31,
+    name: '강병준',
+    grade: 6,
+    positions: ['내야수'],
+    hand: '우투좌타',
+  },
+  {
     number: 10,
     name: '이한이',
     grade: 5,
