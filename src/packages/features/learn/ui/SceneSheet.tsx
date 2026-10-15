@@ -21,6 +21,55 @@ export function SceneSheet({
     dialog.current?.showModal();
   }, []);
 
+  // 휴대폰 시트는 아래로 쓸어내려 닫는다. 맨 위까지 올라가 있을 때만 끌리고,
+  // 120px 넘게 내리거나 빠르게 튕기면 닫히고, 아니면 제자리로 돌아간다.
+  // 끄는 동안 페이지가 스크롤되지 않게 passive 가 아닌 touchmove 로 막는다.
+  useEffect(() => {
+    const el = dialog.current;
+    if (!el) return;
+    let startY: number | null = null;
+    let startAt = 0;
+    let dy = 0;
+
+    const onStart = (e: TouchEvent) => {
+      if (window.matchMedia('(min-width: 640px)').matches) return;
+      if (el.scrollTop > 0) return;
+      startY = e.touches[0].clientY;
+      startAt = performance.now();
+      dy = 0;
+      el.style.transition = 'none';
+    };
+    const onMove = (e: TouchEvent) => {
+      if (startY === null) return;
+      dy = Math.max(0, e.touches[0].clientY - startY);
+      if (dy > 0) e.preventDefault();
+      el.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
+    };
+    const onEnd = () => {
+      if (startY === null) return;
+      startY = null;
+      const fast = dy > 50 && dy / (performance.now() - startAt) > 0.35;
+      el.style.transition = 'transform 0.2s ease-out';
+      if (dy > 120 || fast) {
+        el.style.transform = 'translateY(100%)';
+        window.setTimeout(() => el.close(), 200);
+      } else {
+        el.style.transform = '';
+      }
+    };
+
+    el.addEventListener('touchstart', onStart, { passive: true });
+    el.addEventListener('touchmove', onMove, { passive: false });
+    el.addEventListener('touchend', onEnd);
+    el.addEventListener('touchcancel', onEnd);
+    return () => {
+      el.removeEventListener('touchstart', onStart);
+      el.removeEventListener('touchmove', onMove);
+      el.removeEventListener('touchend', onEnd);
+      el.removeEventListener('touchcancel', onEnd);
+    };
+  }, []);
+
   return (
     <dialog
       ref={dialog}
@@ -33,9 +82,10 @@ export function SceneSheet({
       className="scene-sheet text-ink backdrop:bg-ink/60"
     >
       <div className="bg-white px-4 pt-2 pb-[max(env(safe-area-inset-bottom),16px)] sm:p-5">
+        {/* 손잡이: 아래로 쓸어내리면 닫힌다는 표시 */}
         <span
           aria-hidden="true"
-          className="mx-auto mb-2 block h-1.5 w-12 rounded-full bg-ink/20 sm:hidden"
+          className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-ink/25 sm:hidden"
         />
         <div className="flex items-center justify-between gap-3">
           <h2 id="scene-title" className="font-display text-2xl">
