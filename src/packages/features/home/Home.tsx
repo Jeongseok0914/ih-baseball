@@ -54,6 +54,13 @@ const GUIDE = [
     badge: '1·2·3',
     tone: 'bg-sun',
   },
+  {
+    href: '/learn',
+    title: '야구 교실',
+    text: '초급부터 고급까지, 눌러 보면 장면으로 보여 주는 쉬운 야구 규칙',
+    badge: '⚾',
+    tone: 'bg-white',
+  },
 ];
 
 // 선수단 카드 장식에 쓰는 아이들 얼굴 세 개.
@@ -235,7 +242,7 @@ export function Home() {
       </section>
 
       <section aria-label="둘러보기" className="mx-auto max-w-5xl px-4 pt-16">
-        <ul className="grid gap-4 sm:grid-cols-3 sm:gap-5">
+        <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {GUIDE.map(item => (
             <li key={item.href} className="reveal">
               <Link

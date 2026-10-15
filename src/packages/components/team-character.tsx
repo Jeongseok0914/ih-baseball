@@ -1,5 +1,5 @@
 // 야구부 캐릭터. 모두 같은 인헌 팀 모자를 쓴다.
-// - CoachCharacter: 강재훈 감독님 전신(수염, 배가 나온 71번). 하단 연락처에 쓴다.
+// - CoachCharacter: 강재훈 감독님 전신(수염, 배가 나온 71번). 하단 연락처와 규칙 장면에 쓴다.
 // - CharacterFace: 카드 원에 들어가는 얼굴. 감독님, 젊은 코치, 학년별 아이.
 const SKIN = '#f3c9a1';
 const SKIN_SHADE = '#e2ae86';
@@ -297,34 +297,43 @@ function Head({ face }: { face: Face }) {
   );
 }
 
+// 다른 svg 안에 넣을 때(규칙 장면 등) 위치와 크기를 정한다.
+type NestedBox = { x?: number; y?: number; width?: number; height?: number };
+
 export function CharacterFace({
   face,
   label,
   className,
+  ...box
 }: {
   face: Face;
   label: string;
   className?: string;
-}) {
+} & NestedBox) {
   return (
     <svg
       viewBox={FACE_VIEW_BOX}
       role="img"
       aria-label={label}
       className={className}
+      {...box}
     >
       <Head face={face} />
     </svg>
   );
 }
 
-export function CoachCharacter({ className }: { className?: string }) {
+export function CoachCharacter({
+  className,
+  ...box
+}: { className?: string } & NestedBox) {
   return (
     <svg
       viewBox="0 0 200 260"
       role="img"
       aria-label="인헌 야구부 모자를 쓰고 수염이 난 강재훈 감독님 캐릭터"
       className={className}
+      {...box}
     >
       {/* 다리와 신발 */}
       <rect x="70" y="198" width="25" height="42" rx="9" fill={JERSEY_SHADE} />

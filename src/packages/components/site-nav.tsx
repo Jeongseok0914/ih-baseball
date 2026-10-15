@@ -16,7 +16,7 @@ const iconProps = {
   strokeLinejoin: 'round',
 } as const;
 
-// 하단 탭 아이콘: 집, 유니폼, 달력, 손 흔들기.
+// 하단 탭 아이콘: 집, 유니폼, 달력, 손 흔들기, 야구공.
 const ICONS: Record<string, ReactNode> = {
   '/': (
     <svg {...iconProps}>
@@ -38,6 +38,12 @@ const ICONS: Record<string, ReactNode> = {
     <svg {...iconProps}>
       <path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8" />
       <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15" />
+    </svg>
+  ),
+  '/learn': (
+    <svg {...iconProps}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M7 4.5c2 2.2 2 12.8 0 15M17 4.5c-2 2.2-2 12.8 0 15" />
     </svg>
   ),
 };
@@ -84,7 +90,7 @@ export function BottomTabs() {
       aria-label="주요 메뉴"
       className="fixed inset-x-0 bottom-0 z-20 border-ink border-t-[3px] bg-white px-2 pt-2 pb-[max(env(safe-area-inset-bottom),8px)] sm:hidden"
     >
-      <ul className="grid grid-cols-4 gap-1">
+      <ul className="grid grid-cols-5 gap-1">
         {NAV.map(item => (
           <li key={item.href}>
             <Link

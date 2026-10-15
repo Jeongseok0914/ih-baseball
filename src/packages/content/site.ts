@@ -42,8 +42,9 @@ export const STAFF = [
 export const NAV = [
   { href: '/', label: '홈' },
   { href: '/team', label: '선수단' },
-  { href: '/schedule', label: '훈련 일정' },
+  { href: '/schedule', label: '훈련' },
   { href: '/join', label: '함께하기' },
+  { href: '/learn', label: '야구교실' },
 ];
 
 // 검색 등록 확인 코드. Google Search Console, 네이버 서치어드바이저에서 받은 값을 넣으면
