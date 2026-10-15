@@ -4,7 +4,7 @@ import { SITE } from '~content/site';
 
 // 검색엔진에 알려 줄 사이트 주소. CI가 GitHub Pages origin 과 basePath 를 주입한다.
 // 커스텀 도메인을 연결하면 basePath 는 빈 값이 되어 자동으로 새 주소를 쓴다.
-export const SITE_URL = `${process.env.PAGES_ORIGIN || 'http://localhost:3000'}${process.env.PAGES_BASE_PATH ?? ''}`;
+export const SITE_URL = `${process.env.PAGES_ORIGIN || 'http://localhost:4000'}${process.env.PAGES_BASE_PATH ?? ''}`;
 
 // 페이지 주소는 trailingSlash 설정과 같게 끝에 / 를 붙인다. 파일(sitemap.xml 등)은 그대로 둔다.
 export const absoluteUrl = (path: string) =>

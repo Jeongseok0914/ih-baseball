@@ -23,7 +23,7 @@ const body = Gowun_Dodum({
 
 export const metadata: Metadata = {
   // 공유 썸네일은 절대 URL이어야 한다. CI가 configure-pages 의 origin 을 주입하고 basePath 는 Next가 붙인다.
-  metadataBase: new URL(process.env.PAGES_ORIGIN || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.PAGES_ORIGIN || 'http://localhost:4000'),
   title: { default: SITE.fullName, template: `%s | ${SITE.name}` },
   description: SITE.description,
   keywords: SITE.keywords,

@@ -7,9 +7,9 @@
   },
   "packageManager": "pnpm@11.1.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "build": "next build",
-    "preview": "pnpm dlx serve out",
+    "preview": "pnpm dlx serve out -l 4000",
     "clean": "node -e \"for (const d of ['.next', 'out']) require('node:fs').rmSync(d, { recursive: true, force: true })\"",
     "type-check": "tsc --noEmit",
     "check": "biome check ./src",
