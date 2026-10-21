@@ -1,4 +1,5 @@
 import { PageHero } from '~components/page-hero';
+import { SPECIAL_MOVE } from '~content/rule-scenes';
 import { RuleLevels } from '~features/learn/ui/RuleLevels';
 
 export function Learn() {
@@ -18,6 +19,18 @@ export function Learn() {
           <div className="mt-4">
             <RuleLevels />
           </div>
+          <p className="mt-6 text-ink/60 text-sm">
+            감독님 기술 목소리는{' '}
+            <a
+              href={SPECIAL_MOVE.credit.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              {SPECIAL_MOVE.credit.label}
+            </a>
+            로 만들었어요.
+          </p>
         </section>
       </div>
     </main>

@@ -16,6 +16,14 @@ export type Actor = {
 };
 
 // 효과음: 방망이(hit), 미트(catch), 아웃 호루라기(out), 세이프(safe), 관중 함성(cheer)
+// 감독님 언월도 기술. 맞히는 순간 이름이 화면에 터지고 녹음 목소리로 외친다.
+// 목소리는 타입캐스트 무료 플랜(태지)으로 만들었다. 무료 플랜은 출처 표기가 필수다.
+export const SPECIAL_MOVE = {
+  name: '청룡언월참!',
+  voice: `${process.env.PAGES_BASE_PATH ?? ''}/sounds/special-move.mp3`,
+  credit: { label: '타입캐스트', href: 'https://typecast.ai/kr' },
+};
+
 export type Sfx = 'hit' | 'catch' | 'out' | 'safe' | 'cheer';
 
 // sfx: 단계 시작 때 소리. arcs: 공을 그 높이만큼 띄워 뜬공처럼(그림자와 함께).

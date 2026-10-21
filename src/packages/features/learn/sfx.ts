@@ -64,6 +64,14 @@ export function stopPlaybackSession() {
   if (session) session.type = 'auto';
 }
 
+// 녹음해 둔 목소리 파일 재생(감독님 기술 외침 등). 파일이 없거나 막히면 조용히 넘어간다.
+export function playVoice(src: string) {
+  if (typeof window === 'undefined') return;
+  new Audio(src).play().catch(() => {
+    // 파일이 없으면 효과음만 난다.
+  });
+}
+
 // 짧은 잡음(방망이 "딱", 미트 "팡", 관중 함성의 재료)
 function noise(
   ctx: AudioContext,

@@ -7,7 +7,12 @@ import {
   type Mood,
 } from '~components/team-character';
 import { PLAYERS } from '~content/players';
-import type { Pos, Scene, SceneStep } from '~content/rule-scenes';
+import {
+  type Pos,
+  type Scene,
+  type SceneStep,
+  SPECIAL_MOVE,
+} from '~content/rule-scenes';
 import {
   bob,
   cameraTransform,
@@ -19,6 +24,7 @@ import {
 } from '~features/learn/motion';
 import {
   playSfx,
+  playVoice,
   startPlaybackSession,
   stopPlaybackSession,
 } from '~features/learn/sfx';
@@ -464,9 +470,10 @@ export function RuleScene({ scene }: { scene: Scene }) {
     );
   };
 
-  // 감독님이 맞히는 순간: 화면이 흔들리고 "쾅!"이 터진다.
+  // 감독님이 맞히는 순간: 화면이 흔들리고 기술 이름을 외친다.
   const impact = (index: number) => {
-    setFlash({ at: H, text: '쾅!', id: -1 - index });
+    setFlash({ at: H, text: SPECIAL_MOVE.name, id: -1 - index });
+    if (voiceOn.current) playVoice(SPECIAL_MOVE.voice);
     camera.current?.animate(
       [
         { transform: 'translate(0px, 0px)' },
