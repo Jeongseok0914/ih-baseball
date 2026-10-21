@@ -5,6 +5,7 @@ import { TrainingVideoButton } from '~components/training-video';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
 import { COACH, STAFF } from '~content/site';
 import { TRAINING_VIDEOS, type TrainingVideo } from '~content/training-videos';
+import { Heritage } from '~features/team/ui/Heritage';
 import { JerseyNumber } from '~features/team/ui/JerseyNumber';
 
 const GRADES = [6, 5, 4, 3, 2, 1] as const;
@@ -163,6 +164,8 @@ export function Team() {
             ))}
           </ul>
         </section>
+
+        <Heritage />
       </div>
     </main>
   );

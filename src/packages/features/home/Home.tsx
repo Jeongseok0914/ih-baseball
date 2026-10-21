@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CharacterFace } from '~components/team-character';
-import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
+import { ACHIEVEMENTS, ALUMNI } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
 import { NEWS } from '~content/news';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
@@ -13,9 +13,7 @@ import {
 } from '~content/recruit';
 import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
-import { TRAINING_VIDEOS } from '~content/training-videos';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
-import { latestNews } from '~features/home/live';
 import { HeroVideo } from '~features/home/ui/HeroVideo';
 import { LiveBanner } from '~features/home/ui/LiveBanner';
 import { ShareButton } from '~features/home/ui/ShareButton';
@@ -76,12 +74,6 @@ const GUIDE = [
 
 // 선수단 카드 장식에 쓰는 아이들 얼굴 세 개.
 const TEAM_FACES = PLAYERS.slice(0, 3);
-
-const CHIP_STYLES = [
-  'bg-grass text-white -rotate-2',
-  'bg-dirt text-white rotate-2',
-  'bg-sun text-ink -rotate-1',
-];
 
 // 사진·영상·후기가 아직 없을 때 자리를 잡아 두는 상자.
 function Placeholder({
@@ -145,6 +137,9 @@ export function Home() {
             <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
               {ACHIEVEMENTS[0].year} 교육감배 준우승
             </span>
+            <span className="animate-pop rotate-[-2deg] rounded-xl bg-grass [animation-delay:550ms] px-3 py-1 font-display text-white shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+              프로 선수 {ALUMNI.length}명 배출
+            </span>
           </p>
           <h1
             id="hero-title"
@@ -169,71 +164,17 @@ export function Home() {
         </div>
       </section>
 
-      <section
-        aria-labelledby="week-title"
-        className="mx-auto max-w-5xl px-4 pt-10"
-      >
-        <h2 id="week-title" className="font-display text-3xl">
-          이번 주 인헌
-        </h2>
-        <WeekRail
-          news={latestNews(NEWS)}
-          videos={
-            TRAINING_VIDEOS[0]
-              ? {
-                  count: TRAINING_VIDEOS.length,
-                  poster: TRAINING_VIDEOS[0].poster,
-                }
-              : null
-          }
-        />
-      </section>
-
-      <section
-        aria-labelledby="alumni-title"
-        className="mx-auto max-w-5xl px-4 pt-14"
-      >
-        <h2 id="alumni-title" className="font-display text-3xl">
-          1980년부터, 프로 선수 {ALUMNI.length}명이 이 운동장에서 시작했어요
-        </h2>
-        <ul className="mt-5 flex flex-wrap gap-2.5">
-          {ALUMNI.map((name, index) => (
-            <li
-              key={name}
-              className={`reveal rounded-xl px-4 py-2 font-display text-lg ${CHIP_STYLES[index % CHIP_STYLES.length]}`}
-            >
-              {name}
-            </li>
-          ))}
-        </ul>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-          {ACHIEVEMENTS.map(item => (
-            <li
-              key={item.year}
-              className="chunky reveal flex items-center gap-4 bg-sun px-4 py-3"
-            >
-              <span className="font-display text-3xl text-dirt tabular-nums">
-                {item.year}
-              </span>
-              <span className="font-display text-lg leading-snug">
-                {item.title}
-              </span>
-            </li>
-          ))}
-        </ul>
-        {HERO_PHOTO ? (
-          <Image
-            src={HERO_PHOTO.src}
-            alt={HERO_PHOTO.alt}
-            sizes="(min-width: 1024px) 1024px, 100vw"
-            className="chunky reveal mt-4 aspect-[16/9] w-full object-cover"
-          />
-        ) : null}
-        <p className="mt-5 text-ink/75 leading-relaxed">
-          졸업 후에는 {MIDDLE_SCHOOLS.join('·')} 야구부로 진학해 야구를 이어
-          갔어요.
-        </p>
-      </section>
+      {NEWS.length > 0 ? (
+        <section
+          aria-labelledby="week-title"
+          className="mx-auto max-w-5xl px-4 pt-10"
+        >
+          <h2 id="week-title" className="font-display text-3xl">
+            인헌초 일정
+          </h2>
+          <WeekRail news={NEWS} />
+        </section>
+      ) : null}
 
       <section aria-label="둘러보기" className="mx-auto max-w-5xl px-4 pt-16">
         <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
@@ -275,6 +216,42 @@ export function Home() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* 입상 기록은 홈에도 짧게 남긴다. 팀 역사 전체는 선수단 맨 아래에 있다. */}
+      <section
+        aria-labelledby="awards-title"
+        className="mx-auto max-w-5xl px-4 pt-14"
+      >
+        <h2 id="awards-title" className="font-display text-3xl">
+          입상 기록
+        </h2>
+        {/* 휴대폰은 사진 위·기록 아래, 넓은 화면은 사진과 기록을 나란히. */}
+        <div className="mt-4 grid items-center gap-3 md:grid-cols-2 md:gap-5">
+          {HERO_PHOTO ? (
+            <Image
+              src={HERO_PHOTO.src}
+              alt={HERO_PHOTO.alt}
+              sizes="(min-width: 768px) 480px, 100vw"
+              className="chunky reveal aspect-[16/9] w-full object-cover"
+            />
+          ) : null}
+          <ul className="flex flex-col gap-2 sm:gap-3">
+            {ACHIEVEMENTS.map(item => (
+              <li
+                key={item.year}
+                className="chunky reveal flex items-center gap-3 bg-sun px-4 py-2.5 shadow-none"
+              >
+                <span className="font-display text-2xl text-dirt tabular-nums">
+                  {item.year}
+                </span>
+                <span className="font-display text-lg leading-snug">
+                  {item.title}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       {/* 후기가 있을 때만 보인다. */}
