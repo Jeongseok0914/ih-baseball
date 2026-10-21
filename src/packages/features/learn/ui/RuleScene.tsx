@@ -82,6 +82,35 @@ function SceneActor({
         width={r * 1.64}
         height={r * 1.64}
       />
+      {/* 팔과 방망이: 평소엔 숨겨 두고, 던지거나 칠 때만 잠깐 보인다(RuleScene 의 act). */}
+      <g data-arm style={{ opacity: 0 }}>
+        <g data-arm-swing>
+          <rect
+            x="-1.7"
+            y={-r * 1.3}
+            width="3.4"
+            height={r * 1.3}
+            rx="1.7"
+            fill="#f3c9a1"
+            stroke="var(--color-ink)"
+            strokeWidth="0.6"
+          />
+        </g>
+      </g>
+      <g
+        data-bat
+        style={{ opacity: 0 }}
+        transform={`translate(${r * 0.55} ${r * 0.15})`}
+      >
+        <g data-bat-swing>
+          <path
+            d={`M-1 0 L-1.8 ${-r * 1.9} Q0 ${-r * 2.15} 1.8 ${-r * 1.9} L1 0 Z`}
+            fill="#c98a4b"
+            stroke="var(--color-ink)"
+            strokeWidth="0.6"
+          />
+        </g>
+      </g>
       {actor.tag ? (
         <text
           y={r + 8}
@@ -125,6 +154,17 @@ function Dots({
   );
 }
 
+const H: Pos = [100, 172];
+const MOUND: Pos = [100, 118];
+const dist = (a: Pos, b: Pos) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const pathLength = (from: Pos, path: readonly Pos[]) =>
+  [from, ...path].reduce(
+    (sum, p, i, all) => (i === 0 ? 0 : sum + dist(all[i - 1], p)),
+    0
+  );
+// 공을 던지기 전 팔을 뒤로 젖히는 시간(ms). 공은 이만큼 늦게 출발한다.
+const WINDUP = 200;
+
 // 규칙 장면 재생기. 열리면 처음부터 재생하고, 단계마다 움직인 뒤 설명을 보여 준다.
 export function RuleScene({ scene }: { scene: Scene }) {
   const nodes = useRef(new Map<string, SVGGElement>());
@@ -149,6 +189,76 @@ export function RuleScene({ scene }: { scene: Scene }) {
     positions.current.set(id, at);
     place(nodes.current.get(id), at);
   };
+  // 던지기: 몸이 공 가는 쪽으로 쏠리고 팔이 뒤에서 앞으로 돈다.
+  const throwAt = (id: string, target: Pos) => {
+    const from = positions.current.get(id);
+    const inner = inners.current.get(id);
+    const arm = inner?.querySelector<SVGGElement>('[data-arm]');
+    const swing = inner?.querySelector<SVGGElement>('[data-arm-swing]');
+    if (!from || !inner || !arm || !swing) return;
+    const angle = Math.atan2(target[1] - from[1], target[0] - from[0]);
+    const [ux, uy] = [Math.cos(angle), Math.sin(angle)];
+    // 팔은 위(-y)를 향해 그려져 있으니 +90도 돌려 목표를 보게 한다.
+    arm.setAttribute(
+      'transform',
+      `translate(${-uy * 6} ${ux * 6}) rotate(${(angle * 180) / Math.PI + 90})`
+    );
+    arm.animate([{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], {
+      duration: 650,
+    });
+    swing.animate(
+      [
+        { transform: 'rotate(170deg)' },
+        { transform: 'rotate(150deg)', offset: 0.3 },
+        { transform: 'rotate(-20deg)', offset: 0.55 },
+        { transform: 'rotate(-30deg)' },
+      ],
+      { duration: 650, easing: 'ease-in' }
+    );
+    inner.animate(
+      [
+        { transform: 'translate(0px, 0px)' },
+        { transform: `translate(${-ux * 2}px, ${-uy * 2}px)`, offset: 0.3 },
+        { transform: `translate(${ux * 3}px, ${uy * 3}px)`, offset: 0.55 },
+        { transform: 'translate(0px, 0px)' },
+      ],
+      { duration: 650 }
+    );
+  };
+
+  // 치기: 방망이가 어깨 뒤에서 앞으로 크게 돈다.
+  const swingBat = (id: string) => {
+    const inner = inners.current.get(id);
+    const bat = inner?.querySelector<SVGGElement>('[data-bat]');
+    const swing = inner?.querySelector<SVGGElement>('[data-bat-swing]');
+    if (!bat || !swing) return;
+    bat.animate(
+      [{ opacity: 1 }, { opacity: 1, offset: 0.85 }, { opacity: 0 }],
+      {
+        duration: 700,
+      }
+    );
+    swing.animate(
+      [
+        { transform: 'rotate(-130deg)' },
+        { transform: 'rotate(-130deg)', offset: 0.2 },
+        { transform: 'rotate(80deg)', offset: 0.45 },
+        { transform: 'rotate(95deg)' },
+      ],
+      { duration: 700, easing: 'ease-out' }
+    );
+  };
+
+  // 공이 출발하는 자리에 서 있는 선수(투수·수비)를 찾는다.
+  const playerAt = (at: Pos, range = 9) =>
+    Object.entries(scene.actors).find(([id, actor]) => {
+      const pos = positions.current.get(id);
+      const visible = nodes.current.get(id)?.style.opacity !== '0';
+      return (
+        actor.kind === 'player' && visible && pos && dist(pos, at) <= range
+      );
+    })?.[0];
+
   const setVisible = (id: string, visible: boolean) => {
     const el = nodes.current.get(id);
     if (el) el.style.opacity = visible ? '1' : '0';
@@ -182,10 +292,44 @@ export function RuleScene({ scene }: { scene: Scene }) {
           cameraTransform(s.zoom?.at ?? null, s.zoom?.scale)
         );
       }
-      if (s.sfx && voiceOn.current) playSfx(s.sfx);
       const duration = s.duration ?? 1200;
+      // 공이 누군가의 손에서 출발하면 그 선수가 던지고, 투구가 홈을 지나며 맞으면 타자가 친다.
+      const ballId = Object.keys(s.moves ?? {}).find(
+        id => scene.actors[id].kind === 'ball'
+      );
+      let thrown = false;
+      // 타자가 친 순간(ms). 주자·수비는 공이 맞은 뒤에 움직이기 시작한다.
+      let contact = 0;
+      if (ballId && scene.view === 'field') {
+        const from = positions.current.get(ballId) ?? scene.actors[ballId].at;
+        const path = s.moves?.[ballId] ?? [];
+        const thrower = playerAt(from);
+        if (thrower && path[0]) {
+          throwAt(thrower, path[0]);
+          thrown = true;
+        }
+        const hitAt = path.findIndex(p => dist(p, H) < 3);
+        const batter = playerAt([86, 170], 14);
+        if (s.sfx === 'hit' && hitAt === 0 && batter && dist(from, MOUND) < 4) {
+          const toPlate = dist(from, H) / pathLength(from, path);
+          contact = (thrown ? WINDUP : 0) + duration * toPlate;
+          window.setTimeout(() => swingBat(batter), contact - 160);
+        }
+      }
+      if (s.sfx && voiceOn.current && !thrown) playSfx(s.sfx);
+      if (s.sfx === 'hit' && thrown && voiceOn.current) {
+        // 방망이에 맞는 순간에 "딱" 소리가 나게 늦춘다.
+        const path = s.moves?.[ballId ?? ''] ?? [];
+        const from = positions.current.get(ballId ?? '') ?? MOUND;
+        const toPlate = dist(from, H) / pathLength(from, path);
+        window.setTimeout(() => playSfx('hit'), WINDUP + duration * toPlate);
+      } else if (s.sfx && thrown && voiceOn.current) {
+        playSfx(s.sfx);
+      }
       await Promise.all(
         Object.entries(s.moves ?? {}).map(async ([id, path]) => {
+          if (id === ballId && thrown) await wait(WINDUP);
+          if (id !== ballId && contact) await wait(contact);
           const from = positions.current.get(id) ?? scene.actors[id].at;
           const end = path[path.length - 1];
           if (end) positions.current.set(id, end);
