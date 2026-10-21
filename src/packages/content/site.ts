@@ -33,6 +33,10 @@ export const COACH = {
   phone: '01040133722',
 };
 
+// 01012345678 → 010-1234-5678
+export const formatPhone = (digits: string) =>
+  digits.replace(/^(\d{3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+
 // 선수단 페이지 지도자 카드. 감독님 연락처는 COACH 하나만 쓴다.
 export const STAFF = [
   { number: COACH.number, name: COACH.name, title: COACH.title },

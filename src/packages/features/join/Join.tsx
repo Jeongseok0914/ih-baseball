@@ -1,4 +1,5 @@
 import { KakaoButton } from '~components/contact-links';
+import { JsonLd } from '~components/json-ld';
 import { PageHero } from '~components/page-hero';
 import { FAQ, JOIN_STEPS } from '~content/join';
 import { KAKAO_CHANNEL } from '~content/recruit';
@@ -7,9 +8,21 @@ import { PlaceCard } from '~features/join/ui/PlaceCard';
 
 const STEP_COLORS = ['bg-grass', 'bg-dirt', 'bg-ink'];
 
+// 학부모 질문에 AI 답변·검색 결과가 FAQ 를 그대로 인용할 수 있게 한다.
+const FAQ_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map(item => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
 export function Join() {
   return (
     <main>
+      <JsonLd data={FAQ_JSON_LD} />
       <PageHero title="함께하기">
         입단을 정하기 전에 먼저 와서 해 보세요. 야구부는 언제든 새 친구를
         기다려요.

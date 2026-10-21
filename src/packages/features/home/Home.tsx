@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { JsonLd } from '~components/json-ld';
 import { CharacterFace } from '~components/team-character';
 import { ACHIEVEMENTS, ALUMNI } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
@@ -31,13 +32,24 @@ const TEAM_JSON_LD = {
   description: SITE.description,
   foundingDate: '1980',
   coach: { '@type': 'Person', name: COACH.name, jobTitle: COACH.title },
-  memberOf: { '@type': 'Organization', name: '서울인헌초등학교' },
+  telephone: COACH.phone || undefined,
+  areaServed: ['서울 관악구', '서울 동작구', '서울'],
+  memberOf: {
+    '@type': 'ElementarySchool',
+    name: '서울인헌초등학교',
+    address: {
+      '@type': 'PostalAddress',
+      addressRegion: '서울특별시',
+      addressLocality: '관악구',
+      addressCountry: 'KR',
+    },
+  },
   location: {
     '@type': 'Place',
     name: PLACES.noryangjin.name,
     address: PLACES.noryangjin.address,
   },
-  sameAs: [YOUTUBE_CHANNEL.url],
+  sameAs: [YOUTUBE_CHANNEL.url, INSTAGRAM.url],
 };
 
 // 홈에서 각 메뉴로 바로 가는 안내. 숫자와 요일은 데이터에서 읽는다.
@@ -110,14 +122,7 @@ function Placeholder({
 export function Home() {
   return (
     <main>
-      <script
-        type="application/ld+json"
-        // 우리 데이터로 만든 JSON 이라 안전하다. '<' 만 바꿔 </script> 조기 종료를 막는다.
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(TEAM_JSON_LD).replace(/</g, '\\u003c'),
-        }}
-      />
+      <JsonLd data={TEAM_JSON_LD} />
       <LiveBanner news={NEWS} />
       <section
         aria-labelledby="hero-title"

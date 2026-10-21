@@ -5,10 +5,7 @@ import {
 } from '~components/contact-links';
 import { CoachCharacter } from '~components/team-character';
 import { KAKAO_CHANNEL } from '~content/recruit';
-import { COACH } from '~content/site';
-
-const formatPhone = (digits: string) =>
-  digits.replace(/^(\d{3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+import { COACH, formatPhone } from '~content/site';
 
 export function SiteFooter() {
   return (

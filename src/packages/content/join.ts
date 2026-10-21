@@ -1,3 +1,7 @@
+import { KAKAO_CHANNEL } from '~content/recruit';
+import { daysAt, PLACES } from '~content/schedule';
+import { COACH, formatPhone } from '~content/site';
+
 // 실제 운영 방식이 확정되면 문구를 갱신한다.
 export const JOIN_STEPS = [
   {
@@ -28,11 +32,19 @@ export const FAQ = [
     a: '훈련은 수업이 끝난 뒤에 합니다. 요일은 훈련 일정에서 볼 수 있고, 시간은 감독님께 물어보세요.',
   },
   {
+    q: '훈련은 언제, 어디서 하나요?',
+    a: `${daysAt('noryangjin')}요일은 ${PLACES.noryangjin.name}(${PLACES.noryangjin.access}), ${daysAt('inheon')}요일은 ${PLACES.inheon.name} 운동장에서 훈련하고 토·일요일에는 연습경기를 해요.`,
+  },
+  {
     q: '다른 학교 학생도 들어갈 수 있나요?',
     a: '입단 조건은 감독님께 문의해 주세요.',
   },
   {
     q: '비용은 얼마나 드나요?',
     a: '전임코치제를 도입해 학부모님의 비용 부담을 줄였어요. 회비와 장비는 상황마다 달라서 감독님께 직접 안내받는 것이 정확합니다.',
+  },
+  {
+    q: '입단 상담은 어디로 하나요?',
+    a: `${COACH.name} ${COACH.title}님께 전화나 문자(${formatPhone(COACH.phone)})${KAKAO_CHANNEL ? ', 또는 카카오톡 채널' : ''}로 아이 학년과 이름을 알려 주세요.`,
   },
 ];
