@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { News } from '~content/news';
 import {
   koreanDate,
+  newsDate,
   pickSpotlight,
   type Spotlight,
   seoulToday,
@@ -32,7 +33,7 @@ export function LiveBanner({ news }: { news: News[] }) {
             {spot.news.title}
           </span>
           <span className="block text-sm text-white/80 sm:text-base">
-            {koreanDate(spot.news.date)}
+            {newsDate(spot.news)}
             {spot.news.place ? ` · ${spot.news.place}` : ''} · 응원 와 주세요!
           </span>
         </span>

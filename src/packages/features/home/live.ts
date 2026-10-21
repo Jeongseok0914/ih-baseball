@@ -27,7 +27,10 @@ export type Spotlight =
 // 30일 안의 가장 가까운 대회가 먼저, 없으면 14일 안의 가장 최근 결과.
 export function pickSpotlight(news: News[], today: string): Spotlight | null {
   const event = news
-    .filter(n => n.kind === 'event')
+    .filter(
+      (n): n is Extract<News, { kind: 'event' }> =>
+        n.kind === 'event' && !n.tentative
+    )
     .map(n => ({ news: n, dDay: daysBetween(today, n.date) }))
     .filter(e => e.dDay >= 0 && e.dDay <= EVENT_AHEAD_DAYS)
     .sort((a, b) => a.dDay - b.dDay)[0];
@@ -51,4 +54,14 @@ export const latestNews = (news: News[], count = 3) =>
 export const koreanDate = (date: string) => {
   const [, m, d] = date.split('-').map(Number);
   return `${m}월 ${d}일`;
+};
+
+// 소식 날짜 글자: 미정이면 "11월 중", 여러 날이면 "11월 12일~15일"
+export const newsDate = (news: News) => {
+  if (news.kind !== 'event') return koreanDate(news.date);
+  if (news.tentative) return news.tentative;
+  if (!news.end) return koreanDate(news.date);
+  const [, m1] = news.date.split('-').map(Number);
+  const [, m2, d2] = news.end.split('-').map(Number);
+  return `${koreanDate(news.date)}~${m1 === m2 ? `${d2}일` : koreanDate(news.end)}`;
 };
