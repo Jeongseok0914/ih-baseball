@@ -1,5 +1,6 @@
 import type { StaticImageData } from 'next/image';
 import heroTeam from '~content/images/hero-team.jpg';
+import heroVideoPoster from '~content/images/hero-video.jpg';
 import reelDdTt from '~content/images/reels/DdTtGQmuaFb.jpg';
 import reelDZiA from '~content/images/reels/DZiAyWbzpF7.jpg';
 import reelDZXq from '~content/images/reels/DZXqCu9TTfw.jpg';
@@ -19,6 +20,14 @@ export const RECRUIT = {
 
 // 첫 화면 사진. 보호자 동의를 받은 사진을 content/images 에 넣고 static import 한다.
 // null 이면 사진 자리 표시가 보인다.
+// 첫 화면 배경 영상. 훈련 영상 4개에서 2.5초씩 뽑아 소리 없이 이은 10초(1280px, 약 1.5MB).
+// public 파일은 basePath 가 자동으로 붙지 않아 직접 붙인다. 서버 컴포넌트(Home)에서 읽어 넘긴다.
+export const HERO_VIDEO = {
+  src: `${process.env.PAGES_BASE_PATH ?? ''}/videos/hero.mp4`,
+  poster: heroVideoPoster,
+};
+
+// 2025 교육감배 준우승 단체사진. 홈 입상 기록 옆에 나온다.
 export const HERO_PHOTO: { src: StaticImageData; alt: string } | null = {
   src: heroTeam,
   alt: '2025 서울특별시 교육감배 U12 야구대회 준우승 현수막과 트로피를 들고 운동장에 모인 인헌초 야구부',

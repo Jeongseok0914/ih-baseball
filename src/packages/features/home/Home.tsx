@@ -3,12 +3,23 @@ import Link from 'next/link';
 import { CharacterFace } from '~components/team-character';
 import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
+import { NEWS } from '~content/news';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
-import { HERO_PHOTO, INSTAGRAM, TESTIMONIALS } from '~content/recruit';
+import {
+  HERO_PHOTO,
+  HERO_VIDEO,
+  INSTAGRAM,
+  TESTIMONIALS,
+} from '~content/recruit';
 import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
+import { TRAINING_VIDEOS } from '~content/training-videos';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
+import { latestNews } from '~features/home/live';
+import { HeroVideo } from '~features/home/ui/HeroVideo';
+import { LiveBanner } from '~features/home/ui/LiveBanner';
 import { ShareButton } from '~features/home/ui/ShareButton';
+import { WeekRail } from '~features/home/ui/WeekRail';
 import { absoluteUrl } from '~lib/seo';
 
 // 검색엔진이 이 사이트를 '초등학교 야구팀'으로 이해하도록 돕는 구조화 데이터(schema.org).
@@ -72,41 +83,6 @@ const CHIP_STYLES = [
   'bg-sun text-ink -rotate-1',
 ];
 
-function ChalkDiamond() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 400 320"
-      className="absolute -right-24 -bottom-16 w-[22rem] opacity-80 sm:right-0 sm:-bottom-24 sm:w-[34rem]"
-    >
-      <path
-        d="M200 360 L60 220 L200 80 L340 220 Z"
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth="5"
-        pathLength={1}
-        className="animate-draw"
-      />
-      <circle cx="200" cy="220" r="26" fill="#8f4b20" />
-      {[
-        [200, 80],
-        [60, 220],
-        [340, 220],
-      ].map(([x, y]) => (
-        <rect
-          key={`${x}-${y}`}
-          x={x - 12}
-          y={y - 12}
-          width="24"
-          height="24"
-          fill="#ffffff"
-          transform={`rotate(45 ${x} ${y})`}
-        />
-      ))}
-    </svg>
-  );
-}
-
 // 사진·영상·후기가 아직 없을 때 자리를 잡아 두는 상자.
 function Placeholder({
   label,
@@ -150,57 +126,67 @@ export function Home() {
           __html: JSON.stringify(TEAM_JSON_LD).replace(/</g, '\\u003c'),
         }}
       />
+      <LiveBanner news={NEWS} />
       <section
         aria-labelledby="hero-title"
-        className="relative overflow-hidden bg-dirt text-white"
+        className="relative flex items-end overflow-hidden bg-ink text-white sm:min-h-[600px]"
       >
-        <ChalkDiamond />
-        <div className="relative mx-auto grid max-w-5xl items-center gap-10 px-4 pt-12 pb-14 sm:pt-20 sm:pb-24 md:grid-cols-[1.15fr_1fr]">
-          <div>
-            <p className="flex flex-wrap gap-2">
-              <span className="animate-pop rotate-[-4deg] rounded-xl bg-sun [animation-delay:250ms] px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
-                1980 창단
-              </span>
-              <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
-                {ACHIEVEMENTS[0].year} 교육감배 준우승
-              </span>
-            </p>
-            <h1
-              id="hero-title"
-              className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.18)] sm:text-7xl"
+        <HeroVideo src={HERO_VIDEO.src} poster={HERO_VIDEO.poster.src} />
+        {/* 글자가 영상 위에서도 읽히게 아래쪽을 어둡게 깐다. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/10"
+        />
+        <div className="relative mx-auto w-full max-w-5xl px-4 pt-8 pb-8 sm:pt-24 sm:pb-16">
+          <p className="flex flex-wrap gap-2">
+            <span className="animate-pop rotate-[-4deg] rounded-xl bg-sun [animation-delay:250ms] px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+              1980 창단
+            </span>
+            <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+              {ACHIEVEMENTS[0].year} 교육감배 준우승
+            </span>
+          </p>
+          <h1
+            id="hero-title"
+            className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.35)] sm:text-7xl"
+          >
+            같이 공 던질
+            <br />
+            친구 찾아요!
+          </h1>
+          <p className="mt-4 max-w-xl animate-rise text-lg leading-relaxed [animation-delay:120ms] [text-shadow:0_2px_6px_rgb(0_0_0/0.5)] sm:text-xl">
+            {SITE.description}
+          </p>
+          <div className="mt-6 flex animate-rise gap-2 [animation-delay:220ms] sm:gap-3">
+            <Link
+              href="/join"
+              className="inline-flex min-h-14 flex-1 items-center justify-center rounded-2xl bg-sun px-4 font-display text-ink text-lg shadow-[0_5px_0_#a07a1e] sm:flex-none sm:px-7 sm:text-xl transition-transform hover:-translate-y-0.5 active:translate-y-1"
             >
-              같이 공 던질
-              <br />
-              친구 찾아요!
-            </h1>
-            <p className="mt-5 max-w-xl animate-rise text-lg leading-relaxed [animation-delay:120ms] sm:text-xl">
-              {SITE.description}
-            </p>
-            <div className="mt-7 flex animate-rise flex-wrap gap-3 [animation-delay:220ms]">
-              <Link
-                href="/join"
-                className="inline-flex min-h-14 items-center rounded-2xl bg-white px-7 font-display text-dirt text-xl shadow-[0_5px_0_#6e3815] transition-transform hover:-translate-y-0.5 active:translate-y-1"
-              >
-                체험하러 갈래요
-              </Link>
-              <ShareButton title={SITE.fullName} text={SITE.description} />
-            </div>
+              체험하러 갈래요
+            </Link>
+            <ShareButton title={SITE.fullName} text={SITE.description} />
           </div>
-          {HERO_PHOTO ? (
-            <Image
-              src={HERO_PHOTO.src}
-              alt={HERO_PHOTO.alt}
-              priority
-              sizes="(min-width: 768px) 460px, 100vw"
-              className="chunky aspect-[4/3] w-full rotate-2 animate-rise object-cover [animation-delay:300ms]"
-            />
-          ) : (
-            <Placeholder
-              label="훈련 사진이 들어갈 자리"
-              className="aspect-[4/3] rotate-2 animate-rise border-white/70 bg-[#94501f] [animation-delay:300ms]"
-            />
-          )}
         </div>
+      </section>
+
+      <section
+        aria-labelledby="week-title"
+        className="mx-auto max-w-5xl px-4 pt-10"
+      >
+        <h2 id="week-title" className="font-display text-3xl">
+          이번 주 인헌
+        </h2>
+        <WeekRail
+          news={latestNews(NEWS)}
+          videos={
+            TRAINING_VIDEOS[0]
+              ? {
+                  count: TRAINING_VIDEOS.length,
+                  poster: TRAINING_VIDEOS[0].poster,
+                }
+              : null
+          }
+        />
       </section>
 
       <section
@@ -235,6 +221,14 @@ export function Home() {
             </li>
           ))}
         </ul>
+        {HERO_PHOTO ? (
+          <Image
+            src={HERO_PHOTO.src}
+            alt={HERO_PHOTO.alt}
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            className="chunky reveal mt-4 aspect-[16/9] w-full object-cover"
+          />
+        ) : null}
         <p className="mt-5 text-ink/75 leading-relaxed">
           졸업 후에는 {MIDDLE_SCHOOLS.join('·')} 야구부로 진학해 야구를 이어
           갔어요.

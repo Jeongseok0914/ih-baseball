@@ -22,7 +22,7 @@ export function ShareButton({ title, text }: { title: string; text: string }) {
     <button
       type="button"
       onClick={share}
-      className="inline-flex min-h-14 items-center gap-2 rounded-2xl border-[3px] border-white px-5 font-display text-white text-xl transition-transform hover:-translate-y-0.5 active:translate-y-1"
+      className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-2xl border-[3px] border-white px-4 font-display text-lg text-white transition-transform hover:-translate-y-0.5 active:translate-y-1 sm:px-5 sm:text-xl"
     >
       <svg
         aria-hidden="true"
@@ -36,8 +36,16 @@ export function ShareButton({ title, text }: { title: string; text: string }) {
       >
         <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13" />
       </svg>
+      {/* 휴대폰은 체험 버튼과 한 줄에 놓이게 짧게 쓴다. */}
       <span aria-live="polite">
-        {copied ? '주소를 복사했어요' : '친구에게 알리기'}
+        {copied ? (
+          '복사했어요'
+        ) : (
+          <>
+            <span className="sm:hidden">공유</span>
+            <span className="hidden sm:inline">친구에게 알리기</span>
+          </>
+        )}
       </span>
     </button>
   );
