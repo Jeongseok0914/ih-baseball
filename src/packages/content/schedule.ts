@@ -25,10 +25,6 @@ export const PLACES = {
       href: 'https://mediahub.seoul.go.kr/archives/2002179',
     },
   },
-  yeongnam: {
-    name: '영남중학교',
-    address: '서울 영등포구 대림로31나길 17',
-  },
   inheon: {
     name: '인헌초등학교',
     address: '서울 관악구 봉천동, 낙성대역 근처',
@@ -47,7 +43,7 @@ type Day = {
 export const WEEK: Day[] = [
   { day: '월', kind: 'training', label: '노량진 야구장', place: 'noryangjin' },
   { day: '화', kind: 'training', label: '노량진 야구장', place: 'noryangjin' },
-  { day: '수', kind: 'training', label: '영남중학교', place: 'yeongnam' },
+  { day: '수', kind: 'training', label: '인헌초 운동장', place: 'inheon' },
   { day: '목', kind: 'rest', label: '쉬는 날' },
   { day: '금', kind: 'training', label: '노량진 야구장', place: 'noryangjin' },
   { day: '토', kind: 'game', label: '연습경기' },
