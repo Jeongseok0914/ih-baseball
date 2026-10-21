@@ -14,8 +14,17 @@ export type Actor = {
   hidden?: boolean;
 };
 
+// 효과음: 방망이(hit), 미트(catch), 아웃 호루라기(out), 세이프(safe), 관중 함성(cheer)
+export type Sfx = 'hit' | 'catch' | 'out' | 'safe' | 'cheer';
+
+// sfx: 단계 시작 때 소리. arcs: 공을 그 높이만큼 띄워 뜬공처럼(그림자와 함께).
+// flash: 움직임이 끝난 자리에 "팡!" 같은 글자를 터뜨린다. zoom: 그 자리를 확대(null 이면 원래대로).
 export type SceneStep = {
   caption: string;
+  sfx?: Sfx;
+  arcs?: Record<string, number>;
+  flash?: { at: Pos; text: string; sfx?: Sfx };
+  zoom?: { at: Pos; scale: number } | null;
   set?: Record<string, Pos>;
   show?: string[];
   hide?: string[];
@@ -74,13 +83,24 @@ const IN_ZONE: Pos = [105, 106];
 const LOW_ZONE: Pos = [100, 128];
 const OUTSIDE: Pos = [152, 96];
 
-const pitch = (to: Pos, caption: string, count: SceneStep['count']) => ({
+// 투구 한 번. 공이 들어오면 미트 소리와 함께 심판 콜(스트라이크!/볼!)을 터뜨린다.
+const pitch = (
+  to: Pos,
+  caption: string,
+  count: SceneStep['count'],
+  call = count?.s !== undefined
+    ? '스트라이크!'
+    : count?.b !== undefined
+      ? '볼!'
+      : ''
+): SceneStep => ({
   caption,
   set: { ball: PITCH_FROM },
   show: ['ball'],
   moves: { ball: [to] },
   duration: 700,
   count,
+  ...(call ? { flash: { at: to, text: call, sfx: 'catch' as const } } : {}),
 });
 
 export const RULE_SCENES: Record<string, Scene> = {
@@ -101,7 +121,11 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '빨강 팀은 공격, 초록 팀은 수비예요.' },
       { caption: '아웃 1개', count: { o: 1 }, hold: 900 },
       { caption: '아웃 2개', count: { o: 2 }, hold: 900 },
-      { caption: '아웃 3개! 공격과 수비를 바꿔요.', count: { o: 3 } },
+      {
+        caption: '아웃 3개! 공격과 수비를 바꿔요.',
+        sfx: 'out',
+        count: { o: 3 },
+      },
       {
         caption: '이제 초록 팀이 공격, 빨강 팀이 수비해요.',
         moves: {
@@ -181,6 +205,9 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '공을 높이 쳤어요. 중견수가 달려가요.',
+        sfx: 'hit',
+        arcs: { ball: 60 },
+        flash: { at: [100, 44], text: '팡!', sfx: 'catch' },
         show: ['ball'],
         moves: { ball: [H, [100, 44]], cf: [[100, 44]] },
         duration: 1600,
@@ -188,12 +215,16 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '땅에 닿기 전에 잡았어요! 플라이 아웃', count: { o: 1 } },
       {
         caption: '이번엔 땅볼! 유격수가 잡았어요.',
+        sfx: 'hit',
+        flash: { at: [72, 78], text: '팡!', sfx: 'catch' },
         set: { ball: MOUND, cf: SPOT.CF },
         moves: { ball: [H, SPOT.SS], batter: [[112, 158]] },
         duration: 1100,
       },
       {
         caption: '공이 타자보다 먼저 1루에! 아웃',
+        flash: { at: [150, 104], text: '아웃!', sfx: 'out' },
+        zoom: { at: [146, 112], scale: 1.8 },
         moves: { ball: [SPOT['1B']], batter: [[136, 136]] },
         duration: 700,
         count: { o: 2 },
@@ -218,6 +249,9 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '수비가 없는 곳으로 쳤어요! 1루까지 가면 안타',
+        sfx: 'hit',
+        arcs: { ball: 30 },
+        flash: { at: [158, 114], text: '안타!', sfx: 'safe' },
         show: ['ball'],
         moves: { ball: [H, [132, 50]], r1: [B1] },
         duration: 1600,
@@ -230,11 +264,15 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '담장을 넘어갔어요. 홈런!',
+        sfx: 'hit',
+        arcs: { ball: 80 },
+        flash: { at: [100, 30], text: '홈런!', sfx: 'cheer' },
         moves: { ball: [H, [100, -14]] },
         duration: 1400,
       },
       {
         caption: '주자와 타자 모두 홈으로! 2점',
+        flash: { at: [100, 172], text: '2점!', sfx: 'cheer' },
         moves: { r1: [B2, B3, H], r2: [B1, B2, B3, H] },
         duration: 2400,
         count: { score: 2 },
@@ -257,18 +295,24 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '흰 선이 파울 라인이에요. 선 안쪽에 떨어져야 해요.' },
       {
         caption: '선 밖으로 나갔어요. 파울! 스트라이크 1개',
+        sfx: 'hit',
+        flash: { at: [186, 150], text: '파울!' },
         show: ['ball'],
         moves: { ball: [H, [190, 152]] },
         count: { s: 1 },
       },
       {
         caption: '또 파울! 스트라이크 2개',
+        sfx: 'hit',
+        flash: { at: [14, 148], text: '파울!' },
         set: { ball: MOUND },
         moves: { ball: [H, [10, 150]] },
         count: { s: 2 },
       },
       {
         caption: '스트라이크 2개일 때 파울은 세지 않아요. 그대로 2개!',
+        sfx: 'hit',
+        flash: { at: [186, 138], text: '파울!' },
         set: { ball: MOUND },
         moves: { ball: [H, [192, 138]] },
       },
@@ -290,6 +334,8 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '3루', moves: { runner: [B3] }, hold: 600 },
       {
         caption: '홈 플레이트를 밟았어요. 1점!',
+        flash: { at: [100, 172], text: '1점!', sfx: 'cheer' },
+        zoom: { at: [100, 160], scale: 1.6 },
         moves: { runner: [H] },
         count: { score: 1 },
       },
@@ -323,12 +369,15 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '유격수(6)가 땅볼을 잡았어요.',
+        sfx: 'hit',
+        flash: { at: [72, 78], text: '6', sfx: 'catch' },
         show: ['ball'],
         moves: { ball: [H, SPOT.SS], batter: [[114, 156]] },
         duration: 1100,
       },
       {
         caption: '1루수(3)에게 던져 아웃! 그래서 "6-3 땅볼"이라고 적어요.',
+        flash: { at: [150, 104], text: '3 아웃!', sfx: 'out' },
         moves: { ball: [SPOT['1B']], batter: [[138, 134]] },
         duration: 700,
         hold: 2600,
@@ -374,11 +423,13 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '1번 타자 등장!', moves: { l1: [BAT] }, duration: 900 },
       {
         caption: '1번이 안타를 치고 1루로. 다음은 2번 타자예요.',
+        sfx: 'hit',
         moves: { l1: [B1], l2: [BAT] },
         duration: 1100,
       },
       {
         caption: '2번은 아웃. 이제 3번 타자 차례예요.',
+        sfx: 'out',
         moves: { l2: [[30, 194]], l3: [BAT] },
         duration: 1000,
         count: { o: 1 },
@@ -406,6 +457,7 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '타자가 땅볼을 쳤어요. 1루 주자는 꼭 2루로 가야 해요.',
+        sfx: 'hit',
         show: ['ball'],
         moves: {
           ball: [H, SPOT.SS],
@@ -417,6 +469,8 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '공을 받은 수비가 2루만 밟으면 아웃! 포스 아웃이에요.',
+        flash: { at: [106, 62], text: '포스 아웃!', sfx: 'out' },
+        zoom: { at: [110, 70], scale: 1.8 },
         moves: { ball: [COVER_2B], runner: [[118, 72]], batter: [[124, 146]] },
         duration: 600,
         count: { o: 1 },
@@ -425,12 +479,15 @@ export const RULE_SCENES: Record<string, Scene> = {
       {
         caption:
           '이번엔 2루 주자가 3루로 뛰어요. 꼭 가야 하는 상황이 아니에요.',
+        zoom: null,
         set: { runner: B2, ball: SPOT['3B'], second: SPOT['2B'], batter: B1 },
         moves: { runner: [[60, 96]] },
         duration: 900,
       },
       {
         caption: '이럴 땐 공 든 글러브로 몸을 터치해야 아웃! 태그 아웃이에요.',
+        flash: { at: [58, 100], text: '태그 아웃!', sfx: 'out' },
+        zoom: { at: [60, 104], scale: 1.8 },
         moves: { third: [[58, 100]], ball: [[58, 100]] },
         duration: 500,
         count: { o: 2 },
@@ -460,11 +517,13 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '포수가 2루로 던졌지만…',
+        zoom: { at: [104, 64], scale: 1.8 },
         moves: { ball: [COVER_2B], runner: [[110, 64]], second: [[112, 66]] },
         duration: 900,
       },
       {
         caption: '주자가 먼저 도착! 도루 성공',
+        flash: { at: [100, 56], text: '세이프!', sfx: 'safe' },
         moves: { runner: [B2] },
         duration: 300,
         hold: 2200,
@@ -481,7 +540,7 @@ export const RULE_SCENES: Record<string, Scene> = {
     },
     steps: [
       { ...pitch(OUTSIDE, '볼 하나', { b: 1 }), hold: 900 },
-      pitch([40, 100], '앗! 공이 몸에 맞았어요.', {}),
+      pitch([40, 100], '앗! 공이 몸에 맞았어요.', {}, '앗!'),
       {
         caption: '몸에 맞는 공은 1루로 걸어 나가요.',
         hide: ['ball'],
@@ -507,6 +566,7 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '방망이를 살짝 대서 공을 굴려요. 번트!',
+        sfx: 'catch',
         show: ['ball'],
         moves: {
           ball: [H, [80, 150]],
@@ -518,6 +578,7 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '타자는 1루에서 아웃이지만 주자는 2루로! 희생 번트',
+        flash: { at: [156, 112], text: '아웃!', sfx: 'out' },
         moves: {
           ball: [[156, 112]],
           batter: [[146, 124]],
@@ -530,6 +591,9 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '이번엔 3루에 주자. 타자가 멀리 뜬공을 쳤어요.',
+        sfx: 'hit',
+        arcs: { ball: 70 },
+        flash: { at: [154, 44], text: '팡!', sfx: 'catch' },
         set: {
           runner: B3,
           batter: BAT,
@@ -542,6 +606,7 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '우익수가 잡아서 아웃. 그 뒤에 3루 주자가 홈으로!',
+        flash: { at: [100, 172], text: '득점!', sfx: 'cheer' },
         moves: { runner: [H], ball: [[120, 140]] },
         duration: 1300,
         count: { o: 2, score: 1 },
@@ -565,6 +630,9 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '외야로 높은 뜬공! 2루 주자가 바로 뛰어 버렸어요.',
+        sfx: 'hit',
+        arcs: { ball: 70 },
+        flash: { at: [100, 40], text: '팡!', sfx: 'catch' },
         show: ['ball'],
         moves: { ball: [H, [100, 40]], cf: [[100, 40]], runner: [[66, 90]] },
         duration: 1500,
@@ -576,17 +644,22 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '공이 먼저 2루에 왔어요. 주자 아웃!',
+        flash: { at: [106, 62], text: '아웃!', sfx: 'out' },
         count: { o: 1 },
         hold: 2200,
       },
       {
         caption: '이번엔 잡힐 때까지 2루를 밟고 기다려요.',
+        sfx: 'hit',
+        arcs: { ball: 70 },
+        flash: { at: [100, 40], text: '팡!', sfx: 'catch' },
         set: { runner: B2, ball: MOUND, cf: SPOT.CF, second: SPOT['2B'] },
         moves: { ball: [H, [100, 40]], cf: [[100, 40]] },
         duration: 1500,
       },
       {
         caption: '잡힌 걸 보고 출발! 3루까지 살았어요. 이게 태그업이에요.',
+        flash: { at: [42, 114], text: '세이프!', sfx: 'safe' },
         moves: { runner: [B3], ball: [[60, 108]] },
         duration: 1300,
         hold: 2400,
@@ -609,6 +682,7 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '1루에 주자가 있을 때 땅볼!',
+        sfx: 'hit',
         show: ['ball'],
         moves: {
           ball: [H, SPOT.SS],
@@ -620,12 +694,14 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '유격수가 2루로 던져 하나!',
+        flash: { at: [106, 62], text: '하나!', sfx: 'out' },
         moves: { ball: [COVER_2B], runner: [[118, 72]], batter: [[124, 146]] },
         duration: 600,
         count: { o: 1 },
       },
       {
         caption: '2루수가 바로 1루로 던져 둘! 병살이에요.',
+        flash: { at: [150, 104], text: '둘!', sfx: 'out' },
         moves: { ball: [SPOT['1B']], batter: [[142, 128]] },
         duration: 700,
         count: { o: 2 },
@@ -652,6 +728,8 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '헛스윙 삼진! 그런데 포수가 공을 놓쳤어요.',
+        flash: { at: [120, 192], text: '놓쳤다!', sfx: 'catch' },
+        zoom: { at: [110, 180], scale: 1.6 },
         show: ['ball'],
         moves: { ball: [H, [126, 198]] },
         duration: 900,
@@ -659,11 +737,13 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '이럴 땐 타자가 1루로 뛸 수 있어요!',
+        zoom: null,
         moves: { batter: [[142, 130]], c: [[124, 196]] },
         duration: 1000,
       },
       {
         caption: '공보다 먼저 1루에 닿으면 살아요. 스트라이크 낫아웃!',
+        flash: { at: [158, 114], text: '세이프!', sfx: 'safe' },
         moves: { batter: [B1], ball: [[150, 120]] },
         duration: 800,
         hold: 2400,
@@ -687,12 +767,15 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '노아웃, 주자 1·2루예요.', hold: 1500 },
       {
         caption: '내야에 높이 뜬 공! 쉽게 잡을 수 있어요.',
+        sfx: 'hit',
+        arcs: { ball: 70 },
         show: ['ball'],
         moves: { ball: [H, [86, 82]], ss: [[86, 84]] },
         duration: 1500,
       },
       {
         caption: '심판: "인필드 플라이!" 타자는 바로 아웃이에요.',
+        flash: { at: [86, 84], text: '아웃!', sfx: 'out' },
         count: { o: 1 },
         hold: 2200,
       },
@@ -718,6 +801,7 @@ export const RULE_SCENES: Record<string, Scene> = {
       { caption: '1루에 주자가 있어요. 투수가 던질 준비를 해요.', hold: 1400 },
       {
         caption: '던지는 척하다가 멈췄어요!',
+        zoom: { at: [100, 118], scale: 2 },
         moves: {
           p: [
             [104, 124],
@@ -727,9 +811,15 @@ export const RULE_SCENES: Record<string, Scene> = {
         },
         duration: 900,
       },
-      { caption: '심판: "보크!" 규칙에 어긋난 동작이에요.', hold: 1800 },
+      {
+        caption: '심판: "보크!" 규칙에 어긋난 동작이에요.',
+        flash: { at: [100, 118], text: '보크!', sfx: 'out' },
+        hold: 1800,
+      },
       {
         caption: '주자는 한 베이스씩 나아가요.',
+        zoom: null,
+        flash: { at: [100, 56], text: '진루!', sfx: 'safe' },
         moves: { runner: [B2] },
         duration: 1200,
         hold: 2200,
@@ -755,11 +845,13 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '좌익수가 중간에 있는 유격수에게!',
+        flash: { at: [58, 70], text: '중계!', sfx: 'catch' },
         moves: { ball: [[58, 70]], runner: [[58, 128]] },
         duration: 700,
       },
       {
         caption: '유격수가 받아서 바로 홈으로! 중계 플레이',
+        flash: { at: [100, 190], text: '팡!', sfx: 'catch' },
         moves: { ball: [SPOT.C], runner: [[80, 156]] },
         duration: 700,
       },
@@ -782,6 +874,7 @@ export const RULE_SCENES: Record<string, Scene> = {
     steps: [
       {
         caption: '투수가 공을 많이 던졌어요.',
+        flash: { at: [100, 190], text: '팡!', sfx: 'catch' },
         show: ['ball'],
         moves: { ball: [SPOT.C] },
         duration: 600,
@@ -802,6 +895,7 @@ export const RULE_SCENES: Record<string, Scene> = {
       },
       {
         caption: '수고했어! 다른 투수와 바꾸고, 정해진 날만큼 쉬어요.',
+        sfx: 'cheer',
         moves: { p: [[190, 194]], relief: [MOUND], coach: [[176, 194]] },
         duration: 1600,
         hold: 2600,

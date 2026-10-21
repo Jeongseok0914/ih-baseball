@@ -3,7 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { CharacterFace, CoachCharacter } from '~components/team-character';
 import type { Pos, Scene, SceneStep } from '~content/rule-scenes';
-import { moveAlong, place, wait } from '~features/learn/motion';
+import {
+  bob,
+  cameraTransform,
+  lift,
+  moveAlong,
+  place,
+  wait,
+  zoomTo,
+} from '~features/learn/motion';
+import { playSfx } from '~features/learn/sfx';
 import {
   canSpeak,
   readVoiceOn,
@@ -109,6 +118,11 @@ function Dots({
 // 규칙 장면 재생기. 열리면 처음부터 재생하고, 단계마다 움직인 뒤 설명을 보여 준다.
 export function RuleScene({ scene }: { scene: Scene }) {
   const nodes = useRef(new Map<string, SVGGElement>());
+  // 안쪽 그룹: 뛰는 흔들림·뜬공 높이. 바깥 그룹(nodes)은 바닥 위치만 맡는다.
+  const inners = useRef(new Map<string, SVGGElement>());
+  const shadows = useRef(new Map<string, SVGEllipseElement>());
+  const camera = useRef<SVGGElement>(null);
+  const [flash, setFlash] = useState<SceneStep['flash'] & { id: number }>();
   const positions = useRef(new Map<string, Pos>());
   const run = useRef(0);
   const [caption, setCaption] = useState('');
@@ -137,6 +151,8 @@ export function RuleScene({ scene }: { scene: Scene }) {
     setDone(false);
     setCaption('');
     setCount(EMPTY);
+    setFlash(undefined);
+    zoomTo(camera.current, cameraTransform(null), 0);
     for (const [id, actor] of Object.entries(scene.actors)) {
       setAt(id, actor.at);
       setVisible(id, !actor.hidden);
@@ -149,22 +165,44 @@ export function RuleScene({ scene }: { scene: Scene }) {
       for (const [id, at] of Object.entries(s.set ?? {})) setAt(id, at);
       for (const id of s.show ?? []) setVisible(id, true);
       for (const id of s.hide ?? []) setVisible(id, false);
+      setFlash(undefined);
+      if (s.zoom !== undefined) {
+        zoomTo(
+          camera.current,
+          cameraTransform(s.zoom?.at ?? null, s.zoom?.scale)
+        );
+      }
+      if (s.sfx && voiceOn.current) playSfx(s.sfx);
+      const duration = s.duration ?? 1200;
       await Promise.all(
-        Object.entries(s.moves ?? {}).map(([id, path]) => {
+        Object.entries(s.moves ?? {}).map(async ([id, path]) => {
           const from = positions.current.get(id) ?? scene.actors[id].at;
           const end = path[path.length - 1];
           if (end) positions.current.set(id, end);
           const isBall = scene.actors[id].kind === 'ball';
-          return moveAlong(
+          const height = s.arcs?.[id] ?? 0;
+          const shadow = shadows.current.get(id);
+          if (isBall) {
+            lift(inners.current.get(id), height, duration);
+            if (shadow) shadow.style.opacity = height ? '0.35' : '0';
+          } else {
+            bob(inners.current.get(id), duration);
+          }
+          await moveAlong(
             nodes.current.get(id),
             from,
             path,
-            s.duration ?? 1200,
+            duration,
             isBall ? 'linear' : 'ease-in-out'
           );
+          if (shadow) shadow.style.opacity = '0';
         })
       );
       if (!alive()) return;
+      if (s.flash) {
+        setFlash({ ...s.flash, id: index });
+        if (s.flash.sfx && voiceOn.current) playSfx(s.flash.sfx);
+      }
       setSpoken(voiceOn.current ? 0 : 1);
       setCaption(s.caption);
       const next = s.count;
@@ -219,23 +257,75 @@ export function RuleScene({ scene }: { scene: Scene }) {
         aria-hidden="true"
         className="block w-full bg-grass"
       >
-        <FieldBackground view={scene.view} />
-        {Object.entries(scene.actors).map(([id, actor], index) => (
-          <g
-            key={id}
-            ref={el => {
-              if (el) nodes.current.set(id, el);
-              else nodes.current.delete(id);
-            }}
-            style={{
-              transform: `translate(${actor.at[0]}px, ${actor.at[1]}px)`,
-              opacity: actor.hidden ? 0 : 1,
-              transition: 'opacity 0.2s',
-            }}
-          >
-            <SceneActor actor={actor} view={scene.view} seed={index} />
-          </g>
-        ))}
+        {/* 카메라: 결정적인 순간에 이 그룹을 확대해 그 자리를 크게 보여 준다. */}
+        <g ref={camera}>
+          <FieldBackground view={scene.view} />
+          {Object.entries(scene.actors).map(([id, actor], index) => (
+            <g
+              key={id}
+              ref={el => {
+                if (el) nodes.current.set(id, el);
+                else nodes.current.delete(id);
+              }}
+              style={{
+                transform: `translate(${actor.at[0]}px, ${actor.at[1]}px)`,
+                opacity: actor.hidden ? 0 : 1,
+                transition: 'opacity 0.2s',
+              }}
+            >
+              {actor.kind === 'ball' ? (
+                // 뜬공 그림자: 공이 높이 떠 있는 동안 바닥에 남는다.
+                <ellipse
+                  ref={el => {
+                    if (el) shadows.current.set(id, el);
+                    else shadows.current.delete(id);
+                  }}
+                  rx="3.5"
+                  ry="1.6"
+                  fill="black"
+                  style={{ opacity: 0, transition: 'opacity 0.2s' }}
+                />
+              ) : null}
+              <g
+                ref={el => {
+                  if (el) inners.current.set(id, el);
+                  else inners.current.delete(id);
+                }}
+              >
+                <SceneActor actor={actor} view={scene.view} seed={index} />
+              </g>
+            </g>
+          ))}
+          {flash ? (
+            <g
+              key={flash.id}
+              transform={`translate(${flash.at[0]} ${flash.at[1] - 14})`}
+            >
+              <g
+                className="animate-pop"
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+              >
+                <path
+                  d="M0 -15 L5 -6 L15 -7 L8 1 L12 11 L2 6 L-6 13 L-6 3 L-15 -2 L-5 -6 Z"
+                  transform={`scale(${Math.max(1.6, (flash.text.length * 10 + 14) / 30)} 1.1)`}
+                  fill="var(--color-sun)"
+                  stroke="var(--color-ink)"
+                  strokeWidth="1.2"
+                  strokeLinejoin="round"
+                />
+                <text
+                  y="4"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="var(--color-ink)"
+                  className="font-display"
+                >
+                  {flash.text}
+                </text>
+              </g>
+            </g>
+          ) : null}
+        </g>
       </svg>
       <div className="bg-white px-4 py-3">
         {/* 화면 읽기 프로그램에는 문장을 한 번에, 눈에는 읽는 만큼 진하게 보여 준다. */}

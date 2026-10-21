@@ -42,3 +42,55 @@ export async function moveAlong(
   }
   place(el, end);
 }
+
+// 뜬공: 바닥 위치는 moveAlong 이 옮기고, 이 안쪽 요소를 위로 띄웠다가 내린다(공이 가까워 보이게 커진다).
+export function lift(
+  el: SVGElement | null | undefined,
+  height: number,
+  duration: number
+) {
+  if (!el || height <= 0 || prefersReducedMotion()) return;
+  el.animate(
+    [
+      { transform: 'translate(0px, 0px) scale(1)' },
+      { transform: `translate(0px, ${-height}px) scale(1.8)`, offset: 0.5 },
+      { transform: 'translate(0px, 0px) scale(1)' },
+    ],
+    { duration, easing: 'linear' }
+  );
+}
+
+// 뛰는 사람: 움직이는 동안 콩콩 뛰듯 위아래로 흔든다.
+export function bob(el: SVGElement | null | undefined, duration: number) {
+  if (!el || duration <= 0 || prefersReducedMotion()) return;
+  el.animate(
+    [
+      { transform: 'translateY(0px)' },
+      { transform: 'translateY(-2.5px)' },
+      { transform: 'translateY(0px)' },
+    ],
+    { duration: 260, iterations: Math.max(1, Math.round(duration / 260)) }
+  );
+}
+
+// 카메라: 200×200 그림에서 at 을 가운데 두고 scale 배 확대한다. 가장자리 밖이 보이지 않게 막는다.
+export const cameraTransform = (at: Point | null, scale = 1) => {
+  if (!at || scale <= 1) return 'translate(0px, 0px) scale(1)';
+  const clamp = (v: number) => Math.min(0, Math.max(200 - 200 * scale, v));
+  return `translate(${clamp(100 - at[0] * scale)}px, ${clamp(100 - at[1] * scale)}px) scale(${scale})`;
+};
+
+export function zoomTo(
+  el: SVGElement | null | undefined,
+  to: string,
+  duration = 700
+) {
+  if (!el) return;
+  const from = el.style.transform || cameraTransform(null);
+  el.style.transform = to;
+  if (prefersReducedMotion()) return;
+  el.animate([{ transform: from }, { transform: to }], {
+    duration,
+    easing: 'ease-in-out',
+  });
+}
