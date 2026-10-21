@@ -12,7 +12,11 @@ import {
   wait,
   zoomTo,
 } from '~features/learn/motion';
-import { playSfx } from '~features/learn/sfx';
+import {
+  playSfx,
+  startPlaybackSession,
+  stopPlaybackSession,
+} from '~features/learn/sfx';
 import {
   canSpeak,
   readVoiceOn,
@@ -477,11 +481,13 @@ export function RuleScene({ scene }: { scene: Scene }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: 열릴 때 한 번 재생하고 닫히면 멈춘다
   useEffect(() => {
     voiceOn.current = readVoiceOn();
+    if (voiceOn.current) startPlaybackSession();
     setVoice({ supported: canSpeak(), on: voiceOn.current });
     play();
     return () => {
       run.current++;
       stopSpeaking();
+      stopPlaybackSession();
     };
   }, []);
 
@@ -490,8 +496,10 @@ export function RuleScene({ scene }: { scene: Scene }) {
     voiceOn.current = on;
     saveVoiceOn(on);
     setVoice(v => ({ ...v, on }));
-    if (on) speak(caption, setSpoken);
-    else {
+    if (on) {
+      startPlaybackSession();
+      speak(caption, setSpoken);
+    } else {
       stopSpeaking();
       setSpoken(1);
     }

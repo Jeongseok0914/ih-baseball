@@ -10,6 +10,60 @@ const audio = () => {
   return context;
 };
 
+// 아이폰은 무음(진동) 스위치가 켜져 있으면 웹 효과음을 끈다. 장면을 보는 동안은
+// "미디어 재생"으로 알려 무음 모드에서도 들리게 한다(영상처럼 미디어 볼륨을 따른다).
+// - iOS 17 이상: navigator.audioSession.type = 'playback'
+// - 그 전 버전: 소리 없는 오디오를 반복 재생하면 같은 효과가 난다.
+let silence: HTMLAudioElement | null = null;
+
+const silentWavUrl = () => {
+  // 0.5초짜리 무음 WAV(8kHz, 8비트, 모노)
+  const samples = 4000;
+  const buffer = new ArrayBuffer(44 + samples);
+  const view = new DataView(buffer);
+  const text = (offset: number, value: string) => {
+    for (let i = 0; i < value.length; i++)
+      view.setUint8(offset + i, value.charCodeAt(i));
+  };
+  text(0, 'RIFF');
+  view.setUint32(4, 36 + samples, true);
+  text(8, 'WAVE');
+  text(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, 8000, true);
+  view.setUint32(28, 8000, true);
+  view.setUint16(32, 1, true);
+  view.setUint16(34, 8, true);
+  text(36, 'data');
+  view.setUint32(40, samples, true);
+  new Uint8Array(buffer, 44).fill(128);
+  return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+};
+
+// 버튼을 누른 직후(사용자 동작 안)에 불러야 재생이 허용된다.
+export function startPlaybackSession() {
+  if (typeof window === 'undefined') return;
+  const session = (navigator as Navigator & { audioSession?: { type: string } })
+    .audioSession;
+  if (session) {
+    session.type = 'playback';
+    return;
+  }
+  silence ??= Object.assign(new Audio(silentWavUrl()), { loop: true });
+  silence.play().catch(() => {
+    // 허용되지 않으면 기기 설정을 따른다.
+  });
+}
+
+export function stopPlaybackSession() {
+  silence?.pause();
+  const session = (navigator as Navigator & { audioSession?: { type: string } })
+    .audioSession;
+  if (session) session.type = 'auto';
+}
+
 // 짧은 잡음(방망이 "딱", 미트 "팡", 관중 함성의 재료)
 function noise(
   ctx: AudioContext,
