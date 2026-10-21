@@ -9,10 +9,13 @@ const LINE = '#2b1d14';
 const HAIR = '#2a1d16';
 const CHEEK = '#f29b8f';
 
+// mood: 규칙 장면에서 상황에 맞춰 바꾸는 표정. 없으면 평소 얼굴.
+export type Mood = 'happy' | 'sad' | 'hurt';
+
 export type Face =
-  | { kind: 'headCoach' }
+  | { kind: 'headCoach'; mood?: Mood }
   | { kind: 'coach' }
-  | { kind: 'kid'; grade: number; seed: number };
+  | { kind: 'kid'; grade: number; seed: number; mood?: Mood };
 
 const FACE_VIEW_BOX = '40 16 120 120';
 
@@ -155,6 +158,68 @@ const kidLook = (seed: number) => ({
   brows: seed % 5 === 1 || seed % 5 === 3,
 });
 
+// 상황 표정: 기쁨(눈웃음과 활짝 웃는 입), 속상함(처진 눈썹, 눈물), 아픔(질끈 감은 눈, 식은땀)
+function MoodEyes({ mood }: { mood: Mood }) {
+  if (mood === 'happy') return <SmileEyes y={89} />;
+  if (mood === 'hurt') {
+    return (
+      <path
+        d="M81 84 l10 5 l-10 5 M119 84 l-10 5 l10 5"
+        {...stroke}
+        strokeWidth="3.2"
+      />
+    );
+  }
+  return (
+    <>
+      <path d="M80 80 l12 4 M108 84 l12 -4" {...stroke} strokeWidth="2.8" />
+      <path
+        d="M81 89 q6 5 12 0 M107 89 q6 5 12 0"
+        {...stroke}
+        strokeWidth="3"
+      />
+      {/* 눈물 */}
+      <path d="M85 94 q-4 8 0 11 q4 -3 0 -11 z" fill="#6ec1ff" />
+      <path d="M115 94 q-4 8 0 11 q4 -3 0 -11 z" fill="#6ec1ff" />
+    </>
+  );
+}
+
+function MoodMouth({ mood, under = false }: { mood: Mood; under?: boolean }) {
+  // under: 감독님처럼 수염 아래 입일 때 조금 내려 그린다.
+  const dy = under ? 4 : 0;
+  if (mood === 'happy') {
+    return (
+      <g transform={`translate(0 ${dy})`}>
+        <path
+          d="M88 102 q12 14 24 0 z"
+          fill="#c4553f"
+          stroke={LINE}
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path d="M89.5 103 h21 q-1 3 -3 4 h-15 q-2 -1 -3 -4 z" fill="#fff" />
+      </g>
+    );
+  }
+  if (mood === 'hurt') {
+    return (
+      <>
+        <path
+          d={`M89 ${106 + dy} q3 -4 5.5 0 q3 4 5.5 0 q3 -4 5.5 0 q3 4 5.5 0`}
+          {...stroke}
+          strokeWidth="2.6"
+        />
+        {/* 식은땀 */}
+        <path d="M140 66 q-6 9 0 12 q6 -3 0 -12 z" fill="#6ec1ff" />
+      </>
+    );
+  }
+  return (
+    <path d={`M90 ${111 + dy} q10 -9 20 0`} {...stroke} strokeWidth="2.8" />
+  );
+}
+
 function Head({ face }: { face: Face }) {
   const isKid = face.kind === 'kid';
   const kid = kidLook(isKid ? face.seed : 0);
@@ -185,7 +250,7 @@ function Head({ face }: { face: Face }) {
             d="M64 96 q4 28 36 30 q32 -2 36 -30 q-8 14 -36 16 q-28 -2 -36 -16 z"
             fill={HAIR}
           />
-          <SmileEyes />
+          {face.mood ? <MoodEyes mood={face.mood} /> : <SmileEyes />}
           <ellipse cx="77" cy="101" rx="7" ry="4" fill={CHEEK} opacity="0.75" />
           <ellipse
             cx="123"
@@ -195,13 +260,17 @@ function Head({ face }: { face: Face }) {
             fill={CHEEK}
             opacity="0.75"
           />
-          <path
-            d="M90 106 q10 10 20 0 z"
-            fill="#c4553f"
-            stroke={LINE}
-            strokeWidth="2"
-            strokeLinejoin="round"
-          />
+          {face.mood ? (
+            <MoodMouth mood={face.mood} under />
+          ) : (
+            <path
+              d="M90 106 q10 10 20 0 z"
+              fill="#c4553f"
+              stroke={LINE}
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+          )}
           <path
             d="M100 99 q-10 -7 -22 1 q9 7 22 2 q13 5 22 -2 q-12 -8 -22 -1 z"
             fill={HAIR}
@@ -245,7 +314,11 @@ function Head({ face }: { face: Face }) {
               strokeWidth="2.6"
             />
           ) : null}
-          {EYES[kid.eyes](young ? 5 : 4)}
+          {face.mood ? (
+            <MoodEyes mood={face.mood} />
+          ) : (
+            EYES[kid.eyes](young ? 5 : 4)
+          )}
           <ellipse
             cx="76"
             cy="101"
@@ -288,7 +361,7 @@ function Head({ face }: { face: Face }) {
               <circle cx="126" cy="97.5" r="0.8" fill="#d9b98c" />
             </g>
           ) : null}
-          {MOUTHS[kid.mouth]}
+          {face.mood ? <MoodMouth mood={face.mood} /> : MOUTHS[kid.mouth]}
         </>
       ) : null}
 
@@ -325,8 +398,9 @@ export function CharacterFace({
 
 export function CoachCharacter({
   className,
+  mood,
   ...box
-}: { className?: string } & NestedBox) {
+}: { className?: string; mood?: Mood } & NestedBox) {
   return (
     <svg
       viewBox="0 0 200 260"
@@ -404,7 +478,7 @@ export function CoachCharacter({
         strokeLinecap="round"
       />
 
-      <Head face={{ kind: 'headCoach' }} />
+      <Head face={{ kind: 'headCoach', mood }} />
     </svg>
   );
 }

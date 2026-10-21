@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { CharacterFace, CoachCharacter } from '~components/team-character';
+import {
+  CharacterFace,
+  CoachCharacter,
+  type Mood,
+} from '~components/team-character';
 import { PLAYERS } from '~content/players';
 import type { Pos, Scene, SceneStep } from '~content/rule-scenes';
 import {
@@ -116,19 +120,23 @@ function SceneActor({
   view,
   seed,
   number,
+  mood,
 }: {
   actor: Scene['actors'][string];
   view: Scene['view'];
   seed: number;
   // 인헌초(빨강) 아이들 유니폼에 새기는 실제 선수 등번호
   number?: number;
+  mood?: Mood;
 }) {
   if (actor.kind === 'ball') {
     return <Baseball r={view === 'zone' ? 7 : 4} />;
   }
   if (view === 'zone') {
     // 앞에서 본 타자: 감독님 전신(발이 땅에 닿게)
-    return <CoachCharacter x={-38} y={-50} width={76} height={99} />;
+    return (
+      <CoachCharacter mood={mood} x={-38} y={-50} width={76} height={99} />
+    );
   }
   // 선수: 발끝(0,0)에 서 있는 꼬마 캐릭터. 얼굴, 유니폼(팀 색), 다리. 주인공(감독님)은 조금 크다.
   // 팔과 방망이는 평소엔 숨겨 두고, 던지거나 칠 때만 잠깐 보인다(RuleScene 의 throwAt·swingBat).
@@ -210,8 +218,8 @@ function SceneActor({
         <CharacterFace
           face={
             actor.star
-              ? { kind: 'headCoach' }
-              : { kind: 'kid', grade: 2 + (seed % 5), seed }
+              ? { kind: 'headCoach', mood }
+              : { kind: 'kid', grade: 2 + (seed % 5), seed, mood }
           }
           label=""
           x={actor.star ? -9 : -8.5}
@@ -294,12 +302,26 @@ function Dots({
 
 const H: Pos = [100, 172];
 const MOUND: Pos = [100, 118];
+const BASES: Pos[] = [
+  [158, 114],
+  [100, 56],
+  [42, 114],
+  [100, 172],
+];
 const dist = (a: Pos, b: Pos) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const pathLength = (from: Pos, path: readonly Pos[]) =>
   [from, ...path].reduce(
     (sum, p, i, all) => (i === 0 ? 0 : sum + dist(all[i - 1], p)),
     0
   );
+// 판정 글자로 표정을 정한다.
+const OUT_CALLS = ['아웃', '하나!', '둘!', '삼중살'];
+const GOOD_CALLS = ['세이프', '안타', '득점', '홈런', '점!', '진루'];
+const SCORE_CALLS = ['득점', '홈런', '점!'];
+const DEFENSE_MISTAKES = ['보크', '폭투', '실책', '놓쳤다'];
+const has = (text: string, words: string[]) =>
+  words.some(w => text.includes(w));
+
 // 장면 속 인헌초(빨강) 아이들 등번호. 18번과 1번이 먼저, 그다음 선수단 순서.
 const RED_NUMBERS = [
   18,
@@ -344,9 +366,13 @@ export function RuleScene({ scene }: { scene: Scene }) {
       .filter(([, a]) => a.kind === 'player' && a.team === 'red' && !a.star)
       .map(([id], i) => [id, RED_NUMBERS[i % RED_NUMBERS.length]])
   );
+  // 상황 표정: 판정이 나면 그 근처 선수가 웃거나 울거나 아파한다. 다음 단계에서 원래대로.
+  const [moods, setMoods] = useState<Record<string, Mood>>({});
   const [flash, setFlash] = useState<SceneStep['flash'] & { id: number }>();
   const positions = useRef(new Map<string, Pos>());
   const run = useRef(0);
+  // 단계마다 아웃이 늘었는지 보려고 센다.
+  const outs = useRef(0);
   const [caption, setCaption] = useState('');
   // 읽은 만큼(0~1) 글자를 진하게 칠해 음성과 맞춘다. 소리가 꺼져 있으면 1.
   const [spoken, setSpoken] = useState(1);
@@ -447,6 +473,35 @@ export function RuleScene({ scene }: { scene: Scene }) {
     );
   };
 
+  // 흙먼지 알갱이 하나: 피어오르며 커지다가 사라진다.
+  const puffAt = (x: number, y: number, dx: number) => {
+    const layer = dust.current;
+    if (!layer) return;
+    const puff = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'circle'
+    );
+    puff.setAttribute('cx', String(x + dx));
+    puff.setAttribute('cy', String(y - 0.5));
+    puff.setAttribute('r', '1.6');
+    puff.setAttribute('fill', '#e2c49b');
+    puff.style.transformBox = 'fill-box';
+    puff.style.transformOrigin = 'center';
+    layer.append(puff);
+    puff
+      .animate(
+        [
+          { opacity: 0.8, transform: 'translate(0px, 0px) scale(1)' },
+          { opacity: 0, transform: `translate(${dx}px, -3px) scale(2.6)` },
+        ],
+        { duration: 550, easing: 'ease-out' }
+      )
+      .finished.then(
+        () => puff.remove(),
+        () => puff.remove()
+      );
+  };
+
   // 달리기 흙먼지: 움직이는 동안 발밑에 작은 흙 알갱이가 피어올랐다 사라진다.
   const kickDust = (from: Pos, path: readonly Pos[], duration: number) => {
     const layer = dust.current;
@@ -456,36 +511,87 @@ export function RuleScene({ scene }: { scene: Scene }) {
       window.setTimeout(() => {
         if (!dust.current) return;
         const [x, y] = pointOnPath(from, path, easeInOut(t / duration));
-        for (const dx of [-2.5, 2]) {
-          const puff = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'circle'
-          );
-          puff.setAttribute('cx', String(x + dx));
-          puff.setAttribute('cy', String(y - 0.5));
-          puff.setAttribute('r', '1.6');
-          puff.setAttribute('fill', '#e2c49b');
-          dust.current.append(puff);
-          puff
-            .animate(
-              [
-                { opacity: 0.8, transform: 'translate(0px, 0px) scale(1)' },
-                {
-                  opacity: 0,
-                  transform: `translate(${dx}px, -3px) scale(2.6)`,
-                },
-              ],
-              { duration: 550, easing: 'ease-out' }
-            )
-            .finished.then(
-              () => puff.remove(),
-              () => puff.remove()
-            );
-          puff.style.transformBox = 'fill-box';
-          puff.style.transformOrigin = 'center';
-        }
+        for (const dx of [-2.5, 2]) puffAt(x, y, dx);
       }, t);
     }
+  };
+
+  // 그 자리에서 가장 가까운 선수(팀 지정 가능)
+  const nearest = (at: Pos, team?: 'red' | 'green', range = 26) => {
+    let best: string | undefined;
+    let bestDist = range;
+    for (const [id, actor] of Object.entries(scene.actors)) {
+      if (actor.kind !== 'player') continue;
+      const isRed = actor.team === 'red';
+      if (team === 'red' && !isRed) continue;
+      if (team === 'green' && isRed) continue;
+      const pos = positions.current.get(id);
+      const d = pos ? dist(pos, at) : Infinity;
+      if (d < bestDist) {
+        best = id;
+        bestDist = d;
+      }
+    }
+    return best;
+  };
+
+  // 판정에 맞는 표정. 공격(빨강)은 살면 웃고 아웃이면 울고, 수비는 반대로.
+  const moodsFor = (s: SceneStep, outAdded: boolean) => {
+    const next: Record<string, Mood> = {};
+    const set = (id: string | undefined, mood: Mood) => {
+      if (id) next[id] = mood;
+    };
+    const text = s.flash?.text ?? '';
+    const at = s.flash?.at;
+    if (scene.view === 'zone') {
+      const batter = Object.keys(scene.actors).find(
+        id => scene.actors[id].kind === 'player'
+      );
+      if (text === '앗!') set(batter, 'hurt');
+      else if (outAdded) set(batter, 'sad');
+      else if ((s.count?.b ?? 0) >= 4) set(batter, 'happy');
+      return next;
+    }
+    if (at && has(text, DEFENSE_MISTAKES)) set(nearest(at, 'green'), 'sad');
+    else if (at && has(text, OUT_CALLS)) {
+      // 아웃당한 쪽은 판정 자리에서 조금 떨어져 있을 수 있어 넓게 찾는다.
+      set(nearest(at, 'red', 45), 'sad');
+      set(nearest(at, 'green'), 'happy');
+    } else if (at && has(text, GOOD_CALLS)) {
+      if (has(text, SCORE_CALLS)) {
+        for (const [id, a] of Object.entries(scene.actors))
+          if (a.kind === 'player' && a.team === 'red') set(id, 'happy');
+      } else set(nearest(at, 'red'), 'happy');
+    } else if (outAdded) {
+      const batter =
+        Object.keys(scene.actors).find(id => scene.actors[id].star) ??
+        nearest([86, 170], 'red');
+      set(batter, 'sad');
+    }
+    return next;
+  };
+
+  // 슬라이딩: 베이스에 다다르기 직전 몸을 뒤로 눕혀 미끄러지고 흙먼지가 크게 인다.
+  const slide = (id: string, from: Pos, end: Pos, duration: number) => {
+    const inner = inners.current.get(id);
+    if (!inner) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lean = end[0] >= from[0] ? -70 : 70;
+    const start = Math.max(0, duration - 330);
+    window.setTimeout(() => {
+      inner.animate(
+        [
+          { transform: 'rotate(0deg)' },
+          { transform: `rotate(${lean}deg) translateY(2px)`, offset: 0.35 },
+          { transform: `rotate(${lean}deg) translateY(2px)`, offset: 0.8 },
+          { transform: 'rotate(0deg)' },
+        ],
+        { duration: 700, easing: 'ease-out' }
+      );
+    }, start);
+    window.setTimeout(() => {
+      for (const dx of [-5, -2, 1, 4, 6]) puffAt(end[0] + dx, end[1], dx);
+    }, duration);
   };
 
   // 공이 출발하는 자리에 서 있는 선수(투수·수비)를 찾는다.
@@ -511,6 +617,8 @@ export function RuleScene({ scene }: { scene: Scene }) {
     setCaption('');
     setCount(EMPTY);
     setFlash(undefined);
+    setMoods({});
+    outs.current = 0;
     zoomTo(camera.current, cameraTransform(null), 0);
     for (const [id, actor] of Object.entries(scene.actors)) {
       setAt(id, actor.at);
@@ -525,6 +633,7 @@ export function RuleScene({ scene }: { scene: Scene }) {
       for (const id of s.show ?? []) setVisible(id, true);
       for (const id of s.hide ?? []) setVisible(id, false);
       setFlash(undefined);
+      setMoods({});
       if (s.zoom !== undefined) {
         zoomTo(
           camera.current,
@@ -594,6 +703,30 @@ export function RuleScene({ scene }: { scene: Scene }) {
           } else {
             bob(inners.current.get(id), duration);
             kickDust(from, path, duration);
+            const end = path[path.length - 1];
+            // 1루는 지나쳐 달리는 곳이라 아슬아슬한 "세이프!"일 때만 미끄러진다.
+            const atBase = BASES.some(
+              (b, i) =>
+                end &&
+                dist(b, end) < 4 &&
+                (i > 0 || has(s.flash?.text ?? '', ['세이프']))
+            );
+            const closeCall =
+              s.flash &&
+              end &&
+              dist(s.flash.at, end) < 14 &&
+              !has(s.flash.text, ['팡']);
+            if (
+              end &&
+              atBase &&
+              closeCall &&
+              scene.actors[id].team === 'red' &&
+              dist(from, end) > 8 &&
+              // 홈런처럼 여러 베이스를 도는 건 슬라이딩하지 않는다.
+              pathLength(from, path) < 100
+            ) {
+              slide(id, from, end, duration);
+            }
           }
           await moveAlong(
             nodes.current.get(id),
@@ -606,6 +739,9 @@ export function RuleScene({ scene }: { scene: Scene }) {
         })
       );
       if (!alive()) return;
+      const outsBefore = outs.current;
+      if (s.count?.o !== undefined) outs.current = s.count.o;
+      setMoods(moodsFor(s, outs.current > outsBefore));
       if (s.flash) {
         setFlash({ ...s.flash, id: index });
         if (s.flash.sfx && voiceOn.current) playSfx(s.flash.sfx);
@@ -709,6 +845,7 @@ export function RuleScene({ scene }: { scene: Scene }) {
                   view={scene.view}
                   seed={index}
                   number={redNumbers.get(id)}
+                  mood={moods[id]}
                 />
               </g>
             </g>
