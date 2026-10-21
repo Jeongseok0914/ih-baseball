@@ -8,8 +8,8 @@ import {
   newsDate,
   pickSpotlight,
   type Spotlight,
-  seoulToday,
 } from '~features/home/live';
+import { seoulToday } from '~lib/today';
 
 // 홈 맨 위 "지금" 띠. 다가오는 대회면 D-day, 막 끝난 경기면 스코어를 보여 준다.
 // 날짜는 보는 사람의 오늘로 계산하므로 사이트를 다시 배포하지 않아도 저절로 바뀐다.

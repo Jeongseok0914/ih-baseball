@@ -55,3 +55,15 @@ export const daysAt = (place: keyof typeof PLACES) =>
   WEEK.filter(d => d.place === place)
     .map(d => d.day)
     .join('·');
+
+// 휴대폰용 한 주 일정: 같은 일(같은 장소 훈련, 연습경기, 쉬는 날)끼리 한 줄로 묶는다.
+// 훈련 → 연습경기 → 쉬는 날 순서. 예: { days: ['월','화','금'], kind: 'training', label: '노량진 야구장' }
+const KIND_ORDER = { training: 0, game: 1, rest: 2 } as const;
+export const WEEK_GROUPS = WEEK.reduce<
+  { days: Day['day'][]; kind: Day['kind']; label: string }[]
+>((groups, d) => {
+  const same = groups.find(g => g.kind === d.kind && g.label === d.label);
+  if (same) same.days.push(d.day);
+  else groups.push({ days: [d.day], kind: d.kind, label: d.label });
+  return groups;
+}, []).sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);

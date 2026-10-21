@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { News } from '~content/news';
-import { latestNews, newsDate, seoulToday } from '~features/home/live';
+import { latestNews, newsDate } from '~features/home/live';
+import { seoulToday } from '~lib/today';
 
 // 대회 배지: 오늘이면 "오늘!", 아니면 "D-5"
 const dDayLabel = (today: string, date: string) => {

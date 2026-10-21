@@ -1,21 +1,9 @@
-// 홈이 "오늘" 기준으로 무엇을 보여 줄지 고른다. 날짜는 서울 시간으로 센다.
+// 홈이 "오늘" 기준으로 무엇을 보여 줄지 고른다. 오늘 날짜는 ~lib/today 의 seoulToday 로 구한다.
 import type { News } from '~content/news';
 
 const DAY_MS = 86_400_000;
 const EVENT_AHEAD_DAYS = 30;
 const RESULT_KEEP_DAYS = 14;
-
-// 서울 기준 오늘 날짜('YYYY-MM-DD')와 요일('월'~'일')
-export function seoulToday(now = new Date()) {
-  const date = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Seoul',
-  }).format(now);
-  const day = new Intl.DateTimeFormat('ko-KR', {
-    timeZone: 'Asia/Seoul',
-    weekday: 'short',
-  }).format(now);
-  return { date, day };
-}
 
 const daysBetween = (from: string, to: string) =>
   Math.round((Date.parse(to) - Date.parse(from)) / DAY_MS);

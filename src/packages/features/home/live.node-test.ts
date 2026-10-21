@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { News } from '~content/news';
-import { latestNews, newsDate, pickSpotlight, seoulToday } from './live.ts';
+import { latestNews, newsDate, pickSpotlight } from './live.ts';
 
 const NEWS: News[] = [
   {
@@ -46,14 +46,6 @@ test('최근 소식은 최신순', () => {
     latestNews(NEWS, 2).map(n => n.date),
     ['2026-11-20', '2026-10-25']
   );
-});
-
-test('서울 시간으로 날짜와 요일을 센다', () => {
-  // UTC 2026-10-20 16:00 = 서울 2026-10-21(수) 01:00
-  assert.deepEqual(seoulToday(new Date('2026-10-20T16:00:00Z')), {
-    date: '2026-10-21',
-    day: '수',
-  });
 });
 
 test('날짜 미정 대회는 D-day 를 세지 않고, 여러 날 대회는 기간으로 쓴다', () => {

@@ -1,6 +1,7 @@
 import { PageHero } from '~components/page-hero';
-import { WEEK } from '~content/schedule';
+import { WEEK, WEEK_GROUPS } from '~content/schedule';
 import { TRAINING_VIDEOS } from '~content/training-videos';
+import { TodayMark } from '~features/schedule/ui/TodayMark';
 import { VideoGallery } from '~features/schedule/ui/VideoGallery';
 
 const KIND_STYLE = {
@@ -33,8 +34,31 @@ export function Schedule() {
           <h2 id="week-title" className="font-display text-3xl">
             한 주 일정
           </h2>
-          {/* 휴대폰은 요일별 줄, 넓은 화면은 7칸 */}
-          <ol className="mt-5 flex flex-col gap-2 sm:grid sm:grid-cols-7 sm:gap-3">
+          {/* 휴대폰은 같은 일끼리 묶은 4줄, 넓은 화면은 요일 7칸 */}
+          <ul className="mt-4 flex flex-col gap-2 sm:hidden">
+            {WEEK_GROUPS.map(g => (
+              <li
+                key={g.days.join()}
+                className={`chunky flex items-center gap-3 px-3 py-2.5 shadow-none ${KIND_STYLE[g.kind]}`}
+              >
+                <span className="flex shrink-0 gap-1">
+                  {g.days.map(day => (
+                    <span
+                      key={day}
+                      className="grid size-8 place-items-center rounded-lg bg-white/85 font-display text-ink"
+                    >
+                      {day}
+                    </span>
+                  ))}
+                </span>
+                <span className="font-display text-lg leading-tight">
+                  {g.label}
+                </span>
+                <TodayMark days={g.days} />
+              </li>
+            ))}
+          </ul>
+          <ol className="mt-5 hidden sm:grid sm:grid-cols-7 sm:gap-3">
             {WEEK.map(d => (
               <li
                 key={d.day}
