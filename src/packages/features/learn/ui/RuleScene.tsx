@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CharacterFace, CoachCharacter } from '~components/team-character';
+import { PLAYERS } from '~content/players';
 import type { Pos, Scene, SceneStep } from '~content/rule-scenes';
 import {
   bob,
@@ -114,10 +115,13 @@ function SceneActor({
   actor,
   view,
   seed,
+  number,
 }: {
   actor: Scene['actors'][string];
   view: Scene['view'];
   seed: number;
+  // 인헌초(빨강) 아이들 유니폼에 새기는 실제 선수 등번호
+  number?: number;
 }) {
   if (actor.kind === 'ball') {
     return <Baseball r={view === 'zone' ? 7 : 4} />;
@@ -179,16 +183,29 @@ function SceneActor({
           </>
         ) : (
           // 아이들: 팀 색 유니폼 상의
-          <rect
-            x="-5.2"
-            y="-15"
-            width="10.4"
-            height="9.5"
-            rx="3"
-            fill={TEAM_COLOR[actor.team ?? 'green']}
-            stroke="var(--color-ink)"
-            strokeWidth="0.7"
-          />
+          <>
+            <rect
+              x="-5.2"
+              y="-15"
+              width="10.4"
+              height="9.5"
+              rx="3"
+              fill={TEAM_COLOR[actor.team ?? 'green']}
+              stroke="var(--color-ink)"
+              strokeWidth="0.7"
+            />
+            {number ? (
+              <text
+                y="-8"
+                textAnchor="middle"
+                fontSize="5.4"
+                fill="white"
+                className="font-display"
+              >
+                {number}
+              </text>
+            ) : null}
+          </>
         )}
         <CharacterFace
           face={
@@ -283,6 +300,13 @@ const pathLength = (from: Pos, path: readonly Pos[]) =>
     (sum, p, i, all) => (i === 0 ? 0 : sum + dist(all[i - 1], p)),
     0
   );
+// 장면 속 인헌초(빨강) 아이들 등번호. 18번과 1번이 먼저, 그다음 선수단 순서.
+const RED_NUMBERS = [
+  18,
+  1,
+  ...PLAYERS.map(p => p.number).filter(n => n !== 18 && n !== 1),
+];
+
 // 경로 위 t(0~1) 지점. 사람은 ease-in-out 으로 움직이니 비슷하게 맞춘다.
 const easeInOut = (t: number) =>
   t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
@@ -314,6 +338,12 @@ export function RuleScene({ scene }: { scene: Scene }) {
   const shadows = useRef(new Map<string, SVGEllipseElement>());
   const camera = useRef<SVGGElement>(null);
   const dust = useRef<SVGGElement>(null);
+  // 빨강 팀 아이들(감독님 제외)에게 장면에 나오는 순서대로 18, 1, … 번을 붙인다.
+  const redNumbers = new Map(
+    Object.entries(scene.actors)
+      .filter(([, a]) => a.kind === 'player' && a.team === 'red' && !a.star)
+      .map(([id], i) => [id, RED_NUMBERS[i % RED_NUMBERS.length]])
+  );
   const [flash, setFlash] = useState<SceneStep['flash'] & { id: number }>();
   const positions = useRef(new Map<string, Pos>());
   const run = useRef(0);
@@ -674,7 +704,12 @@ export function RuleScene({ scene }: { scene: Scene }) {
                   else inners.current.delete(id);
                 }}
               >
-                <SceneActor actor={actor} view={scene.view} seed={index} />
+                <SceneActor
+                  actor={actor}
+                  view={scene.view}
+                  seed={index}
+                  number={redNumbers.get(id)}
+                />
               </g>
             </g>
           ))}
