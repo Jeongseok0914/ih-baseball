@@ -126,65 +126,115 @@ function SceneActor({
     // 앞에서 본 타자: 감독님 전신(발이 땅에 닿게)
     return <CoachCharacter x={-38} y={-50} width={76} height={99} />;
   }
-  const r = actor.star ? 11 : 8;
+  // 선수: 발끝(0,0)에 서 있는 꼬마 캐릭터. 얼굴, 유니폼(팀 색), 다리. 주인공(감독님)은 조금 크다.
+  // 팔과 방망이는 평소엔 숨겨 두고, 던지거나 칠 때만 잠깐 보인다(RuleScene 의 throwAt·swingBat).
   return (
     <>
-      <circle
-        r={r}
-        fill={TEAM_COLOR[actor.team ?? 'green']}
-        stroke={actor.star ? 'var(--color-sun)' : 'white'}
-        strokeWidth={actor.star ? 2 : 1.2}
-      />
-      <CharacterFace
-        face={
-          actor.star
-            ? { kind: 'headCoach' }
-            : { kind: 'kid', grade: 2 + (seed % 5), seed }
-        }
-        label=""
-        // 팀 색 테두리가 보이게 얼굴은 동그라미보다 조금 작게 넣는다.
-        x={-r * 0.82}
-        y={-r * 0.86}
-        width={r * 1.64}
-        height={r * 1.64}
-      />
-      {/* 팔과 방망이: 평소엔 숨겨 두고, 던지거나 칠 때만 잠깐 보인다(RuleScene 의 act). */}
-      <g data-arm style={{ opacity: 0 }}>
-        <g data-arm-swing>
-          <rect
-            x="-1.7"
-            y={-r * 1.3}
-            width="3.4"
-            height={r * 1.3}
-            rx="1.7"
-            fill="#f3c9a1"
-            stroke="var(--color-ink)"
-            strokeWidth="0.6"
-          />
-        </g>
-      </g>
-      <g
-        data-bat
-        style={{ opacity: 0 }}
-        transform={`translate(${r * 0.55} ${r * 0.15})`}
-      >
-        {actor.star ? <SwingTrail length={r * 3.4} /> : null}
-        <g data-bat-swing>
-          {actor.star ? (
-            <Glaive length={r * 3.4} />
-          ) : (
+      <g transform={actor.star ? 'scale(1.25)' : undefined}>
+        <ellipse rx="6.5" ry="2.2" fill="black" opacity="0.25" />
+        {/* 다리와 신발 */}
+        <rect
+          x="-3.6"
+          y="-6.5"
+          width="3"
+          height="6.5"
+          rx="1.2"
+          fill="#dcdcd6"
+        />
+        <rect x="0.6" y="-6.5" width="3" height="6.5" rx="1.2" fill="#dcdcd6" />
+        <ellipse cx="-2.1" cy="-0.4" rx="2.2" ry="1.2" fill="#111" />
+        <ellipse cx="2.1" cy="-0.4" rx="2.2" ry="1.2" fill="#111" />
+        {actor.star ? (
+          // 감독님: 하단 연락처 캐릭터처럼 배가 나온 흰 유니폼, 금색 71, 검은 벨트
+          <>
+            <ellipse
+              cx="0"
+              cy="-11"
+              rx="7.6"
+              ry="7.2"
+              fill="#f5f5f2"
+              stroke="#dcdcd6"
+              strokeWidth="0.6"
+            />
+            <ellipse cx="0.8" cy="-9.8" rx="5.2" ry="4.6" fill="white" />
+            <text
+              x="0.8"
+              y="-7.8"
+              textAnchor="middle"
+              fontSize="5.4"
+              fill="#111"
+              stroke="var(--color-gold)"
+              strokeWidth="0.25"
+              className="font-display"
+            >
+              71
+            </text>
             <path
-              d={`M-1 0 L-1.8 ${-r * 1.9} Q0 ${-r * 2.15} 1.8 ${-r * 1.9} L1 0 Z`}
-              fill="#c98a4b"
+              d="M-5.6 -5.4 q5.6 2.6 11.2 0"
+              fill="none"
+              stroke="#111"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+          </>
+        ) : (
+          // 아이들: 팀 색 유니폼 상의
+          <rect
+            x="-5.2"
+            y="-15"
+            width="10.4"
+            height="9.5"
+            rx="3"
+            fill={TEAM_COLOR[actor.team ?? 'green']}
+            stroke="var(--color-ink)"
+            strokeWidth="0.7"
+          />
+        )}
+        <CharacterFace
+          face={
+            actor.star
+              ? { kind: 'headCoach' }
+              : { kind: 'kid', grade: 2 + (seed % 5), seed }
+          }
+          label=""
+          x={actor.star ? -9 : -8.5}
+          y={actor.star ? -31 : -29}
+          width={actor.star ? 18 : 17}
+          height={actor.star ? 18 : 17}
+        />
+        <g data-arm style={{ opacity: 0 }}>
+          <g data-arm-swing>
+            <rect
+              x="-1.6"
+              y="-9.5"
+              width="3.2"
+              height="9.5"
+              rx="1.6"
+              fill="#f3c9a1"
               stroke="var(--color-ink)"
               strokeWidth="0.6"
             />
-          )}
+          </g>
+        </g>
+        <g data-bat style={{ opacity: 0 }} transform="translate(3.5 -9)">
+          {actor.star ? <SwingTrail length={27} /> : null}
+          <g data-bat-swing>
+            {actor.star ? (
+              <Glaive length={27} />
+            ) : (
+              <path
+                d="M-1 0 L-1.8 -15 Q0 -17 1.8 -15 L1 0 Z"
+                fill="#c98a4b"
+                stroke="var(--color-ink)"
+                strokeWidth="0.6"
+              />
+            )}
+          </g>
         </g>
       </g>
       {actor.tag ? (
         <text
-          y={r + 8}
+          y="9"
           textAnchor="middle"
           fontSize="8"
           fill="white"
@@ -233,6 +283,26 @@ const pathLength = (from: Pos, path: readonly Pos[]) =>
     (sum, p, i, all) => (i === 0 ? 0 : sum + dist(all[i - 1], p)),
     0
   );
+// 경로 위 t(0~1) 지점. 사람은 ease-in-out 으로 움직이니 비슷하게 맞춘다.
+const easeInOut = (t: number) =>
+  t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+const pointOnPath = (from: Pos, path: readonly Pos[], t: number): Pos => {
+  const points = [from, ...path];
+  let left = pathLength(from, path) * t;
+  for (let i = 1; i < points.length; i++) {
+    const seg = dist(points[i - 1], points[i]);
+    if (left <= seg || i === points.length - 1) {
+      const k = seg ? Math.min(1, left / seg) : 1;
+      return [
+        points[i - 1][0] + (points[i][0] - points[i - 1][0]) * k,
+        points[i - 1][1] + (points[i][1] - points[i - 1][1]) * k,
+      ];
+    }
+    left -= seg;
+  }
+  return points[points.length - 1];
+};
+
 // 공을 던지기 전 팔을 뒤로 젖히는 시간(ms). 공은 이만큼 늦게 출발한다.
 const WINDUP = 200;
 
@@ -243,6 +313,7 @@ export function RuleScene({ scene }: { scene: Scene }) {
   const inners = useRef(new Map<string, SVGGElement>());
   const shadows = useRef(new Map<string, SVGEllipseElement>());
   const camera = useRef<SVGGElement>(null);
+  const dust = useRef<SVGGElement>(null);
   const [flash, setFlash] = useState<SceneStep['flash'] & { id: number }>();
   const positions = useRef(new Map<string, Pos>());
   const run = useRef(0);
@@ -272,7 +343,8 @@ export function RuleScene({ scene }: { scene: Scene }) {
     // 팔은 위(-y)를 향해 그려져 있으니 +90도 돌려 목표를 보게 한다.
     arm.setAttribute(
       'transform',
-      `translate(${-uy * 6} ${ux * 6}) rotate(${(angle * 180) / Math.PI + 90})`
+      // 어깨(몸통 위쪽)에서 던지는 쪽 옆으로 팔을 붙인다.
+      `translate(${-uy * 4} ${-12 + ux * 4}) rotate(${(angle * 180) / Math.PI + 90})`
     );
     arm.animate([{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], {
       duration: 650,
@@ -343,6 +415,47 @@ export function RuleScene({ scene }: { scene: Scene }) {
       ],
       { duration: 300, composite: 'add' }
     );
+  };
+
+  // 달리기 흙먼지: 움직이는 동안 발밑에 작은 흙 알갱이가 피어올랐다 사라진다.
+  const kickDust = (from: Pos, path: readonly Pos[], duration: number) => {
+    const layer = dust.current;
+    if (!layer || pathLength(from, path) < 12) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (let t = 90; t < duration; t += 110) {
+      window.setTimeout(() => {
+        if (!dust.current) return;
+        const [x, y] = pointOnPath(from, path, easeInOut(t / duration));
+        for (const dx of [-2.5, 2]) {
+          const puff = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'circle'
+          );
+          puff.setAttribute('cx', String(x + dx));
+          puff.setAttribute('cy', String(y - 0.5));
+          puff.setAttribute('r', '1.6');
+          puff.setAttribute('fill', '#e2c49b');
+          dust.current.append(puff);
+          puff
+            .animate(
+              [
+                { opacity: 0.8, transform: 'translate(0px, 0px) scale(1)' },
+                {
+                  opacity: 0,
+                  transform: `translate(${dx}px, -3px) scale(2.6)`,
+                },
+              ],
+              { duration: 550, easing: 'ease-out' }
+            )
+            .finished.then(
+              () => puff.remove(),
+              () => puff.remove()
+            );
+          puff.style.transformBox = 'fill-box';
+          puff.style.transformOrigin = 'center';
+        }
+      }, t);
+    }
   };
 
   // 공이 출발하는 자리에 서 있는 선수(투수·수비)를 찾는다.
@@ -450,6 +563,7 @@ export function RuleScene({ scene }: { scene: Scene }) {
             if (shadow) shadow.style.opacity = height ? '0.35' : '0';
           } else {
             bob(inners.current.get(id), duration);
+            kickDust(from, path, duration);
           }
           await moveAlong(
             nodes.current.get(id),
@@ -527,6 +641,7 @@ export function RuleScene({ scene }: { scene: Scene }) {
         {/* 카메라: 결정적인 순간에 이 그룹을 확대해 그 자리를 크게 보여 준다. */}
         <g ref={camera}>
           <FieldBackground view={scene.view} />
+          <g ref={dust} />
           {Object.entries(scene.actors).map(([id, actor], index) => (
             <g
               key={id}
