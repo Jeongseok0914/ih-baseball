@@ -26,6 +26,23 @@ type Count = Required<NonNullable<SceneStep['count']>>;
 const EMPTY: Count = { b: 0, s: 0, o: 0, score: 0 };
 const TEAM_COLOR = { red: 'var(--color-stitch)', green: 'var(--color-grass)' };
 
+// 야구공: 흰 공에 빨간 실밥 두 줄. 반지름 10 기준으로 그리고 r 에 맞춰 줄인다.
+function Baseball({ r }: { r: number }) {
+  const seams = ['M-5.5 -8 Q-1 0 -5.5 8', 'M5.5 -8 Q1 0 5.5 8'];
+  return (
+    <g transform={`scale(${r / 10})`}>
+      <circle r="10" fill="white" stroke="#c9c4ba" strokeWidth="1" />
+      {seams.map(d => (
+        <g key={d} fill="none" stroke="var(--color-stitch)">
+          <path d={d} strokeWidth="1.1" />
+          {/* 실밥 바늘땀: 같은 선 위에 짧은 가로 획을 점선으로 얹는다. */}
+          <path d={d} strokeWidth="3.2" strokeDasharray="0.7 1.8" />
+        </g>
+      ))}
+    </g>
+  );
+}
+
 // 장면 속 사람과 공. 주인공은 감독님, 나머지는 아이들 얼굴이고 팀 색 동그라미 위에 올린다.
 function SceneActor({
   actor,
@@ -37,14 +54,7 @@ function SceneActor({
   seed: number;
 }) {
   if (actor.kind === 'ball') {
-    return (
-      <circle
-        r={view === 'zone' ? 7 : 3.5}
-        fill="white"
-        stroke="var(--color-stitch)"
-        strokeWidth="1.2"
-      />
-    );
+    return <Baseball r={view === 'zone' ? 7 : 4} />;
   }
   if (view === 'zone') {
     // 앞에서 본 타자: 감독님 전신(발이 땅에 닿게)

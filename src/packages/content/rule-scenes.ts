@@ -152,7 +152,10 @@ export const RULE_SCENES: Record<string, Scene> = {
       ball: { kind: 'ball', at: PITCH_FROM, hidden: true },
     },
     steps: [
-      { caption: '점선 네모가 스트라이크 존이에요. 가슴과 무릎 사이예요.' },
+      {
+        caption:
+          '점선 네모가 스트라이크 존이에요. 가슴 높이부터 무릎 아래까지예요.',
+      },
       pitch(IN_ZONE, '존 안으로 들어오면 스트라이크!', { s: 1 }),
       pitch(OUTSIDE, '존 밖으로 지나가면 볼!', { b: 1 }),
       pitch(LOW_ZONE, '휘둘렀는데 못 맞히면 헛스윙! 이것도 스트라이크예요.', {
@@ -480,7 +483,9 @@ export const RULE_SCENES: Record<string, Scene> = {
         caption:
           '이번엔 2루 주자가 3루로 뛰어요. 꼭 가야 하는 상황이 아니에요.',
         zoom: null,
-        set: { runner: B2, ball: SPOT['3B'], second: SPOT['2B'], batter: B1 },
+        set: { runner: B2, ball: SPOT['3B'], second: SPOT['2B'] },
+        // 1루가 비어 있어야 2루 주자가 꼭 가야 하는 상황(포스)이 아니다.
+        hide: ['batter'],
         moves: { runner: [[60, 96]] },
         duration: 900,
       },
@@ -899,6 +904,332 @@ export const RULE_SCENES: Record<string, Scene> = {
         moves: { p: [[190, 194]], relief: [MOUND], coach: [[176, 194]] },
         duration: 1600,
         hold: 2600,
+      },
+    ],
+  },
+  // ---- 추가 규칙 ----
+  safeOut: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      p: fielder('P'),
+      ss: fielder('SS'),
+      first: fielder('1B'),
+      batter: star(BAT),
+      ball: ball(),
+    },
+    steps: [
+      {
+        caption: '땅볼! 타자는 1루로, 유격수가 공을 잡았어요.',
+        sfx: 'hit',
+        show: ['ball'],
+        moves: {
+          ball: [H, SPOT.SS],
+          batter: [[122, 148]],
+          first: [[156, 110]],
+        },
+        duration: 1000,
+      },
+      {
+        caption: '타자가 공보다 먼저 1루에 닿았어요. 세이프!',
+        moves: { ball: [[154, 112]], batter: [B1] },
+        duration: 650,
+        zoom: { at: [152, 114], scale: 1.8 },
+        flash: { at: B1, text: '세이프!', sfx: 'safe' },
+      },
+      {
+        caption: '공이 먼저 왔다면 아웃이었어요. 똑같이 닿으면 세이프로 봐요.',
+        hold: 2600,
+      },
+    ],
+  },
+
+  runToFirst: {
+    view: 'field',
+    actors: {
+      p: fielder('P'),
+      lf: fielder('LF'),
+      batter: star(BAT),
+      ball: ball(),
+    },
+    steps: [
+      {
+        caption: '치면 방망이는 내려놓고 1루로 힘껏 달려요!',
+        sfx: 'hit',
+        show: ['ball'],
+        arcs: { ball: 25 },
+        moves: { ball: [H, [66, 56]], batter: [B1, [184, 96]] },
+        duration: 1600,
+      },
+      {
+        caption: '1루는 지나쳐 달려도 괜찮아요. 바로 돌아오면 돼요.',
+        moves: { batter: [B1] },
+        duration: 800,
+        flash: { at: B1, text: '세이프!', sfx: 'safe' },
+      },
+    ],
+  },
+
+  timeDead: {
+    view: 'field',
+    actors: {
+      p: fielder('P'),
+      c: fielder('C'),
+      runner: kid(B1),
+      batter: star(BAT),
+      ball: ball(),
+    },
+    steps: [
+      {
+        caption: '친 공이 경기장 밖으로 나갔어요. 볼데드!',
+        sfx: 'hit',
+        show: ['ball'],
+        arcs: { ball: 40 },
+        moves: { ball: [H, [196, 150]], runner: [[132, 88]] },
+        duration: 1200,
+        flash: { at: [180, 150], text: '볼데드', sfx: 'out' },
+      },
+      {
+        caption: '볼데드일 때는 경기가 멈춰요. 주자는 원래 베이스로!',
+        hide: ['ball'],
+        moves: { runner: [B1] },
+        duration: 900,
+      },
+      {
+        caption: '심판이 "플레이"를 외치면 다시 시작해요.',
+        flash: { at: [100, 140], text: '플레이!', sfx: 'safe' },
+      },
+    ],
+  },
+
+  manners: {
+    view: 'field',
+    actors: {
+      r1: star([14, 194]),
+      r2: kid([28, 194]),
+      r3: kid([42, 194]),
+      g1: { kind: 'player', team: 'green', at: [186, 194] },
+      g2: { kind: 'player', team: 'green', at: [172, 194] },
+      g3: { kind: 'player', team: 'green', at: [158, 194] },
+    },
+    steps: [
+      {
+        caption: '경기 전, 두 팀이 홈 플레이트 앞에 줄을 서요.',
+        moves: {
+          r1: [[86, 158]],
+          r2: [[74, 146]],
+          r3: [[62, 134]],
+          g1: [[114, 158]],
+          g2: [[126, 146]],
+          g3: [[138, 134]],
+        },
+        duration: 1500,
+      },
+      {
+        caption: '서로 마주 보고 "잘 부탁합니다!" 하고 인사해요.',
+        flash: { at: [100, 140], text: '인사!', sfx: 'cheer' },
+      },
+      {
+        caption: '심판 판정은 존중하고, 끝나면 상대 팀에게도 박수를 쳐 줘요.',
+        flash: { at: [100, 140], text: '짝짝짝!', sfx: 'cheer' },
+        hold: 2400,
+      },
+    ],
+  },
+
+  error: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      p: fielder('P'),
+      ss: fielder('SS'),
+      first: fielder('1B'),
+      batter: star(BAT),
+      ball: ball(),
+    },
+    steps: [
+      {
+        caption: '쉬운 땅볼이에요. 유격수가 잡았어요.',
+        sfx: 'hit',
+        show: ['ball'],
+        moves: { ball: [H, SPOT.SS], batter: [[120, 150]] },
+        duration: 1000,
+      },
+      {
+        caption: '앗, 1루로 던진 공이 빗나갔어요!',
+        moves: { ball: [[176, 140]], batter: [B1] },
+        duration: 700,
+        flash: { at: [172, 138], text: '실책!', sfx: 'out' },
+      },
+      {
+        caption: '그 틈에 2루까지! 이건 안타가 아니라 실책으로 기록해요.',
+        moves: { batter: [B2] },
+        duration: 1000,
+        flash: { at: B2, text: '세이프!', sfx: 'safe' },
+      },
+    ],
+  },
+
+  pickoff: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      p: fielder('P'),
+      first: { ...fielder('1B'), at: [160, 108] },
+      runner: star([144, 100]),
+      batter: kid(BAT),
+      ball: { kind: 'ball', at: MOUND },
+    },
+    steps: [
+      { caption: '1루 주자가 베이스에서 멀리 떨어져 있어요.', hold: 1500 },
+      {
+        caption: '투수가 갑자기 1루로 던졌어요. 견제구!',
+        moves: { ball: [[158, 110]], runner: [[152, 108]] },
+        duration: 500,
+        zoom: { at: [154, 110], scale: 1.8 },
+      },
+      {
+        caption: '주자가 돌아오기 전에 태그! 아웃',
+        flash: { at: [152, 108], text: '아웃!', sfx: 'out' },
+        count: { o: 1 },
+      },
+    ],
+  },
+
+  wildPitch: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      p: fielder('P'),
+      c: fielder('C'),
+      runner: star(B3),
+      batter: kid(BAT),
+      ball: { kind: 'ball', at: MOUND },
+    },
+    steps: [
+      { caption: '3루에 주자가 있어요.', hold: 1200 },
+      {
+        caption: '투수의 공이 크게 빠졌어요. 폭투!',
+        moves: { ball: [H, [70, 198]], c: [[82, 196]] },
+        duration: 900,
+        flash: { at: [74, 194], text: '폭투!', sfx: 'catch' },
+      },
+      {
+        caption:
+          '그 사이 3루 주자가 홈으로! 포수가 잡을 공을 놓친 거면 포일이에요.',
+        moves: { runner: [H] },
+        duration: 1000,
+        count: { score: 1 },
+        flash: { at: H, text: '득점!', sfx: 'cheer' },
+      },
+    ],
+  },
+
+  squeeze: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      p: fielder('P'),
+      c: fielder('C'),
+      third: fielder('3B'),
+      runner: star(B3),
+      batter: kid(BAT),
+      ball: { kind: 'ball', at: MOUND },
+    },
+    steps: [
+      { caption: '3루에 주자가 있어요. 작전은 스퀴즈!', hold: 1500 },
+      {
+        caption: '투수가 던지자마자 주자는 홈으로, 타자는 번트!',
+        sfx: 'catch',
+        moves: { ball: [H, [114, 150]], runner: [[72, 144]] },
+        duration: 900,
+      },
+      {
+        caption: '공을 잡는 사이 홈인! 1점을 냈어요.',
+        moves: { runner: [H], p: [[112, 148]] },
+        duration: 800,
+        count: { score: 1 },
+        flash: { at: H, text: '득점!', sfx: 'cheer' },
+      },
+    ],
+  },
+
+  appeal: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      second: fielder('2B'),
+      cf: fielder('CF'),
+      runner: star(B1),
+      ball: { kind: 'ball', at: [100, 30], hidden: true },
+    },
+    steps: [
+      {
+        caption: '주자가 2루를 안 밟고 지나갔어요!',
+        moves: { runner: [[114, 66], B3] },
+        duration: 1600,
+        zoom: { at: [104, 62], scale: 1.6 },
+      },
+      {
+        caption: '수비가 공을 들고 2루를 밟으며 심판에게 알려요. 어필!',
+        zoom: null,
+        show: ['ball'],
+        moves: { ball: [COVER_2B], second: [COVER_2B] },
+        duration: 900,
+      },
+      {
+        caption: '베이스를 안 밟았으니 주자는 아웃!',
+        flash: { at: COVER_2B, text: '아웃!', sfx: 'out' },
+        count: { o: 1 },
+      },
+    ],
+  },
+
+  triplePlay: {
+    view: 'field',
+    scoreboard: true,
+    actors: {
+      third: fielder('3B'),
+      second: fielder('2B'),
+      first: fielder('1B'),
+      r1: kid(B1),
+      r2: kid(B2),
+      batter: star(BAT),
+      ball: ball(),
+    },
+    steps: [
+      {
+        caption: '노아웃, 주자 1·2루. 3루 쪽 땅볼!',
+        sfx: 'hit',
+        show: ['ball'],
+        moves: {
+          ball: [H, [52, 108]],
+          r2: [[74, 82]],
+          r1: [[132, 88]],
+          batter: [[112, 160]],
+        },
+        duration: 1000,
+      },
+      {
+        caption: '3루수가 잡아서 3루를 밟아 하나!',
+        moves: { third: [B3], ball: [B3] },
+        duration: 400,
+        flash: { at: B3, text: '하나!', sfx: 'out' },
+        count: { o: 1 },
+      },
+      {
+        caption: '2루로 던져 둘!',
+        moves: { ball: [COVER_2B], second: [COVER_2B], r1: [[118, 72]] },
+        duration: 600,
+        flash: { at: COVER_2B, text: '둘!', sfx: 'out' },
+        count: { o: 2 },
+      },
+      {
+        caption: '1루로 던져 셋! 공 하나로 아웃 3개, 삼중살이에요.',
+        moves: { ball: [SPOT['1B']], batter: [[140, 130]] },
+        duration: 700,
+        flash: { at: [150, 104], text: '삼중살!', sfx: 'cheer' },
+        count: { o: 3 },
       },
     ],
   },
