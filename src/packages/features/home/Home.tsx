@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { JsonLd } from '~components/json-ld';
 import { CharacterFace } from '~components/team-character';
-import { ACHIEVEMENTS } from '~content/history';
+import { ACHIEVEMENTS, ALUMNI } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
 import { NEWS } from '~content/news';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
@@ -16,7 +16,6 @@ import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
 import { HeroVideo } from '~features/home/ui/HeroVideo';
-import { LiveBanner } from '~features/home/ui/LiveBanner';
 import { ShareButton } from '~features/home/ui/ShareButton';
 import { WeekRail } from '~features/home/ui/WeekRail';
 import { absoluteUrl } from '~lib/seo';
@@ -123,7 +122,6 @@ export function Home() {
   return (
     <main>
       <JsonLd data={TEAM_JSON_LD} />
-      <LiveBanner news={NEWS} />
       <section
         aria-labelledby="hero-title"
         className="relative flex items-end overflow-hidden bg-ink text-white sm:min-h-[600px]"
@@ -135,9 +133,17 @@ export function Home() {
           className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/10"
         />
         <div className="relative mx-auto w-full max-w-5xl px-4 pt-8 pb-8 sm:pt-24 sm:pb-16">
+          <p className="flex flex-wrap gap-2">
+            <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+              {ACHIEVEMENTS[0].year} 교육감배 준우승
+            </span>
+            <span className="animate-pop rotate-[-2deg] rounded-xl bg-grass [animation-delay:550ms] px-3 py-1 font-display text-white shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
+              프로 선수 {ALUMNI.length}명 배출
+            </span>
+          </p>
           <h1
             id="hero-title"
-            className="animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.35)] sm:text-7xl"
+            className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.35)] sm:text-7xl"
           >
             같이 공 던질
             <br />
