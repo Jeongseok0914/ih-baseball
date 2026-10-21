@@ -1,8 +1,10 @@
 import Image, { type StaticImageData } from 'next/image';
 import { PageHero } from '~components/page-hero';
 import { CharacterFace, type Face } from '~components/team-character';
+import { TrainingVideoButton } from '~components/training-video';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
 import { COACH, STAFF } from '~content/site';
+import { TRAINING_VIDEOS, type TrainingVideo } from '~content/training-videos';
 import { JerseyNumber } from '~features/team/ui/JerseyNumber';
 
 const GRADES = [6, 5, 4, 3, 2, 1] as const;
@@ -18,6 +20,8 @@ type CardProps = {
   face: Face;
   // 지도자 카드는 잔디색으로 구분한다.
   isStaff?: boolean;
+  // 훈련 영상이 있으면 카드 맨 아래에 영상 버튼을 붙인다. 여러 개면 개수를 보여 준다.
+  videos: TrainingVideo[];
 };
 
 function ProfileCard({
@@ -29,6 +33,7 @@ function ProfileCard({
   photo,
   face,
   isStaff = false,
+  videos,
 }: CardProps) {
   return (
     <li
@@ -66,6 +71,17 @@ function ProfileCard({
       </p>
       {comment ? (
         <p className="mt-3 border-current/20 border-t pt-3">“{comment}”</p>
+      ) : null}
+      {videos.length > 0 ? (
+        <div className="mt-auto pt-3">
+          <TrainingVideoButton
+            videos={videos}
+            className="inline-flex min-h-10 w-full items-center justify-center gap-1 rounded-xl bg-stitch px-2 pt-0.5 font-display text-white shadow-[0_3px_0_#7d1a15] active:translate-y-0.5"
+          >
+            <span aria-hidden="true">▶</span> 훈련 영상
+            {videos.length > 1 ? ` ${videos.length}` : ''}
+          </TrainingVideoButton>
+        </div>
       ) : null}
     </li>
   );
@@ -115,6 +131,9 @@ export function Team() {
                         grade: player.grade,
                         seed: PLAYERS.indexOf(player),
                       }}
+                      videos={TRAINING_VIDEOS.filter(
+                        v => v.player === player.number
+                      )}
                     />
                   ))}
                 </ul>
@@ -136,6 +155,7 @@ export function Team() {
                 name={staff.name}
                 detail={staff.title}
                 isStaff
+                videos={[]}
                 face={{
                   kind: staff.number === COACH.number ? 'headCoach' : 'coach',
                 }}

@@ -5,7 +5,7 @@ import { ACHIEVEMENTS, ALUMNI, MIDDLE_SCHOOLS } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
 import { PLAYERS, ROSTER_SEASON } from '~content/players';
 import { HERO_PHOTO, INSTAGRAM, TESTIMONIALS } from '~content/recruit';
-import { daysAt, PLACES } from '~content/schedule';
+import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
 import { ShareButton } from '~features/home/ui/ShareButton';
@@ -42,9 +42,9 @@ const GUIDE = [
   },
   {
     href: '/schedule',
-    title: '훈련 일정',
-    text: `${daysAt('noryangjin')} ${PLACES.noryangjin.name}, ${daysAt('yeongnam')} ${PLACES.yeongnam.name}, 주말엔 연습경기`,
-    badge: '월~일',
+    title: '훈련',
+    text: '우리 선수들의 포지션별 훈련 영상과 한 주 훈련 일정',
+    badge: '▶',
     tone: 'bg-white',
   },
   {

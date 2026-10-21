@@ -152,7 +152,7 @@ body {
   }
 }
 
-/* 규칙 장면 창: 휴대폰은 화면 아래에서 올라오는 시트, 넓은 화면은 가운데 팝업 */
+/* 시트(규칙 장면, 훈련 영상): 휴대폰은 화면 아래에서 올라오는 시트, 넓은 화면은 가운데 팝업 */
 @keyframes sheet-up {
   from {
     transform: translateY(100%);
@@ -166,7 +166,7 @@ body {
   }
 }
 
-.scene-sheet {
+.sheet {
   inset: auto 0 0;
   margin: 0;
   width: 100%;
@@ -179,12 +179,12 @@ body {
   padding: 0;
 }
 
-.scene-sheet[open] {
+.sheet[open] {
   animation: sheet-up 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (min-width: 640px) {
-  .scene-sheet {
+  .sheet {
     inset: 0;
     margin: auto;
     width: min(90vw, 34rem);
@@ -192,8 +192,12 @@ body {
     border-radius: 24px;
   }
 
-  .scene-sheet[open] {
+  .sheet[open] {
     animation: pop-in 0.2s ease-out;
+  }
+
+  .sheet-wide {
+    width: min(92vw, 52rem);
   }
 }
 

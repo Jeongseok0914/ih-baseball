@@ -1,19 +1,20 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import type { Scene } from '~content/rule-scenes';
-import { RuleScene } from '~features/learn/ui/RuleScene';
+import { type ReactNode, useEffect, useRef } from 'react';
 
-// 규칙 장면 창. 휴대폰은 아래에서 올라오는 시트, 넓은 화면은 가운데 팝업(globals.css 의 scene-sheet).
+// 휴대폰은 아래에서 올라오는 시트, 넓은 화면은 가운데 팝업(globals.css 의 sheet).
 // 브라우저 기본 <dialog> 라 Esc·뒤 화면 막기·포커스 가두기가 따라온다.
-export function SceneSheet({
+// 규칙 장면(야구 교실)과 훈련 영상이 같이 쓴다. wide 는 영상처럼 넓게 볼 때.
+export function BottomSheet({
   title,
-  scene,
   onClose,
+  wide = false,
+  children,
 }: {
   title: string;
-  scene: Scene;
   onClose: () => void;
+  wide?: boolean;
+  children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -73,13 +74,13 @@ export function SceneSheet({
   return (
     <dialog
       ref={dialog}
-      aria-labelledby="scene-title"
+      aria-labelledby="sheet-title"
       onClose={onClose}
       // 시트 바깥(어두운 배경)을 누르면 닫는다.
       onClick={e => {
         if (e.target === e.currentTarget) dialog.current?.close();
       }}
-      className="scene-sheet text-ink backdrop:bg-ink/60"
+      className={`sheet text-ink backdrop:bg-ink/60 ${wide ? 'sheet-wide' : ''}`}
     >
       <div className="bg-white px-4 pt-2 pb-[max(env(safe-area-inset-bottom),16px)] sm:p-5">
         {/* 손잡이: 아래로 쓸어내리면 닫힌다는 표시 */}
@@ -88,7 +89,7 @@ export function SceneSheet({
           className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-ink/25 sm:hidden"
         />
         <div className="flex items-center justify-between gap-3">
-          <h2 id="scene-title" className="font-display text-2xl">
+          <h2 id="sheet-title" className="font-display text-2xl">
             {title}
           </h2>
           <button
@@ -100,7 +101,7 @@ export function SceneSheet({
             ×
           </button>
         </div>
-        <RuleScene scene={scene} />
+        {children}
       </div>
     </dialog>
   );

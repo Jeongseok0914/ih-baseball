@@ -2,6 +2,8 @@ import { KakaoButton } from '~components/contact-links';
 import { PageHero } from '~components/page-hero';
 import { FAQ, JOIN_STEPS } from '~content/join';
 import { KAKAO_CHANNEL } from '~content/recruit';
+import { daysAt, PLACES } from '~content/schedule';
+import { PlaceCard } from '~features/join/ui/PlaceCard';
 
 const STEP_COLORS = ['bg-grass', 'bg-dirt', 'bg-ink'];
 
@@ -46,6 +48,18 @@ export function Join() {
               </li>
             ))}
           </ol>
+        </section>
+
+        {/* 체험하러 올 곳. 예전 훈련 탭에 있던 장소 안내를 여기로 옮겼다. */}
+        <section aria-labelledby="places-title" className="mt-14">
+          <h2 id="places-title" className="font-display text-3xl">
+            훈련 장소
+          </h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
+            {(Object.keys(PLACES) as (keyof typeof PLACES)[]).map(key => (
+              <PlaceCard key={key} place={PLACES[key]} days={daysAt(key)} />
+            ))}
+          </div>
         </section>
 
         <section aria-labelledby="faq-title" className="mt-14">

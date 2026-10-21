@@ -1,9 +1,10 @@
 'use client';
 
 import { type KeyboardEvent, useId, useRef, useState } from 'react';
+import { BottomSheet } from '~components/bottom-sheet';
 import { RULE_LEVELS } from '~content/learn';
 import { RULE_SCENES } from '~content/rule-scenes';
-import { SceneSheet } from '~features/learn/ui/SceneSheet';
+import { RuleScene } from '~features/learn/ui/RuleScene';
 
 const LEVEL_COLORS = ['bg-grass', 'bg-dirt', 'bg-stitch'];
 
@@ -125,11 +126,9 @@ export function RuleLevels() {
                   ) : null}
                 </div>
                 {scene && open === rule.title ? (
-                  <SceneSheet
-                    title={rule.title}
-                    scene={scene}
-                    onClose={() => setOpen(null)}
-                  />
+                  <BottomSheet title={rule.title} onClose={() => setOpen(null)}>
+                    <RuleScene scene={scene} />
+                  </BottomSheet>
                 ) : null}
               </li>
             );
