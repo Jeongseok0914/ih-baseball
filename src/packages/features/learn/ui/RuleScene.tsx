@@ -26,6 +26,68 @@ type Count = Required<NonNullable<SceneStep['count']>>;
 const EMPTY: Count = { b: 0, s: 0, o: 0, score: 0 };
 const TEAM_COLOR = { red: 'var(--color-stitch)', green: 'var(--color-grass)' };
 
+// 감독님(주인공)의 방망이는 청룡언월도: 붉은 자루, 금 장식, 초승달 칼날과 술.
+// 자루 끝(0,0)을 축으로 위(-y)를 향해 그리고, 휘두를 때 이 축으로 돈다.
+function Glaive({ length: L }: { length: number }) {
+  return (
+    <>
+      <rect
+        x="-1.1"
+        y={-L}
+        width="2.2"
+        height={L}
+        rx="1"
+        fill="#8b1d1d"
+        stroke="var(--color-ink)"
+        strokeWidth="0.5"
+      />
+      <rect
+        x="-1.8"
+        y={-L * 0.82}
+        width="3.6"
+        height="2.2"
+        fill="var(--color-gold)"
+      />
+      <path
+        d={`M-1 ${-L + 1} C-11 ${-L - 1} -12 ${-L - 13} 1 ${-L - 18} C-4 ${-L - 11} -3 ${-L - 6} 1.4 ${-L - 3} Z`}
+        fill="#e8eef2"
+        stroke="#2b5d8a"
+        strokeWidth="0.9"
+      />
+      <path
+        d={`M1 ${-L + 1} q4 -3 3 -7 q-2 2 -3 1 Z`}
+        fill="var(--color-gold)"
+      />
+      <path
+        d={`M0 ${-L * 0.82 + 2} q-3 4 -1 8 M0 ${-L * 0.82 + 2} q2 4 0 8`}
+        stroke="var(--color-stitch)"
+        strokeWidth="1.2"
+        fill="none"
+      />
+    </>
+  );
+}
+
+// 휘두를 때 남는 잔상: 칼날이 지나가는 부채꼴을 금빛으로 잠깐 칠한다.
+const TRAIL_FROM = -130;
+const TRAIL_TO = 80;
+function SwingTrail({ length: L }: { length: number }) {
+  const point = (deg: number, radius: number) => {
+    const a = (deg * Math.PI) / 180;
+    return `${(radius * Math.sin(a)).toFixed(1)} ${(-radius * Math.cos(a)).toFixed(1)}`;
+  };
+  const inner = L * 0.45;
+  const outer = L + 14;
+  return (
+    <path
+      data-bat-trail
+      d={`M${point(TRAIL_FROM, outer)} A${outer} ${outer} 0 1 1 ${point(TRAIL_TO, outer)} L${point(TRAIL_TO, inner)} A${inner} ${inner} 0 1 0 ${point(TRAIL_FROM, inner)} Z`}
+      fill="var(--color-sun)"
+      style={{ opacity: 0 }}
+    />
+  );
+}
+
 // 야구공: 흰 공에 빨간 실밥 두 줄. 반지름 10 기준으로 그리고 r 에 맞춰 줄인다.
 function Baseball({ r }: { r: number }) {
   const seams = ['M-5.5 -8 Q-1 0 -5.5 8', 'M5.5 -8 Q1 0 5.5 8'];
@@ -102,13 +164,18 @@ function SceneActor({
         style={{ opacity: 0 }}
         transform={`translate(${r * 0.55} ${r * 0.15})`}
       >
+        {actor.star ? <SwingTrail length={r * 3.4} /> : null}
         <g data-bat-swing>
-          <path
-            d={`M-1 0 L-1.8 ${-r * 1.9} Q0 ${-r * 2.15} 1.8 ${-r * 1.9} L1 0 Z`}
-            fill="#c98a4b"
-            stroke="var(--color-ink)"
-            strokeWidth="0.6"
-          />
+          {actor.star ? (
+            <Glaive length={r * 3.4} />
+          ) : (
+            <path
+              d={`M-1 0 L-1.8 ${-r * 1.9} Q0 ${-r * 2.15} 1.8 ${-r * 1.9} L1 0 Z`}
+              fill="#c98a4b"
+              stroke="var(--color-ink)"
+              strokeWidth="0.6"
+            />
+          )}
         </g>
       </g>
       {actor.tag ? (
@@ -227,25 +294,50 @@ export function RuleScene({ scene }: { scene: Scene }) {
   };
 
   // 치기: 방망이가 어깨 뒤에서 앞으로 크게 돈다.
+  // 감독님(주인공)은 청룡언월도로 더 크게 휘두르고 금빛 잔상이 남는다.
   const swingBat = (id: string) => {
     const inner = inners.current.get(id);
     const bat = inner?.querySelector<SVGGElement>('[data-bat]');
     const swing = inner?.querySelector<SVGGElement>('[data-bat-swing]');
+    const trail = inner?.querySelector<SVGPathElement>('[data-bat-trail]');
     if (!bat || !swing) return;
+    const duration = trail ? 900 : 700;
     bat.animate(
       [{ opacity: 1 }, { opacity: 1, offset: 0.85 }, { opacity: 0 }],
-      {
-        duration: 700,
-      }
+      { duration }
     );
     swing.animate(
       [
-        { transform: 'rotate(-130deg)' },
-        { transform: 'rotate(-130deg)', offset: 0.2 },
-        { transform: 'rotate(80deg)', offset: 0.45 },
-        { transform: 'rotate(95deg)' },
+        { transform: `rotate(${TRAIL_FROM}deg)` },
+        { transform: `rotate(${TRAIL_FROM - 15}deg)`, offset: 0.2 },
+        { transform: `rotate(${TRAIL_TO}deg)`, offset: 0.42 },
+        { transform: `rotate(${TRAIL_TO + 15}deg)` },
       ],
-      { duration: 700, easing: 'ease-out' }
+      { duration, easing: 'ease-out' }
+    );
+    trail?.animate(
+      [
+        { opacity: 0 },
+        { opacity: 0, offset: 0.22 },
+        { opacity: 0.75, offset: 0.42 },
+        { opacity: 0 },
+      ],
+      { duration }
+    );
+  };
+
+  // 감독님이 맞히는 순간: 화면이 흔들리고 "쾅!"이 터진다.
+  const impact = (index: number) => {
+    setFlash({ at: H, text: '쾅!', id: -1 - index });
+    camera.current?.animate(
+      [
+        { transform: 'translate(0px, 0px)' },
+        { transform: 'translate(-3px, 2px)' },
+        { transform: 'translate(3px, -2px)' },
+        { transform: 'translate(-2px, -1px)' },
+        { transform: 'translate(0px, 0px)' },
+      ],
+      { duration: 300, composite: 'add' }
     );
   };
 
@@ -313,7 +405,13 @@ export function RuleScene({ scene }: { scene: Scene }) {
         if (s.sfx === 'hit' && hitAt === 0 && batter && dist(from, MOUND) < 4) {
           const toPlate = dist(from, H) / pathLength(from, path);
           contact = (thrown ? WINDUP : 0) + duration * toPlate;
-          window.setTimeout(() => swingBat(batter), contact - 160);
+          const star = scene.actors[batter].star;
+          // 언월도는 더 크게 휘두르니 조금 일찍 시작한다.
+          window.setTimeout(
+            () => swingBat(batter),
+            contact - (star ? 380 : 160)
+          );
+          if (star) window.setTimeout(() => impact(index), contact);
         }
       }
       if (s.sfx && voiceOn.current && !thrown) playSfx(s.sfx);
@@ -337,7 +435,14 @@ export function RuleScene({ scene }: { scene: Scene }) {
           const height = s.arcs?.[id] ?? 0;
           const shadow = shadows.current.get(id);
           if (isBall) {
-            lift(inners.current.get(id), height, duration);
+            // 친 공은 맞은 뒤부터 떠오른다. 투구 구간은 땅 높이로 온다.
+            const afterHit = contact ? contact - (thrown ? WINDUP : 0) : 0;
+            if (afterHit > 0) {
+              window.setTimeout(
+                () => lift(inners.current.get(id), height, duration - afterHit),
+                afterHit
+              );
+            } else lift(inners.current.get(id), height, duration);
             if (shadow) shadow.style.opacity = height ? '0.35' : '0';
           } else {
             bob(inners.current.get(id), duration);

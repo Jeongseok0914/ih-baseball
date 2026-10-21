@@ -31,8 +31,18 @@ export async function moveAlong(
     place(el, end);
     return;
   }
+  // 구간 길이에 비례해 시간을 나눠 일정한 속도로 움직인다(키프레임 기본값은 시간 균등 분할).
+  const points = [from, ...path];
+  const lengths = points.map((p, i) =>
+    i === 0 ? 0 : Math.hypot(p[0] - points[i - 1][0], p[1] - points[i - 1][1])
+  );
+  const total = lengths.reduce((a, b) => a + b, 0) || 1;
+  let walked = 0;
   const animation = el.animate(
-    [from, ...path].map(p => ({ transform: translate(p) })),
+    points.map((p, i) => {
+      walked += lengths[i];
+      return { transform: translate(p), offset: walked / total };
+    }),
     { duration, easing, fill: 'forwards' }
   );
   try {
