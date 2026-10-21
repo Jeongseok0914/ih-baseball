@@ -136,9 +136,6 @@ export function Home() {
         />
         <div className="relative mx-auto w-full max-w-5xl px-4 pt-8 pb-8 sm:pt-24 sm:pb-16">
           <p className="flex flex-wrap gap-2">
-            <span className="animate-pop rotate-[-4deg] rounded-xl bg-sun [animation-delay:250ms] px-3 py-1 font-display text-ink shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
-              1980 창단
-            </span>
             <span className="animate-pop rotate-[3deg] rounded-xl bg-white [animation-delay:400ms] px-3 py-1 font-display text-grass shadow-[0_4px_0_rgb(0_0_0/0.2)] sm:text-lg">
               {ACHIEVEMENTS[0].year} 교육감배 준우승
             </span>

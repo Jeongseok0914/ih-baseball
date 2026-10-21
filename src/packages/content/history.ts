@@ -15,6 +15,8 @@ export const ALUMNI = [
   '정진호',
   '최동환',
   '최원태',
+  // 삼성 라이온즈 포수. 팀 확인(2026-10).
+  '이서준',
 ];
 
 export const MIDDLE_SCHOOLS = [
