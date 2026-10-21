@@ -1,6 +1,6 @@
 // 야구부 캐릭터. 모두 같은 인헌 팀 모자를 쓴다.
 // - CoachCharacter: 강재훈 감독님 전신(수염, 배가 나온 71번). 하단 연락처와 규칙 장면에 쓴다.
-// - CharacterFace: 카드 원에 들어가는 얼굴. 감독님, 젊은 코치, 학년별 아이.
+// - CharacterFace: 카드 원에 들어가는 얼굴. 감독님, 젊은 코치, 학년별 아이(규칙 장면 상대 팀은 LG 모자).
 const SKIN = '#f3c9a1';
 const SKIN_SHADE = '#e2ae86';
 const JERSEY = '#f5f5f2';
@@ -15,11 +15,12 @@ export type Mood = 'happy' | 'sad' | 'hurt';
 export type Face =
   | { kind: 'headCoach'; mood?: Mood }
   | { kind: 'coach' }
-  | { kind: 'kid'; grade: number; seed: number; mood?: Mood };
+  | { kind: 'kid'; grade: number; seed: number; mood?: Mood; rival?: boolean };
 
 const FACE_VIEW_BOX = '40 16 120 120';
 
-function Cap() {
+// rival: 규칙 장면의 상대 팀(LG). 모자 글자만 바꾼다.
+function Cap({ rival = false }: { rival?: boolean }) {
   return (
     <>
       <path
@@ -35,12 +36,12 @@ function Cap() {
         textAnchor="middle"
         fontSize="20"
         fontWeight="900"
-        fill="var(--color-gold)"
-        stroke="var(--color-gold)"
+        fill={rival ? '#e0283c' : 'var(--color-gold)'}
+        stroke={rival ? '#e0283c' : 'var(--color-gold)'}
         strokeWidth="1.2"
         strokeLinejoin="round"
       >
-        인헌
+        {rival ? 'LG' : '인헌'}
       </text>
       <path
         d="M54 68 q46 -8 92 0 q-4 13 -46 13 q-42 0 -46 -13 z"
@@ -365,7 +366,7 @@ function Head({ face }: { face: Face }) {
         </>
       ) : null}
 
-      <Cap />
+      <Cap rival={face.kind === 'kid' && face.rival} />
     </>
   );
 }

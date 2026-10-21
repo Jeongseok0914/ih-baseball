@@ -3,6 +3,7 @@
 // - 각 단계는 set(순간 이동) → show/hide → moves(경로를 따라 이동) → caption·count 표시 순서로 진행한다.
 export type Pos = readonly [number, number];
 
+// team: red 는 인헌, green 은 상대 팀 LG.
 // star: 장면의 주인공. 감독님 캐릭터로 그린다. 나머지 선수는 아이들 캐릭터.
 // tag: 선수 아래에 붙는 짧은 이름표(예: 수비 번호, 타순).
 export type Actor = {
@@ -118,7 +119,7 @@ export const RULE_SCENES: Record<string, Scene> = {
       r4: { kind: 'player', team: 'red', at: [42, 194] },
     },
     steps: [
-      { caption: '빨강 팀은 공격, 초록 팀은 수비예요.' },
+      { caption: '인헌(빨강)은 공격, LG(초록)는 수비예요.' },
       { caption: '아웃 1개', count: { o: 1 }, hold: 900 },
       { caption: '아웃 2개', count: { o: 2 }, hold: 900 },
       {
@@ -127,7 +128,7 @@ export const RULE_SCENES: Record<string, Scene> = {
         count: { o: 3 },
       },
       {
-        caption: '이제 초록 팀이 공격, 빨강 팀이 수비해요.',
+        caption: '이제 LG가 공격, 인헌이 수비해요.',
         moves: {
           r1: [SPOT.P],
           r2: [SPOT.C],

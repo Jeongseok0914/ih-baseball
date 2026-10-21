@@ -219,7 +219,13 @@ function SceneActor({
           face={
             actor.star
               ? { kind: 'headCoach', mood }
-              : { kind: 'kid', grade: 2 + (seed % 5), seed, mood }
+              : {
+                  kind: 'kid',
+                  grade: 2 + (seed % 5),
+                  seed,
+                  mood,
+                  rival: actor.team !== 'red',
+                }
           }
           label=""
           x={actor.star ? -9 : -8.5}
@@ -787,18 +793,22 @@ export function RuleScene({ scene }: { scene: Scene }) {
 
   return (
     <div className="mt-3 overflow-hidden rounded-2xl border-[3px] border-ink bg-ink">
-      {scene.scoreboard ? (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2 text-sm text-white">
-          <Dots label="B" on={count.b} max={4} color="bg-grass" />
-          <Dots label="S" on={count.s} max={3} color="bg-sun" />
-          <Dots label="O" on={count.o} max={3} color="bg-stitch" />
-          {count.score > 0 ? (
-            <span className="ml-auto font-display text-base">
-              점수 {count.score}
-            </span>
-          ) : null}
-        </div>
-      ) : null}
+      {/* 전광판: 인헌 vs LG, 점수, 볼·스트라이크·아웃 */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm text-white">
+        <span className="font-display text-base">
+          <span className="text-[#ff6b5e]">인헌</span>
+          {count.score > 0 ? ` ${count.score}` : ''}
+          <span className="mx-1.5 text-white/60">vs</span>
+          <span className="text-[#7fd08f]">LG</span>
+        </span>
+        {scene.scoreboard ? (
+          <>
+            <Dots label="B" on={count.b} max={4} color="bg-grass" />
+            <Dots label="S" on={count.s} max={3} color="bg-sun" />
+            <Dots label="O" on={count.o} max={3} color="bg-stitch" />
+          </>
+        ) : null}
+      </div>
       <svg
         viewBox="0 0 200 200"
         aria-hidden="true"
