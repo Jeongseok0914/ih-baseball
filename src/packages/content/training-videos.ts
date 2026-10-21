@@ -5,7 +5,8 @@ import catcher22 from '~content/images/training/catcher-22.jpg';
 import catcher33 from '~content/images/training/catcher-33.jpg';
 import { PLAYERS } from '~content/players';
 
-// 선수 훈련 영상. 보호자가 영상 공개에 동의한 선수만 넣는다. 이 배열 순서대로 화면에 나온다.
+// 선수 훈련 영상. 보호자가 영상 공개에 동의한 선수만 넣는다.
+// 화면에는 높은 학년부터 나오고, 같은 학년 안에서는 이 배열 순서대로 나온다.
 // 한 선수에 영상이 여러 개면 선수단 카드에서 시트 안 목록으로 바꿔 본다.
 // - 사이트에 직접 올린 영상: public/videos/training 에 720p(H.264)로 줄여 넣고 src 로 가리킨다.
 // - 영상이 많아져 저장소가 부담되면 유튜브에 올리고 youtube 에 영상 ID 만 적는다. 화면은 그대로다.
@@ -30,7 +31,10 @@ export const videoLabel = (video: TrainingVideo) => {
     : video.title;
 };
 
-export const TRAINING_VIDEOS: TrainingVideo[] = [
+const gradeOf = (video: TrainingVideo) =>
+  PLAYERS.find(p => p.number === video.player)?.grade ?? 0;
+
+const VIDEOS: TrainingVideo[] = [
   {
     player: 18,
     category: '포수',
@@ -60,3 +64,7 @@ export const TRAINING_VIDEOS: TrainingVideo[] = [
     ...file('catcher-22.mp4'),
   },
 ];
+
+export const TRAINING_VIDEOS = [...VIDEOS].sort(
+  (a, b) => gradeOf(b) - gradeOf(a)
+);
