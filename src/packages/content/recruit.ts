@@ -38,9 +38,13 @@ export const HERO_PHOTO: { src: StaticImageData; alt: string } | null = {
 // 비어 있으면 짧은 영상 자리 표시가 보인다.
 export const INSTAGRAM: {
   url: string;
+  feed: string;
   reels: { code: string; thumb: StaticImageData }[];
 } = {
   url: 'https://www.instagram.com/inhunyagu',
+  // Behold(behold.so) JSON 피드 주소(https://feeds.behold.so/...). 있으면 홈이 최신 릴스를
+  // 자동으로 보여 주고, 아래 reels 는 피드를 못 불러올 때만 쓴다. 비어 있으면 reels 만 쓴다.
+  feed: '',
   // 최근 릴스 3개(고정 게시물 제외). 최신이 앞.
   reels: [
     { code: 'DdTtGQmuaFb', thumb: reelDdTt },
