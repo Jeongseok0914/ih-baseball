@@ -3,7 +3,10 @@ import heroTeam from '~content/images/hero-team.jpg';
 import heroVideoPoster from '~content/images/hero-video.jpg';
 import reelDdTt from '~content/images/reels/DdTtGQmuaFb.jpg';
 import reelDe6 from '~content/images/reels/De6_1cNODaz.jpg';
+import reelDSmY from '~content/images/reels/DSmY-TNEU1H.jpg';
+import reelDTUy from '~content/images/reels/DTUy3fukeWZ.jpg';
 import reelDZiA from '~content/images/reels/DZiAyWbzpF7.jpg';
+import reelDZXq from '~content/images/reels/DZXqCu9TTfw.jpg';
 
 // 신입 부원 모집 안내. 모든 페이지 위 띠와 홈 첫 화면에 쓴다.
 export const RECRUIT = {
@@ -46,6 +49,9 @@ export const INSTAGRAM: {
     { code: 'De6_1cNODaz', thumb: reelDe6 },
     { code: 'DdTtGQmuaFb', thumb: reelDdTt },
     { code: 'DZiAyWbzpF7', thumb: reelDZiA },
+    { code: 'DZXqCu9TTfw', thumb: reelDZXq },
+    { code: 'DTUy3fukeWZ', thumb: reelDTUy },
+    { code: 'DSmY-TNEU1H', thumb: reelDSmY },
   ],
 };
 
