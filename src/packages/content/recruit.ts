@@ -2,8 +2,8 @@ import type { StaticImageData } from 'next/image';
 import heroTeam from '~content/images/hero-team.jpg';
 import heroVideoPoster from '~content/images/hero-video.jpg';
 import reelDdTt from '~content/images/reels/DdTtGQmuaFb.jpg';
+import reelDe6 from '~content/images/reels/De6_1cNODaz.jpg';
 import reelDZiA from '~content/images/reels/DZiAyWbzpF7.jpg';
-import reelDZXq from '~content/images/reels/DZXqCu9TTfw.jpg';
 
 // 신입 부원 모집 안내. 모든 페이지 위 띠와 홈 첫 화면에 쓴다.
 export const RECRUIT = {
@@ -38,18 +38,14 @@ export const HERO_PHOTO: { src: StaticImageData; alt: string } | null = {
 // 비어 있으면 짧은 영상 자리 표시가 보인다.
 export const INSTAGRAM: {
   url: string;
-  feed: string;
   reels: { code: string; thumb: StaticImageData }[];
 } = {
   url: 'https://www.instagram.com/inhunyagu',
-  // Behold(behold.so) JSON 피드 주소(https://feeds.behold.so/...). 있으면 홈이 최신 릴스를
-  // 자동으로 보여 주고, 아래 reels 는 피드를 못 불러올 때만 쓴다. 비어 있으면 reels 만 쓴다.
-  feed: '',
   // 최근 릴스 3개(고정 게시물 제외). 최신이 앞.
   reels: [
+    { code: 'De6_1cNODaz', thumb: reelDe6 },
     { code: 'DdTtGQmuaFb', thumb: reelDdTt },
     { code: 'DZiAyWbzpF7', thumb: reelDZiA },
-    { code: 'DZXqCu9TTfw', thumb: reelDZXq },
   ],
 };
 

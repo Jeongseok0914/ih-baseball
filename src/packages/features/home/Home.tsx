@@ -16,7 +16,6 @@ import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
 import { HeroVideo } from '~features/home/ui/HeroVideo';
-import { InstagramReels } from '~features/home/ui/InstagramReels';
 import { ShareButton } from '~features/home/ui/ShareButton';
 import { WeekRail } from '~features/home/ui/WeekRail';
 import { absoluteUrl } from '~lib/seo';
@@ -289,29 +288,51 @@ export function Home() {
         {/* 릴스를 차례로 두고 맨 끝에 '더 보기' 카드를 둔다. 많아지면 옆으로 넘겨 본다.
             휴대폰은 다음 카드가 살짝 보여서 넘길 수 있다는 걸 알 수 있다. */}
         <ul className="-mx-4 mt-5 flex scroll-px-4 snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 sm:gap-5 md:mx-0 md:scroll-px-0 md:px-0">
-          {INSTAGRAM.reels.length > 0 || INSTAGRAM.feed ? (
-            <InstagramReels
-              feed={INSTAGRAM.feed}
-              fallback={INSTAGRAM.reels.map(reel => ({
-                href: `https://www.instagram.com/reel/${reel.code}/`,
-                src: reel.thumb.src,
-                width: reel.thumb.width,
-                height: reel.thumb.height,
-              }))}
-            />
-          ) : (
-            [0, 1, 2].map(slot => (
-              <li
-                key={slot}
-                className="w-[28%] shrink-0 md:w-[calc((100%-3.75rem)/4)]"
-              >
-                <Placeholder
-                  label="릴스 자리"
-                  className="aspect-[9/16] border-ink/30 text-ink/50"
-                />
-              </li>
-            ))
-          )}
+          {INSTAGRAM.reels.length > 0
+            ? INSTAGRAM.reels.map((reel, index) => (
+                <li
+                  key={reel.code}
+                  className="w-[28%] shrink-0 snap-start md:w-[calc((100%-3.75rem)/4)]"
+                >
+                  <a
+                    href={`https://www.instagram.com/reel/${reel.code}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`인스타그램 릴스 ${index + 1} 보기`}
+                    className="chunky group relative block overflow-hidden"
+                  >
+                    <Image
+                      src={reel.thumb}
+                      alt=""
+                      sizes="(min-width: 768px) 240px, 28vw"
+                      className="skeleton aspect-[9/16] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <span className="absolute inset-0 grid place-items-center bg-black/10">
+                      <span className="grid size-11 place-items-center rounded-full bg-white/90 text-ink shadow-[0_3px_0_rgb(0_0_0/0.25)] transition-transform group-hover:scale-110 sm:size-14">
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 24 24"
+                          className="ml-0.5 size-5 sm:size-7"
+                          fill="currentColor"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            : [0, 1, 2].map(slot => (
+                <li
+                  key={slot}
+                  className="w-[28%] shrink-0 md:w-[calc((100%-3.75rem)/4)]"
+                >
+                  <Placeholder
+                    label="릴스 자리"
+                    className="aspect-[9/16] border-ink/30 text-ink/50"
+                  />
+                </li>
+              ))}
           {INSTAGRAM.url ? (
             <li className="w-[28%] shrink-0 snap-start md:w-[calc((100%-3.75rem)/4)]">
               <a
