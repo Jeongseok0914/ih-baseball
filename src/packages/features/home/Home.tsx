@@ -150,6 +150,10 @@ export function Home() {
             id="hero-title"
             className="mt-4 animate-rise font-display text-5xl leading-tight [text-shadow:0_4px_0_rgb(0_0_0/0.35)] sm:text-7xl"
           >
+            {/* 검색엔진이 가장 무겁게 보는 제목이라 팀 이름을 같이 둔다. */}
+            <span className="mb-2 block text-xl text-white/90 sm:text-2xl">
+              {SITE.fullName}
+            </span>
             같이 공 던질
             <br />
             친구 찾아요!
