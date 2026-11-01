@@ -10,7 +10,9 @@ const PAGE = 8;
 
 // 훈련 영상 목록. 종류(포수·타격 등)가 두 가지 이상이면 위에 고르는 버튼이 생긴다.
 export function VideoGallery({ videos }: { videos: TrainingVideo[] }) {
-  const categories = [...new Set(videos.map(v => v.category))];
+  const categories = [
+    ...new Set(videos.flatMap(v => (v.category ? [v.category] : []))),
+  ];
   const [category, setCategory] = useState<string | null>(null);
   const [shown, setShown] = useState(PAGE);
   const filtered = category
@@ -49,7 +51,7 @@ export function VideoGallery({ videos }: { videos: TrainingVideo[] }) {
           <li key={videoLabel(video)}>
             <TrainingVideoButton
               videos={[video]}
-              className="chunky group block w-full overflow-hidden bg-white text-left transition-transform duration-200 hover:-translate-y-1"
+              className="chunky group block h-full w-full overflow-hidden bg-white text-left transition-transform duration-200 hover:-translate-y-1"
             >
               <span className="relative block">
                 <Image

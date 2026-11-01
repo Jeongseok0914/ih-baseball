@@ -61,7 +61,12 @@ export function TrainingVideoButton({
                 autoPlay
                 playsInline
                 preload="metadata"
-                className="aspect-video w-full"
+                // 세로 영상은 화면 높이에 맞춰 가운데 둔다.
+                className={
+                  video.vertical
+                    ? 'mx-auto block aspect-[9/16] h-[min(66dvh,560px)] w-auto'
+                    : 'aspect-video w-full'
+                }
               />
             )}
           </div>
@@ -82,7 +87,7 @@ export function TrainingVideoButton({
                       className="aspect-video w-full object-cover"
                     />
                     <span className="block px-2 py-1 font-display text-sm leading-tight">
-                      {v.title}
+                      {v.title ?? `영상 ${v.part ?? index + 1}`}
                     </span>
                   </button>
                 </li>

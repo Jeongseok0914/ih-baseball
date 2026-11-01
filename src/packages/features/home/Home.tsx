@@ -126,7 +126,12 @@ export function Home() {
         aria-labelledby="hero-title"
         className="relative flex items-end overflow-hidden bg-ink text-white sm:min-h-[600px]"
       >
-        <HeroVideo src={HERO_VIDEO.src} poster={HERO_VIDEO.poster.src} />
+        <HeroVideo
+          src={HERO_VIDEO.src}
+          mobileSrc={HERO_VIDEO.mobileSrc}
+          poster={HERO_VIDEO.poster.src}
+          mobilePoster={HERO_VIDEO.mobilePoster.src}
+        />
         {/* 글자가 영상 위에서도 읽히게 아래쪽을 어둡게 깐다. */}
         <div
           aria-hidden="true"

@@ -1,6 +1,7 @@
 import type { StaticImageData } from 'next/image';
 import heroTeam from '~content/images/hero-team.jpg';
 import heroVideoPoster from '~content/images/hero-video.jpg';
+import heroVideoMobilePoster from '~content/images/hero-video-mobile.jpg';
 import reelDdTt from '~content/images/reels/DdTtGQmuaFb.jpg';
 import reelDe6 from '~content/images/reels/De6_1cNODaz.jpg';
 import reelDSmY from '~content/images/reels/DSmY-TNEU1H.jpg';
@@ -23,11 +24,15 @@ export const RECRUIT = {
 
 // 첫 화면 사진. 보호자 동의를 받은 사진을 content/images 에 넣고 static import 한다.
 // null 이면 사진 자리 표시가 보인다.
-// 첫 화면 배경 영상. 훈련 영상 4개에서 2.5초씩 뽑아 소리 없이 이은 10초(1280px, 약 1.5MB).
+// 첫 화면 배경 영상(소리 없음). 단체 체력·타격(김예승·김소헌)·수비 훈련과 포수(김현승) 영상 12곳에서 2초씩 뽑아 화면 전환으로 이은 약 20초.
+// 넓은 화면용(1280×548, 약 4.2MB)과 휴대폰용(720×900 세로, 약 3.7MB)을 따로 만들어 화질을 지킨다.
+// 영상에 박힌 이름·예능 자막은 잘라 냈다. 훈련 영상이 늘면 다시 만든다.
 // public 파일은 basePath 가 자동으로 붙지 않아 직접 붙인다. 서버 컴포넌트(Home)에서 읽어 넘긴다.
 export const HERO_VIDEO = {
   src: `${process.env.PAGES_BASE_PATH ?? ''}/videos/hero.mp4`,
+  mobileSrc: `${process.env.PAGES_BASE_PATH ?? ''}/videos/hero-mobile.mp4`,
   poster: heroVideoPoster,
+  mobilePoster: heroVideoMobilePoster,
 };
 
 // 2025 교육감배 준우승 단체사진. 홈 입상 기록 옆에 나온다.
