@@ -10,8 +10,6 @@ import catcher33 from '~content/images/training/catcher-33.jpg';
 import fielding1b from '~content/images/training/fielding-1-2.jpg';
 import fielding10 from '~content/images/training/fielding-10.jpg';
 import fielding10b from '~content/images/training/fielding-10-2.jpg';
-import fielding28 from '~content/images/training/fielding-28.jpg';
-import fielding28b from '~content/images/training/fielding-28-2.jpg';
 import fielding36 from '~content/images/training/fielding-36.jpg';
 import fielding36b from '~content/images/training/fielding-36-2.jpg';
 import teamFitness from '~content/images/training/team-fitness.jpg';
@@ -142,22 +140,6 @@ const VIDEOS: TrainingVideo[] = [
     poster: fielding36b,
     vertical: true,
     ...file('fielding-36-2.mp4'),
-  },
-  {
-    player: 28,
-    date: '2026-11-01',
-    part: 1,
-    poster: fielding28,
-    vertical: true,
-    ...file('fielding-28.mp4'),
-  },
-  {
-    player: 28,
-    date: '2026-11-01',
-    part: 2,
-    poster: fielding28b,
-    vertical: true,
-    ...file('fielding-28-2.mp4'),
   },
   {
     player: 1,
