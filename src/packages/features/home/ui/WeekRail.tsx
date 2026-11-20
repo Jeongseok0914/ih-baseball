@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { News } from '~content/news';
-import { isUpcoming, latestNews, newsDate } from '~features/home/live';
+import { isUpcoming, latestNews, newsDate, outcome } from '~features/home/live';
 import { seoulToday } from '~lib/today';
 
 // 대회 배지: 시작 전이면 "D-5", 시작일이면 "오늘!", 여러 날 대회가 열리는 중이면 "진행 중"
@@ -15,7 +15,6 @@ const dDayLabel = (today: string, date: string) => {
 
 const NEWS_KIND = {
   event: { label: '지난 대회', style: 'bg-ink/10 text-ink' },
-  result: { label: '결과', style: 'bg-stitch text-white' },
 } as const;
 const UPCOMING_STYLE = 'bg-sun text-ink';
 
@@ -49,25 +48,34 @@ export function WeekRail({ news }: { news: News[] }) {
   return (
     <ul className="-mx-4 mt-4 flex snap-x scroll-px-4 gap-3 sm:scroll-px-0 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
       {items.map(item => {
+        // 경기 결과는 승·패 띠, 다가오는 대회는 D-day, 지난 대회는 "지난 대회".
+        const badge =
+          item.kind === 'result'
+            ? outcome(item.us, item.them)
+            : upcoming.includes(item) && today
+              ? {
+                  label: item.tentative ? '예정' : dDayLabel(today, item.date),
+                  style: UPCOMING_STYLE,
+                }
+              : NEWS_KIND.event;
         const body = (
           <>
             <span className="flex items-center justify-between gap-2">
               <span
-                className={`rounded-lg px-2 py-0.5 font-display text-sm ${upcoming.includes(item) ? UPCOMING_STYLE : NEWS_KIND[item.kind].style}`}
+                className={`rounded-lg px-2 py-0.5 font-display text-sm ${badge.style}`}
               >
-                {upcoming.includes(item) && today
-                  ? item.kind === 'event' && item.tentative
-                    ? '예정'
-                    : dDayLabel(today, item.date)
-                  : NEWS_KIND[item.kind].label}
+                {badge.label}
               </span>
               <span className="text-ink/60 text-sm">{newsDate(item)}</span>
             </span>
             <span className="mt-2 font-display text-lg leading-snug">
-              {item.kind === 'result'
-                ? `${item.title} · 인헌 ${item.us} : ${item.them} ${item.opponent}`
-                : item.title}
+              {item.title}
             </span>
+            {item.kind === 'result' ? (
+              <span className="mt-1 font-display text-ink/70 tabular-nums">
+                {item.opponent}전 · 인헌 {item.us} : {item.them}
+              </span>
+            ) : null}
           </>
         );
         return (

@@ -198,16 +198,19 @@ export const TRAINING_VIDEOS = [...VIDEOS].sort(
 
 // 대회 하이라이트: 팀 유튜브 중계(공개 영상)에서 인헌초 득점 장면만 모아 줄였다. 홈 '경기 영상' 맨 위에 나온다.
 // 훈련 영상 목록에는 넣지 않는다.
-export const HIGHLIGHTS: TrainingVideo[] = [
+// group: 홈 '경기 영상'에서 같은 group 의 유튜브 영상 묶음 맨 앞에 나온다.
+export const HIGHLIGHTS: (TrainingVideo & { group: string })[] = [
   {
     date: '2026-11-15',
     title: '홍천무궁화배 6학년 득점 하이라이트',
+    group: '홍천무궁화배 6학년',
     poster: hongcheon6,
     ...file('hongcheon-6.mp4'),
   },
   {
     date: '2026-11-15',
     title: '홍천무궁화배 5학년 득점 하이라이트',
+    group: '홍천무궁화배 5학년',
     poster: hongcheon5,
     ...file('hongcheon-5.mp4'),
   },

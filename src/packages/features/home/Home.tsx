@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { JsonLd } from '~components/json-ld';
 import { CharacterFace } from '~components/team-character';
-import { TrainingVideoButton } from '~components/training-video';
 import { ACHIEVEMENTS, ALUMNI } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
 import { NEWS } from '~content/news';
@@ -15,8 +14,8 @@ import {
 } from '~content/recruit';
 import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
-import { HIGHLIGHTS, videoLabel } from '~content/training-videos';
-import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
+import { YOUTUBE_CHANNEL } from '~content/youtube';
+import { GameVideos } from '~features/home/ui/GameVideos';
 import { HeroVideo } from '~features/home/ui/HeroVideo';
 import { ShareButton } from '~features/home/ui/ShareButton';
 import { WeekRail } from '~features/home/ui/WeekRail';
@@ -186,6 +185,35 @@ export function Home() {
           <WeekRail news={NEWS} />
         </section>
       ) : null}
+
+      <section
+        id="games"
+        aria-labelledby="video-title"
+        className="mx-auto max-w-5xl px-4 pt-16"
+      >
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="video-title" className="font-display text-3xl">
+            경기 영상
+          </h2>
+          <a
+            href={YOUTUBE_CHANNEL.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="chunky inline-flex min-h-12 items-center gap-2 bg-stitch px-4 font-display text-lg text-white shadow-none"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="size-6"
+              fill="currentColor"
+            >
+              <path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.8 15V9l5.2 3z" />
+            </svg>
+            유튜브 채널 가기
+          </a>
+        </div>
+        <GameVideos />
+      </section>
 
       <section aria-label="둘러보기" className="mx-auto max-w-5xl px-4 pt-16">
         <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
@@ -371,95 +399,6 @@ export function Home() {
               </a>
             </li>
           ) : null}
-        </ul>
-      </section>
-
-      <section
-        aria-labelledby="video-title"
-        className="mx-auto max-w-5xl px-4 pt-16"
-      >
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="video-title" className="font-display text-3xl">
-            경기 영상
-          </h2>
-          <a
-            href={YOUTUBE_CHANNEL.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="chunky inline-flex min-h-12 items-center gap-2 bg-stitch px-4 font-display text-lg text-white shadow-none"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className="size-6"
-              fill="currentColor"
-            >
-              <path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.8 15V9l5.2 3z" />
-            </svg>
-            유튜브 채널 가기
-          </a>
-        </div>
-        {HIGHLIGHTS.length > 0 ? (
-          <ul className="mt-5 grid gap-4 sm:grid-cols-2 sm:gap-5">
-            {HIGHLIGHTS.map(video => (
-              <li key={videoLabel(video)} className="reveal">
-                <TrainingVideoButton
-                  videos={[video]}
-                  className="chunky group block h-full w-full overflow-hidden bg-white text-left transition-transform duration-200 hover:-translate-y-1"
-                >
-                  <span className="relative block">
-                    <Image
-                      src={video.poster}
-                      alt=""
-                      sizes="(min-width: 640px) 480px, 100vw"
-                      className="skeleton aspect-video w-full border-ink border-b-[3px] object-cover"
-                    />
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 grid place-items-center bg-ink/15"
-                    >
-                      <span className="grid size-14 place-items-center rounded-full bg-white/90 pl-1 text-3xl text-stitch shadow-[0_3px_0_rgb(0_0_0/0.25)] transition-transform group-hover:scale-110">
-                        ▶
-                      </span>
-                    </span>
-                    <span className="absolute top-2 left-2 rounded-lg bg-sun px-2 py-0.5 font-display text-ink text-sm">
-                      하이라이트
-                    </span>
-                  </span>
-                  <span className="block p-3 font-display leading-snug sm:text-lg">
-                    {videoLabel(video)}
-                  </span>
-                </TrainingVideoButton>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        <ul className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
-          {VIDEOS.map(video => (
-            <li key={video.id} className="reveal">
-              <a
-                href={`https://www.youtube.com/watch?v=${video.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="chunky block h-full overflow-hidden bg-white transition-transform duration-200 hover:-translate-y-1"
-              >
-                {/* biome-ignore lint/performance/noImgElement: 정적 export 라 외부 썸네일은 그대로 쓴다 */}
-                <img
-                  src={`https://i.ytimg.com/vi/${video.id}/mqdefault.jpg`}
-                  alt=""
-                  loading="lazy"
-                  width={320}
-                  height={180}
-                  className="skeleton aspect-video w-full border-ink border-b-[3px] object-cover"
-                />
-                <span className="block p-3">
-                  <span className="line-clamp-2 font-display leading-snug sm:text-lg">
-                    {video.title}
-                  </span>
-                </span>
-              </a>
-            </li>
-          ))}
         </ul>
       </section>
     </main>

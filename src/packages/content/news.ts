@@ -38,6 +38,7 @@ export const NEWS: News[] = [
     opponent: '백운초',
     us: 5,
     them: 7,
+    href: '/#games',
   },
   {
     kind: 'result',
@@ -46,6 +47,7 @@ export const NEWS: News[] = [
     opponent: 'VIP',
     us: 6,
     them: 5,
+    href: '/#games',
   },
   {
     kind: 'result',
@@ -54,6 +56,7 @@ export const NEWS: News[] = [
     opponent: '도곡초',
     us: 5,
     them: 21,
+    href: '/#games',
   },
   {
     kind: 'result',
@@ -62,6 +65,7 @@ export const NEWS: News[] = [
     opponent: '화곡초',
     us: 2,
     them: 12,
+    href: '/#games',
   },
   {
     kind: 'result',
@@ -70,6 +74,7 @@ export const NEWS: News[] = [
     opponent: '갈산초',
     us: 2,
     them: 12,
+    href: '/#games',
   },
   {
     kind: 'result',
@@ -78,6 +83,7 @@ export const NEWS: News[] = [
     opponent: '백운초',
     us: 7,
     them: 5,
+    href: '/#games',
   },
   {
     kind: 'event',
@@ -85,6 +91,6 @@ export const NEWS: News[] = [
     end: '2026-11-15',
     title: '홍천무궁화배 유소년클럽최강자전 야구대회',
     place: '강원 홍천',
-    href: '/schedule',
+    href: '/#games',
   },
 ];
