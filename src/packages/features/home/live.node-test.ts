@@ -1,13 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { News } from '~content/news';
-import {
-  isUpcoming,
-  latestNews,
-  newsDate,
-  outcome,
-  pickSpotlight,
-} from './live.ts';
+import { isUpcoming, latestNews, newsDate, pickSpotlight } from './live.ts';
 
 const NEWS: News[] = [
   {
@@ -101,10 +95,4 @@ test('대회는 마지막 날까지, 날짜 미정 대회는 그 달 끝까지 �
   assert.equal(isUpcoming(tbd, '2026-11-20'), true);
   assert.equal(isUpcoming(tbd, '2026-12-01'), false);
   assert.equal(isUpcoming(NEWS[0], '2026-01-01'), false);
-});
-
-test('점수로 승·패·무를 정한다', () => {
-  assert.equal(outcome(7, 5).label, '승');
-  assert.equal(outcome(2, 12).label, '패');
-  assert.equal(outcome(3, 3).label, '무');
 });

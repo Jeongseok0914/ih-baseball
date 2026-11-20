@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { News } from '~content/news';
-import { isUpcoming, latestNews, newsDate, outcome } from '~features/home/live';
+import { isUpcoming, latestNews, newsDate } from '~features/home/live';
+import { outcome } from '~lib/outcome';
 import { seoulToday } from '~lib/today';
 
 // 대회 배지: 시작 전이면 "D-5", 시작일이면 "오늘!", 여러 날 대회가 열리는 중이면 "진행 중"

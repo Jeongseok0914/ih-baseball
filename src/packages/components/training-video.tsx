@@ -7,13 +7,16 @@ import { type TrainingVideo, videoLabel } from '~content/training-videos';
 
 // 누르면 시트(휴대폰)나 팝업(PC)에서 훈련 영상을 튼다. 영상 파일은 이때 처음 받는다.
 // 훈련 페이지의 영상 목록과 선수단 카드가 같이 쓴다. 겉모양은 children 으로 받는다.
-// videos 가 여러 개면(한 선수의 영상 여러 개) 시트 아래 목록에서 바꿔 볼 수 있다.
+// videos 가 여러 개면(한 선수의 영상 여러 개, 한 경기의 타자·투수 하이라이트) 시트 아래 목록에서 바꿔 볼 수 있다.
+// title 을 주면 시트 제목 앞에 붙는다. 예: "홍천무궁화배 6학년 11/15 갈산초전 · 타자 하이라이트"
 export function TrainingVideoButton({
   videos,
+  title,
   className,
   children,
 }: {
   videos: TrainingVideo[];
+  title?: string;
   className?: string;
   children: ReactNode;
 }) {
@@ -21,6 +24,7 @@ export function TrainingVideoButton({
   const [active, setActive] = useState(0);
   const video = videos[active];
   if (!video) return null;
+  const label = title ? `${title} · ${videoLabel(video)}` : videoLabel(video);
 
   return (
     <>
@@ -36,17 +40,13 @@ export function TrainingVideoButton({
         {children}
       </button>
       {open ? (
-        <BottomSheet
-          title={videoLabel(video)}
-          wide
-          onClose={() => setOpen(false)}
-        >
+        <BottomSheet title={label} wide onClose={() => setOpen(false)}>
           <div className="mt-3 overflow-hidden rounded-2xl border-[3px] border-ink bg-ink">
             {'youtube' in video ? (
               <iframe
                 key={video.youtube}
                 src={`https://www.youtube-nocookie.com/embed/${video.youtube}?autoplay=1&rel=0&playsinline=1`}
-                title={videoLabel(video)}
+                title={label}
                 allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen
                 className="aspect-video w-full"
@@ -60,6 +60,12 @@ export function TrainingVideoButton({
                 controls
                 autoPlay
                 playsInline
+                // 다 보면 목록의 다음 영상(예: 타자 → 투수 하이라이트)으로 넘어간다.
+                onEnded={() =>
+                  setActive(index =>
+                    index + 1 < videos.length ? index + 1 : index
+                  )
+                }
                 preload="metadata"
                 // 세로 영상은 화면 높이에 맞춰 가운데 둔다.
                 className={

@@ -24,3 +24,6 @@ next-env.d.ts
 .claude/settings.local.json
 .claude/worktrees/
 .superpowers/
+
+# team media kept locally (cheer song is the user's own track; repo is public)
+/media/

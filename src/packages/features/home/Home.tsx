@@ -15,7 +15,6 @@ import {
 import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { YOUTUBE_CHANNEL } from '~content/youtube';
-import { GameVideos } from '~features/home/ui/GameVideos';
 import { HeroVideo } from '~features/home/ui/HeroVideo';
 import { ShareButton } from '~features/home/ui/ShareButton';
 import { WeekRail } from '~features/home/ui/WeekRail';
@@ -185,35 +184,6 @@ export function Home() {
           <WeekRail news={NEWS} />
         </section>
       ) : null}
-
-      <section
-        id="games"
-        aria-labelledby="video-title"
-        className="mx-auto max-w-5xl px-4 pt-16"
-      >
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="video-title" className="font-display text-3xl">
-            경기 영상
-          </h2>
-          <a
-            href={YOUTUBE_CHANNEL.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="chunky inline-flex min-h-12 items-center gap-2 bg-stitch px-4 font-display text-lg text-white shadow-none"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className="size-6"
-              fill="currentColor"
-            >
-              <path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.8 15V9l5.2 3z" />
-            </svg>
-            유튜브 채널 가기
-          </a>
-        </div>
-        <GameVideos />
-      </section>
 
       <section aria-label="둘러보기" className="mx-auto max-w-5xl px-4 pt-16">
         <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">

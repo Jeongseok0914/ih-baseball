@@ -47,6 +47,7 @@ export const NAV = [
   { href: '/', label: '홈' },
   { href: '/team', label: '선수단' },
   { href: '/schedule', label: '훈련' },
+  { href: '/games', label: '경기' },
   { href: '/join', label: '함께하기' },
   { href: '/learn', label: '야구교실' },
 ];

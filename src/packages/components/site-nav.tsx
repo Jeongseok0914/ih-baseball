@@ -16,7 +16,7 @@ const iconProps = {
   strokeLinejoin: 'round',
 } as const;
 
-// 하단 탭 아이콘: 집, 유니폼, 달력, 손 흔들기, 야구공.
+// 하단 탭 아이콘: 집, 유니폼, 달력, 트로피, 손 흔들기, 야구공.
 const ICONS: Record<string, ReactNode> = {
   '/': (
     <svg {...iconProps}>
@@ -32,6 +32,12 @@ const ICONS: Record<string, ReactNode> = {
     <svg {...iconProps}>
       <rect x="3" y="5" width="18" height="16" rx="2" />
       <path d="M3 10h18M8 3v4M16 3v4" />
+    </svg>
+  ),
+  '/games': (
+    <svg {...iconProps}>
+      <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z" />
+      <path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4" />
     </svg>
   ),
   '/join': (
@@ -88,15 +94,15 @@ export function BottomTabs() {
   return (
     <nav
       aria-label="주요 메뉴"
-      className="fixed inset-x-0 bottom-0 z-20 border-ink border-t-[3px] bg-white px-2 pt-2 pb-[max(env(safe-area-inset-bottom),8px)] sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-20 border-ink border-t-[3px] bg-white px-1 pt-2 pb-[max(env(safe-area-inset-bottom),8px)] sm:hidden"
     >
-      <ul className="grid grid-cols-5 gap-1">
+      <ul className="grid grid-cols-6 gap-0.5">
         {NAV.map(item => (
           <li key={item.href}>
             <Link
               href={item.href}
               aria-current={isActive(item.href) ? 'page' : undefined}
-              className={`flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-xl font-display text-sm ${
+              className={`flex min-h-14 flex-col items-center justify-center gap-0.5 whitespace-nowrap rounded-xl font-display text-[13px] ${
                 isActive(item.href) ? 'bg-grass text-white' : 'text-ink/70'
               }`}
             >

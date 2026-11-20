@@ -60,11 +60,3 @@ export const newsDate = (news: News) => {
   const [, m2, d2] = news.end.split('-').map(Number);
   return `${koreanDate(news.date)}~${m1 === m2 ? `${d2}일` : koreanDate(news.end)}`;
 };
-
-// 경기 결과 띠: 인헌 점수(us)와 상대 점수(them)로 승·패·무와 색을 정한다.
-export const outcome = (us: number, them: number) =>
-  us > them
-    ? { label: '승', style: 'bg-[var(--color-grass)] text-white' }
-    : us < them
-      ? { label: '패', style: 'bg-stitch text-white' }
-      : { label: '무', style: 'bg-sun text-ink' };
