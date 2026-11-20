@@ -61,9 +61,9 @@ const GUIDE = [
     tone: 'bg-white',
   },
   {
-    href: '/schedule',
+    href: '/games',
     title: '훈련·경기',
-    text: '포지션별 훈련 영상, 대회 경기 하이라이트와 한 주 훈련 일정',
+    text: '대회 경기 하이라이트, 포지션별 훈련 영상과 한 주 훈련 일정',
     badge: '▶',
     tone: 'bg-white',
   },

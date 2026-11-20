@@ -47,7 +47,7 @@ export const NAV: { href: string; label: string; match?: string[] }[] = [
   { href: '/', label: '홈' },
   { href: '/team', label: '선수단' },
   // match: 같은 메뉴로 켜지는 다른 주소(메뉴 안 탭).
-  { href: '/schedule', label: '훈련·경기', match: ['/games'] },
+  { href: '/games', label: '훈련·경기', match: ['/schedule'] },
   { href: '/join', label: '함께하기' },
   { href: '/learn', label: '야구교실' },
 ];

@@ -28,7 +28,7 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z" />
     </svg>
   ),
-  '/schedule': (
+  '/games': (
     <svg {...iconProps}>
       <rect x="3" y="5" width="18" height="16" rx="2" />
       <path d="M3 10h18M8 3v4M16 3v4" />

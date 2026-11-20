@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
 const TABS = [
-  { href: '/schedule', label: '훈련' },
   { href: '/games', label: '경기' },
+  { href: '/schedule', label: '훈련' },
 ] as const;
 
-// '훈련·경기' 메뉴 안의 탭. 두 페이지(/schedule, /games)가 같이 쓴다.
+// '훈련·경기' 메뉴 안의 탭. 경기 탭이 먼저(메뉴를 누르면 /games). 두 페이지가 같이 쓴다.
 export function PlayTabs({
   active,
 }: {
