@@ -16,7 +16,7 @@ const iconProps = {
   strokeLinejoin: 'round',
 } as const;
 
-// 하단 탭 아이콘: 집, 유니폼, 달력, 트로피, 손 흔들기, 야구공.
+// 하단 탭 아이콘: 집, 유니폼, 달력, 손 흔들기, 야구공.
 const ICONS: Record<string, ReactNode> = {
   '/': (
     <svg {...iconProps}>
@@ -32,12 +32,6 @@ const ICONS: Record<string, ReactNode> = {
     <svg {...iconProps}>
       <rect x="3" y="5" width="18" height="16" rx="2" />
       <path d="M3 10h18M8 3v4M16 3v4" />
-    </svg>
-  ),
-  '/games': (
-    <svg {...iconProps}>
-      <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z" />
-      <path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4" />
     </svg>
   ),
   '/join': (
@@ -57,7 +51,10 @@ const ICONS: Record<string, ReactNode> = {
 const useActiveHref = () => {
   const pathname = usePathname();
   // trailingSlash 때문에 pathname 이 /team/ 로 온다. 끝의 / 를 떼고 메뉴 주소와 비교한다.
-  return (href: string) => (pathname.replace(/\/$/, '') || '/') === href;
+  return (item: (typeof NAV)[number]) => {
+    const path = pathname.replace(/\/$/, '') || '/';
+    return path === item.href || !!item.match?.includes(path);
+  };
 };
 
 // 태블릿·PC: 상단 메뉴. 현재 페이지는 흰 알약 위에 잔디색 글씨.
@@ -71,11 +68,9 @@ export function SiteNav() {
           <li key={item.href}>
             <Link
               href={item.href}
-              aria-current={isActive(item.href) ? 'page' : undefined}
+              aria-current={isActive(item) ? 'page' : undefined}
               className={`block rounded-xl px-3 py-1.5 ${
-                isActive(item.href)
-                  ? 'bg-white text-grass'
-                  : 'hover:bg-white/15'
+                isActive(item) ? 'bg-white text-grass' : 'hover:bg-white/15'
               }`}
             >
               {item.label}
@@ -96,14 +91,14 @@ export function BottomTabs() {
       aria-label="주요 메뉴"
       className="fixed inset-x-0 bottom-0 z-20 border-ink border-t-[3px] bg-white px-1 pt-2 pb-[max(env(safe-area-inset-bottom),8px)] sm:hidden"
     >
-      <ul className="grid grid-cols-6 gap-0.5">
+      <ul className="grid grid-cols-5 gap-1">
         {NAV.map(item => (
           <li key={item.href}>
             <Link
               href={item.href}
-              aria-current={isActive(item.href) ? 'page' : undefined}
+              aria-current={isActive(item) ? 'page' : undefined}
               className={`flex min-h-14 flex-col items-center justify-center gap-0.5 whitespace-nowrap rounded-xl font-display text-[13px] ${
-                isActive(item.href) ? 'bg-grass text-white' : 'text-ink/70'
+                isActive(item) ? 'bg-grass text-white' : 'text-ink/70'
               }`}
             >
               {ICONS[item.href]}

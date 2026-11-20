@@ -1,4 +1,5 @@
 import { PageHero } from '~components/page-hero';
+import { PlayTabs } from '~components/play-tabs';
 import { WEEK, WEEK_GROUPS } from '~content/schedule';
 import { TRAINING_VIDEOS } from '~content/training-videos';
 import { TodayMark } from '~features/schedule/ui/TodayMark';
@@ -13,11 +14,13 @@ const KIND_STYLE = {
 export function Schedule() {
   return (
     <main>
-      <PageHero title="훈련">
-        우리 선수들이 훈련하는 모습을 영상으로 보고, 한 주 일정도 확인해요.
+      <PageHero title="훈련·경기">
+        우리 선수들이 훈련하는 모습과 대회 경기 하이라이트를 영상으로 보고, 한
+        주 일정도 확인해요.
       </PageHero>
 
       <div className="mx-auto max-w-5xl px-4">
+        <PlayTabs active="/schedule" />
         {TRAINING_VIDEOS.length > 0 ? (
           <section aria-labelledby="videos-title" className="mt-12">
             <h2 id="videos-title" className="font-display text-3xl">
