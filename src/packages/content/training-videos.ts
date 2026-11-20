@@ -205,12 +205,14 @@ export const TRAINING_VIDEOS = [...VIDEOS].sort(
 // 점수판은 늦게 바뀌고 실책·볼넷 득점도 섞이므로 점수로 고르지 않았다: 주자가 늘어난 출루마다
 // 그 앞 플레이 순간을 화면 움직임으로 찾고, 장면을 직접 보고 쳐서 나간 것만 남겼다(볼넷·견제·실책 제외).
 // 중계 점수판은 확대한 화면 왼쪽 위에 그대로 붙였고, 자막과 팀 응원가 배경음악을 넣었다.
-// '경기' 메뉴에서 group(대회·학년)끼리 묶어 사이트 안에서 재생한다. 훈련 영상 목록에는 넣지 않는다.
+// '경기' 메뉴에서 group(대회)끼리 묶어 날짜순으로 보여 주고 사이트 안에서 재생한다. 학년은 카드에 작게 적는다.
+// (학년별로 묶으면 한 학년의 전적만 따로 드러나서 대회 단위로 묶는다. 2026-11-20 팀 결정) 훈련 영상 목록에는 넣지 않는다.
 // score: 인헌 점수 us, 상대 점수 them. 카드에 승·패 띠로 나온다. 최신 경기가 앞.
 // 원본 중계: 채널 '인헌초 야구부'(YOUTUBE_CHANNEL)의 11/13~11/15 라이브.
 export type GameHighlight = {
   date: string;
   title: string;
+  grade: 5 | 6;
   group: string;
   score: { us: number; them: number };
   videos: TrainingVideo[];
@@ -229,17 +231,23 @@ const game = (
   return {
     date,
     title,
-    group: `홍천무궁화배 ${grade}학년`,
+    grade,
+    group: '홍천무궁화배',
     score: { us, them },
     videos: [{ date, title: '경기 하이라이트', poster, ...file(`${key}.mp4`) }],
   };
 };
 
+// 대회 묶음 제목 아래 붙는 기간·장소.
+export const GROUP_NOTES: Record<string, string> = {
+  홍천무궁화배: '11월 12일~15일 · 강원 홍천',
+};
+
 export const HIGHLIGHTS: GameHighlight[] = [
   game('2026-11-15', 6, '갈산초', 2, 12, hc1115g6),
-  game('2026-11-14', 6, '도곡초', 5, 21, hc1114g6),
-  game('2026-11-13', 6, '백운초', 5, 7, hc1113g6),
   game('2026-11-15', 5, '백운초', 7, 5, hc1115g5),
+  game('2026-11-14', 6, '도곡초', 5, 21, hc1114g6),
   game('2026-11-14', 5, '화곡초', 2, 12, hc1114g5),
+  game('2026-11-13', 6, '백운초', 5, 7, hc1113g6),
   game('2026-11-13', 5, 'VIP', 6, 5, hc1113g5),
 ];
