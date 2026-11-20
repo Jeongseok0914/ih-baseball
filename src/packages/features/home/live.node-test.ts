@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { News } from '~content/news';
-import { latestNews, newsDate, pickSpotlight } from './live.ts';
+import { isUpcoming, latestNews, newsDate, pickSpotlight } from './live.ts';
 
 const NEWS: News[] = [
   {
@@ -75,4 +75,24 @@ test('날짜 미정 대회는 D-day 를 세지 않고, 여러 날 대회는 기�
     }),
     '10월 30일~11월 2일'
   );
+});
+
+test('대회는 마지막 날까지, 날짜 미정 대회는 그 달 끝까지 다가오는 대회다', () => {
+  const multi: News = {
+    kind: 'event',
+    date: '2026-11-12',
+    end: '2026-11-15',
+    title: 'A',
+  };
+  assert.equal(isUpcoming(multi, '2026-11-15'), true);
+  assert.equal(isUpcoming(multi, '2026-11-16'), false);
+  const tbd: News = {
+    kind: 'event',
+    date: '2026-11-01',
+    tentative: '11월 중',
+    title: '미정',
+  };
+  assert.equal(isUpcoming(tbd, '2026-11-20'), true);
+  assert.equal(isUpcoming(tbd, '2026-12-01'), false);
+  assert.equal(isUpcoming(NEWS[0], '2026-01-01'), false);
 });

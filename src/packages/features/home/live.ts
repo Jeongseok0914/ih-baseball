@@ -34,6 +34,13 @@ export function pickSpotlight(news: News[], today: string): Spotlight | null {
   return result ? { kind: 'result', news: result } : null;
 }
 
+// 아직 끝나지 않은 대회인가. 여러 날 대회는 마지막 날까지, 날짜 미정 대회는 그 달이 끝날 때까지.
+export const isUpcoming = (news: News, today: string) =>
+  news.kind === 'event' &&
+  (news.tentative
+    ? news.date.slice(0, 7) >= today.slice(0, 7)
+    : (news.end ?? news.date) >= today);
+
 // 최근 소식: 날짜 최신순. 앞으로 열릴 대회가 있으면 맨 앞에 온다.
 export const latestNews = (news: News[], count = 3) =>
   [...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, count);

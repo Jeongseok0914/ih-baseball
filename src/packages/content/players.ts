@@ -133,6 +133,13 @@ export const PLAYERS: Player[] = [
     hand: '우투우타',
   },
   {
+    number: 11,
+    name: '김민준',
+    grade: 4,
+    positions: ['외야수'],
+    hand: '우투우타',
+  },
+  {
     number: 1,
     name: '김예승',
     grade: 2,

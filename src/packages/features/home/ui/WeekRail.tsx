@@ -3,19 +3,21 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { News } from '~content/news';
-import { latestNews, newsDate } from '~features/home/live';
+import { isUpcoming, latestNews, newsDate } from '~features/home/live';
 import { seoulToday } from '~lib/today';
 
-// 대회 배지: 오늘이면 "오늘!", 아니면 "D-5"
+// 대회 배지: 시작 전이면 "D-5", 시작일이면 "오늘!", 여러 날 대회가 열리는 중이면 "진행 중"
 const dDayLabel = (today: string, date: string) => {
   const days = Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000);
-  return days === 0 ? '오늘!' : `D-${days}`;
+  if (days > 0) return `D-${days}`;
+  return days === 0 ? '오늘!' : '진행 중';
 };
 
 const NEWS_KIND = {
-  event: { label: '대회', style: 'bg-sun text-ink' },
+  event: { label: '지난 대회', style: 'bg-ink/10 text-ink' },
   result: { label: '결과', style: 'bg-stitch text-white' },
 } as const;
+const UPCOMING_STYLE = 'bg-sun text-ink';
 
 const CARD =
   'chunky flex h-full flex-col bg-white p-4 shadow-none transition-transform hover:-translate-y-0.5';
@@ -27,7 +29,7 @@ export function WeekRail({ news }: { news: News[] }) {
   useEffect(() => setToday(seoulToday().date), []);
   const upcoming = today
     ? news
-        .filter(n => n.kind === 'event' && n.date >= today)
+        .filter(n => isUpcoming(n, today))
         .sort(
           // 날짜가 정해진 대회가 먼저, 날짜 미정(tentative)은 뒤로.
           (a, b) =>
@@ -51,13 +53,12 @@ export function WeekRail({ news }: { news: News[] }) {
           <>
             <span className="flex items-center justify-between gap-2">
               <span
-                className={`rounded-lg px-2 py-0.5 font-display text-sm ${NEWS_KIND[item.kind].style}`}
+                className={`rounded-lg px-2 py-0.5 font-display text-sm ${upcoming.includes(item) ? UPCOMING_STYLE : NEWS_KIND[item.kind].style}`}
               >
-                {item.kind === 'event' &&
-                !item.tentative &&
-                today &&
-                item.date >= today
-                  ? dDayLabel(today, item.date)
+                {upcoming.includes(item) && today
+                  ? item.kind === 'event' && item.tentative
+                    ? '예정'
+                    : dDayLabel(today, item.date)
                   : NEWS_KIND[item.kind].label}
               </span>
               <span className="text-ink/60 text-sm">{newsDate(item)}</span>
