@@ -30,6 +30,55 @@ export type News =
     };
 
 export const NEWS: News[] = [
+  // 홍천무궁화배 결과: 팀 유튜브 중계 점수판 기준, 학년 구분은 팀 확인(2026-11-20).
+  {
+    kind: 'result',
+    date: '2026-11-13',
+    title: '홍천무궁화배 6학년',
+    opponent: '백운초',
+    us: 5,
+    them: 7,
+  },
+  {
+    kind: 'result',
+    date: '2026-11-13',
+    title: '홍천무궁화배 5학년',
+    opponent: 'VIP',
+    us: 6,
+    them: 5,
+  },
+  {
+    kind: 'result',
+    date: '2026-11-14',
+    title: '홍천무궁화배 6학년',
+    opponent: '도곡초',
+    us: 5,
+    them: 21,
+  },
+  {
+    kind: 'result',
+    date: '2026-11-14',
+    title: '홍천무궁화배 5학년',
+    opponent: '화곡초',
+    us: 2,
+    them: 12,
+  },
+  {
+    kind: 'result',
+    date: '2026-11-15',
+    title: '홍천무궁화배 6학년',
+    opponent: '갈산초',
+    us: 2,
+    them: 12,
+  },
+  {
+    kind: 'result',
+    date: '2026-11-15',
+    title: '홍천무궁화배 5학년',
+    opponent: '백운초',
+    us: 7,
+    them: 5,
+  },
   {
     kind: 'event',
     date: '2026-11-12',

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { JsonLd } from '~components/json-ld';
 import { CharacterFace } from '~components/team-character';
+import { TrainingVideoButton } from '~components/training-video';
 import { ACHIEVEMENTS, ALUMNI } from '~content/history';
 import emblem from '~content/images/emblem.jpg';
 import { NEWS } from '~content/news';
@@ -14,6 +15,7 @@ import {
 } from '~content/recruit';
 import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
+import { HIGHLIGHTS, videoLabel } from '~content/training-videos';
 import { VIDEOS, YOUTUBE_CHANNEL } from '~content/youtube';
 import { HeroVideo } from '~features/home/ui/HeroVideo';
 import { ShareButton } from '~features/home/ui/ShareButton';
@@ -397,6 +399,41 @@ export function Home() {
             유튜브 채널 가기
           </a>
         </div>
+        {HIGHLIGHTS.length > 0 ? (
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2 sm:gap-5">
+            {HIGHLIGHTS.map(video => (
+              <li key={videoLabel(video)} className="reveal">
+                <TrainingVideoButton
+                  videos={[video]}
+                  className="chunky group block h-full w-full overflow-hidden bg-white text-left transition-transform duration-200 hover:-translate-y-1"
+                >
+                  <span className="relative block">
+                    <Image
+                      src={video.poster}
+                      alt=""
+                      sizes="(min-width: 640px) 480px, 100vw"
+                      className="skeleton aspect-video w-full border-ink border-b-[3px] object-cover"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 grid place-items-center bg-ink/15"
+                    >
+                      <span className="grid size-14 place-items-center rounded-full bg-white/90 pl-1 text-3xl text-stitch shadow-[0_3px_0_rgb(0_0_0/0.25)] transition-transform group-hover:scale-110">
+                        ▶
+                      </span>
+                    </span>
+                    <span className="absolute top-2 left-2 rounded-lg bg-sun px-2 py-0.5 font-display text-ink text-sm">
+                      하이라이트
+                    </span>
+                  </span>
+                  <span className="block p-3 font-display leading-snug sm:text-lg">
+                    {videoLabel(video)}
+                  </span>
+                </TrainingVideoButton>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <ul className="mt-5 grid gap-4 sm:grid-cols-3 sm:gap-5">
           {VIDEOS.map(video => (
             <li key={video.id} className="reveal">

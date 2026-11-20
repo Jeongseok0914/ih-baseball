@@ -12,6 +12,8 @@ import fielding10 from '~content/images/training/fielding-10.jpg';
 import fielding10b from '~content/images/training/fielding-10-2.jpg';
 import fielding36 from '~content/images/training/fielding-36.jpg';
 import fielding36b from '~content/images/training/fielding-36-2.jpg';
+import hongcheon5 from '~content/images/training/hongcheon-5.jpg';
+import hongcheon6 from '~content/images/training/hongcheon-6.jpg';
 import teamFitness from '~content/images/training/team-fitness.jpg';
 import teamFitness2 from '~content/images/training/team-fitness-2.jpg';
 import { PLAYERS } from '~content/players';
@@ -193,3 +195,20 @@ const VIDEOS: TrainingVideo[] = [
 export const TRAINING_VIDEOS = [...VIDEOS].sort(
   (a, b) => b.date.localeCompare(a.date) || gradeOf(b) - gradeOf(a)
 );
+
+// 대회 하이라이트: 팀 유튜브 중계(공개 영상)에서 인헌초 득점 장면만 모아 줄였다. 홈 '경기 영상' 맨 위에 나온다.
+// 훈련 영상 목록에는 넣지 않는다.
+export const HIGHLIGHTS: TrainingVideo[] = [
+  {
+    date: '2026-11-15',
+    title: '홍천무궁화배 6학년 득점 하이라이트',
+    poster: hongcheon6,
+    ...file('hongcheon-6.mp4'),
+  },
+  {
+    date: '2026-11-15',
+    title: '홍천무궁화배 5학년 득점 하이라이트',
+    poster: hongcheon5,
+    ...file('hongcheon-5.mp4'),
+  },
+];
