@@ -87,11 +87,4 @@ export const NEWS: News[] = [
     place: '강원 홍천',
     href: '/schedule',
   },
-  {
-    kind: 'event',
-    date: '2026-11-01',
-    tentative: '11월 중',
-    title: '제2회 서울특별시 교육감배 U12 야구대회',
-    href: '/schedule',
-  },
 ];
