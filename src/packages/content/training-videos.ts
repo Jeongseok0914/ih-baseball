@@ -12,18 +12,12 @@ import fielding10 from '~content/images/training/fielding-10.jpg';
 import fielding10b from '~content/images/training/fielding-10-2.jpg';
 import fielding36 from '~content/images/training/fielding-36.jpg';
 import fielding36b from '~content/images/training/fielding-36-2.jpg';
-import hc1113g5Bat from '~content/images/training/hongcheon-1113-5-bat.jpg';
-import hc1113g5Pitch from '~content/images/training/hongcheon-1113-5-pitch.jpg';
-import hc1113g6Bat from '~content/images/training/hongcheon-1113-6-bat.jpg';
-import hc1113g6Pitch from '~content/images/training/hongcheon-1113-6-pitch.jpg';
-import hc1114g5Bat from '~content/images/training/hongcheon-1114-5-bat.jpg';
-import hc1114g5Pitch from '~content/images/training/hongcheon-1114-5-pitch.jpg';
-import hc1114g6Bat from '~content/images/training/hongcheon-1114-6-bat.jpg';
-import hc1114g6Pitch from '~content/images/training/hongcheon-1114-6-pitch.jpg';
-import hc1115g5Bat from '~content/images/training/hongcheon-1115-5-bat.jpg';
-import hc1115g5Pitch from '~content/images/training/hongcheon-1115-5-pitch.jpg';
-import hc1115g6Bat from '~content/images/training/hongcheon-1115-6-bat.jpg';
-import hc1115g6Pitch from '~content/images/training/hongcheon-1115-6-pitch.jpg';
+import hc1113g5 from '~content/images/training/hongcheon-1113-5.jpg';
+import hc1113g6 from '~content/images/training/hongcheon-1113-6.jpg';
+import hc1114g5 from '~content/images/training/hongcheon-1114-5.jpg';
+import hc1114g6 from '~content/images/training/hongcheon-1114-6.jpg';
+import hc1115g5 from '~content/images/training/hongcheon-1115-5.jpg';
+import hc1115g6 from '~content/images/training/hongcheon-1115-6.jpg';
 import teamFitness from '~content/images/training/team-fitness.jpg';
 import teamFitness2 from '~content/images/training/team-fitness-2.jpg';
 import { PLAYERS } from '~content/players';
@@ -206,9 +200,10 @@ export const TRAINING_VIDEOS = [...VIDEOS].sort(
   (a, b) => b.date.localeCompare(a.date) || gradeOf(b) - gradeOf(a)
 );
 
-// 경기 하이라이트: 팀 유튜브 중계(공개 영상)에서 경기마다 두 편을 만들었다.
-// - 타자: 인헌초가 점수를 낸 장면. 투수·수비: 인헌초 수비 때 아웃을 잡은 장면.
-// 중계 점수판의 점수·아웃 숫자가 바뀐 순간을 찾아 그 직전 장면을 잘랐고, 확대·자막·배경음악(직접 만든 곡)을 넣었다.
+// 경기 하이라이트: 팀 유튜브 중계(공개 영상)에서 경기마다 한 편을 만들었다.
+// 인헌초 공격(백운초전 2경기는 안타·출루 장면, 나머지는 득점 장면)과 수비 아웃 장면을 경기 순서대로 이었다.
+// 중계 점수판의 점수·주자·아웃 표시가 바뀐 순간을 찾아 그 앞 플레이를 잘랐고(볼넷은 뺌),
+// 확대·자막·팀 응원가 배경음악을 넣었다.
 // '경기' 메뉴에서 group(대회·학년)끼리 묶어 사이트 안에서 재생한다. 훈련 영상 목록에는 넣지 않는다.
 // score: 인헌 점수 us, 상대 점수 them. 카드에 승·패 띠로 나온다. 최신 경기가 앞.
 // 원본 중계: 채널 '인헌초 야구부'(YOUTUBE_CHANNEL)의 11/13~11/15 라이브.
@@ -226,7 +221,7 @@ const game = (
   opponent: string,
   us: number,
   them: number,
-  posters: { bat: StaticImageData; pitch: StaticImageData }
+  poster: StaticImageData
 ): GameHighlight => {
   const key = `hongcheon-${date.slice(5).replace('-', '')}-${grade}`;
   const title = `${Number(date.slice(5, 7))}/${Number(date.slice(8))} ${opponent}전`;
@@ -235,46 +230,15 @@ const game = (
     title,
     group: `홍천무궁화배 ${grade}학년`,
     score: { us, them },
-    videos: [
-      {
-        date,
-        title: '타자 하이라이트',
-        poster: posters.bat,
-        ...file(`${key}-bat.mp4`),
-      },
-      {
-        date,
-        title: '투수·수비 하이라이트',
-        poster: posters.pitch,
-        ...file(`${key}-pitch.mp4`),
-      },
-    ],
+    videos: [{ date, title: '경기 하이라이트', poster, ...file(`${key}.mp4`) }],
   };
 };
 
 export const HIGHLIGHTS: GameHighlight[] = [
-  game('2026-11-15', 6, '갈산초', 2, 12, {
-    bat: hc1115g6Bat,
-    pitch: hc1115g6Pitch,
-  }),
-  game('2026-11-14', 6, '도곡초', 5, 21, {
-    bat: hc1114g6Bat,
-    pitch: hc1114g6Pitch,
-  }),
-  game('2026-11-13', 6, '백운초', 5, 7, {
-    bat: hc1113g6Bat,
-    pitch: hc1113g6Pitch,
-  }),
-  game('2026-11-15', 5, '백운초', 7, 5, {
-    bat: hc1115g5Bat,
-    pitch: hc1115g5Pitch,
-  }),
-  game('2026-11-14', 5, '화곡초', 2, 12, {
-    bat: hc1114g5Bat,
-    pitch: hc1114g5Pitch,
-  }),
-  game('2026-11-13', 5, 'VIP', 6, 5, {
-    bat: hc1113g5Bat,
-    pitch: hc1113g5Pitch,
-  }),
+  game('2026-11-15', 6, '갈산초', 2, 12, hc1115g6),
+  game('2026-11-14', 6, '도곡초', 5, 21, hc1114g6),
+  game('2026-11-13', 6, '백운초', 5, 7, hc1113g6),
+  game('2026-11-15', 5, '백운초', 7, 5, hc1115g5),
+  game('2026-11-14', 5, '화곡초', 2, 12, hc1114g5),
+  game('2026-11-13', 5, 'VIP', 6, 5, hc1113g5),
 ];

@@ -6,8 +6,8 @@ export function Games() {
   return (
     <main>
       <PageHero title="경기">
-        대회 경기 결과와 경기마다 만든 하이라이트예요. 타자 하이라이트는 우리가
-        점수를 낸 장면, 투수 하이라이트는 우리가 아웃을 잡은 장면을 모았어요.
+        대회 경기 결과와 경기마다 만든 하이라이트예요. 우리가 안타를 치고 점수를
+        내고, 아웃을 잡은 장면을 경기 순서대로 모았어요.
       </PageHero>
 
       <div className="mx-auto max-w-5xl px-4 pb-4">

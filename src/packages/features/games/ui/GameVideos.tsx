@@ -4,7 +4,7 @@ import { HIGHLIGHTS } from '~content/training-videos';
 import { outcome, record } from '~lib/outcome';
 
 // '경기' 메뉴: 경기 카드를 group(예: 홍천무궁화배 6학년)끼리 묶어 보여 준다.
-// 누르면 사이트 안에서 타자 하이라이트부터 재생하고, 시트 아래 목록에서 투수·수비 하이라이트로 바꿔 본다.
+// 누르면 사이트 안에서 그 경기 하이라이트(공격·수비 장면을 경기 순서대로)를 재생한다.
 // 썸네일 아래에 승·패 띠가 붙는다.
 export function GameVideos() {
   const groups = [...new Set(HIGHLIGHTS.map(v => v.group))];
@@ -50,7 +50,7 @@ export function GameVideos() {
                 <span className="block p-2.5 font-display text-sm leading-snug sm:p-3 sm:text-lg">
                   {game.title}
                   <span className="mt-0.5 block font-sans text-ink/60 text-xs sm:text-sm">
-                    타자 · 투수 하이라이트
+                    공격 · 수비 하이라이트
                   </span>
                 </span>
               </TrainingVideoButton>
