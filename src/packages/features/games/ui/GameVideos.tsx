@@ -2,9 +2,11 @@ import Image from 'next/image';
 import { TrainingVideoButton } from '~components/training-video';
 import { GROUP_NOTES, HIGHLIGHTS } from '~content/training-videos';
 
-// '경기' 메뉴: 경기 카드를 대회(group)끼리 묶어 최신 경기부터 보여 준다. 학년은 카드 제목에 작게 적는다.
+// '경기' 메뉴: 경기 카드를 대회(group)끼리 묶어 최신 경기부터 보여 준다. 학년은 대회 연령 구분(6학년 U-12, 5학년 U-11)으로 카드 제목에 작게 적는다.
 // 누르면 사이트 안에서 그 경기 하이라이트(공격·수비 장면을 경기 순서대로)를 재생한다.
 // 이긴 경기에만 "승리!" 띠를 붙이고, 나머지는 점수만 담담하게 보여 준다(전적 줄은 두지 않는다).
+const division = (grade: 5 | 6) => `U-${grade + 6}`;
+
 export function GameVideos() {
   const groups = [...new Set(HIGHLIGHTS.map(v => v.group))];
 
@@ -25,7 +27,7 @@ export function GameVideos() {
             <li key={`${game.grade}-${game.title}`} className="reveal">
               <TrainingVideoButton
                 videos={game.videos}
-                title={`${game.group} ${game.grade}학년 ${game.title}`}
+                title={`${game.group} ${division(game.grade)} ${game.title}`}
                 className="chunky group block h-full w-full overflow-hidden bg-white text-left transition-transform duration-200 hover:-translate-y-1"
               >
                 <span className="relative block">
@@ -49,7 +51,7 @@ export function GameVideos() {
                 </span>
                 <ScoreBand us={game.score.us} them={game.score.them} />
                 <span className="block p-2.5 font-display text-sm leading-snug sm:p-3 sm:text-lg">
-                  <span className="text-dirt">{game.grade}학년</span>{' '}
+                  <span className="text-dirt">{division(game.grade)}</span>{' '}
                   {game.title}
                   <span className="mt-0.5 block font-sans text-ink/60 text-xs sm:text-sm">
                     공격 · 수비 하이라이트
