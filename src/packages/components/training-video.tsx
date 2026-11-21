@@ -8,7 +8,7 @@ import { type TrainingVideo, videoLabel } from '~content/training-videos';
 // 누르면 시트(휴대폰)나 팝업(PC)에서 훈련 영상을 튼다. 영상 파일은 이때 처음 받는다.
 // 훈련 페이지의 영상 목록과 선수단 카드가 같이 쓴다. 겉모양은 children 으로 받는다.
 // videos 가 여러 개면(한 선수의 영상 여러 개, 한 경기의 타자·투수 하이라이트) 시트 아래 목록에서 바꿔 볼 수 있다.
-// title 을 주면 시트 제목 앞에 붙는다. 예: "홍천무궁화배 6학년 11/15 갈산초전 · 타자 하이라이트"
+// title 을 주면 시트 제목 앞에 붙는다. 예: "홍천무궁화배 U-12 11/15 갈산초전 · 타자 하이라이트"
 export function TrainingVideoButton({
   videos,
   title,
