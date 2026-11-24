@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { Gowun_Dodum, Jua } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { InvitationNavigation } from '~components/invitation-navigation';
 import { RecruitTicker } from '~components/recruit-ticker';
 import { SiteFooter } from '~components/site-footer';
 import { SiteHeader } from '~components/site-header';
 import { BottomTabs } from '~components/site-nav';
+import { NIGHT } from '~content/night';
 import { SEARCH_VERIFICATION, SITE } from '~content/site';
 import { OG_IMAGES } from '~lib/seo';
 import './globals.css';
@@ -50,11 +52,20 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko" className={`${display.variable} ${body.variable}`}>
       <body className="pb-[calc(80px+env(safe-area-inset-bottom))] font-sans sm:pb-0">
-        <SiteHeader />
-        <RecruitTicker />
+        <div className="site-chrome contents">
+          <SiteHeader />
+          <RecruitTicker />
+        </div>
         {children}
-        <SiteFooter />
-        <BottomTabs />
+        <div className="site-chrome contents">
+          <SiteFooter />
+          <BottomTabs />
+        </div>
+        <InvitationNavigation
+          invitationPath={NIGHT.path}
+          invitationLabel={NIGHT.invitationLinkLabel}
+          homeLabel={NIGHT.homeLinkLabel}
+        />
       </body>
     </html>
   );
