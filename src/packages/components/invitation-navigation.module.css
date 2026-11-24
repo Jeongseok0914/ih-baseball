@@ -15,21 +15,3 @@
   font: 400 1rem / 1.25 var(--font-display);
   box-shadow: 0 3px 0 var(--color-ink);
 }
-
-.aboveTabs {
-  bottom: calc(88px + env(safe-area-inset-bottom));
-}
-
-:global(body):has(.aboveTabs) {
-  padding-bottom: calc(144px + env(safe-area-inset-bottom));
-}
-
-@media (min-width: 640px) {
-  .aboveTabs {
-    bottom: calc(16px + env(safe-area-inset-bottom));
-  }
-
-  :global(body):has(.aboveTabs) {
-    padding-bottom: calc(68px + env(safe-area-inset-bottom));
-  }
-}

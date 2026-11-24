@@ -63,7 +63,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </div>
         <InvitationNavigation
           invitationPath={NIGHT.path}
-          invitationLabel={NIGHT.invitationLinkLabel}
           homeLabel={NIGHT.homeLinkLabel}
         />
       </body>
