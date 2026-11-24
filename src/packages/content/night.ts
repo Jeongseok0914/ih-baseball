@@ -7,17 +7,10 @@ const venue = {
   address: '서울 서초구 방배천로4안길 20',
   coordinates: '37.479009,126.983379',
 };
-const kakaoPlace = (name: string, coordinates: string) =>
-  `${encodeURIComponent(name)},${coordinates}`;
-
 function mapLinks(name: string, address: string, coordinates: string) {
   const [latitude, longitude] = coordinates.split(',');
 
   return [
-    {
-      label: '카카오맵',
-      href: `https://map.kakao.com/link/map/${kakaoPlace(name, coordinates)}`,
-    },
     {
       label: '티맵',
       href: `tmap://viewmap?name=${encodeURIComponent(name)}&x=${longitude}&y=${latitude}`,
@@ -56,7 +49,7 @@ export const NIGHT = {
         id: 'A',
         name: '방배복개도로 제1지역 공영주차장',
         mapLabel: '방배복개도로 제1지역',
-        address: '서초구 방배동 493-3',
+        address: '서울 서초구 방배동 493-3',
         coordinates: '37.47800851,126.9826064',
         hours: '토요일 10:00–23:00',
         rate: '5분당 250원',
@@ -65,7 +58,7 @@ export const NIGHT = {
         id: 'B',
         name: '사당노외 공영주차장',
         mapLabel: '사당노외 공영주차장',
-        address: '서초구 과천대로 950-18',
+        address: '서울 서초구 과천대로 950-18',
         coordinates: '37.475404,126.9815541',
         hours: '24시간',
         rate: '5분당 400원',

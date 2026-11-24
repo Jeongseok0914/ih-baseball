@@ -3,6 +3,7 @@ import { ContactButtons } from '~components/contact-links';
 import { HeroVideo } from '~components/hero-video';
 import { PresidentCharacter } from '~components/team-character';
 import { NIGHT } from '~content/night';
+import { CopyAddressButton } from '~features/night/CopyAddressButton';
 import styles from '~features/night/night.module.css';
 
 function DirectionsMap() {
@@ -70,16 +71,19 @@ function DirectionsMap() {
 }
 
 function MapLinks({
-  name,
-  maps,
+  place,
 }: {
-  name: string;
-  maps: typeof NIGHT.venue.maps;
+  place: Pick<typeof NIGHT.venue, 'name' | 'address' | 'maps'>;
 }) {
   return (
     <div className={`${styles.links} ${styles.mapLinks}`}>
-      {maps.map(({ label, href }) => (
-        <a key={label} href={href} aria-label={`${label}에서 ${name} 열기`}>
+      <CopyAddressButton name={place.name} address={place.address} />
+      {place.maps.map(({ label, href }) => (
+        <a
+          key={label}
+          href={href}
+          aria-label={`${label}에서 ${place.name} 열기`}
+        >
           {label}
         </a>
       ))}
@@ -124,7 +128,7 @@ export function NightInvitation() {
         <p>{NIGHT.venue.address}</p>
         <p>{NIGHT.station.name} 인근</p>
         <DirectionsMap />
-        <MapLinks name={NIGHT.venue.name} maps={NIGHT.venue.maps} />
+        <MapLinks place={NIGHT.venue} />
         <small>티맵은 앱이 설치된 기기에서 열립니다.</small>
         <h3>공영주차장</h3>
         <p>{NIGHT.parking.note}</p>
@@ -140,7 +144,7 @@ export function NightInvitation() {
                 <p>
                   {lot.hours} · {lot.rate}
                 </p>
-                <MapLinks name={lot.name} maps={lot.maps} />
+                <MapLinks place={lot} />
               </div>
             </li>
           ))}
