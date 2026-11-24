@@ -483,3 +483,73 @@ export function CoachCharacter({
     </svg>
   );
 }
+
+export function PresidentCharacter() {
+  return (
+    <svg viewBox="0 0 200 210" aria-hidden="true">
+      <circle
+        cx="100"
+        cy="110"
+        r="86"
+        fill="#2f6b3f"
+        stroke="var(--color-gold)"
+        strokeWidth="2"
+      />
+      <path
+        d="M55 75 Q53 36 100 35 Q145 35 145 75 L149 131 Q151 153 163 168 Q145 183 126 171 H72 Q52 177 36 164 Q52 144 52 120 Z"
+        fill={HAIR}
+      />
+      <path
+        d="M44 191 L50 159 Q55 133 86 128 H114 Q145 133 150 159 L156 191 Q100 207 44 191 Z"
+        fill={JERSEY}
+        stroke={JERSEY_SHADE}
+        strokeWidth="2"
+      />
+      <path
+        d="M82 129 L100 151 L118 129 M100 151 V198"
+        fill="none"
+        stroke="#111"
+        strokeWidth="4"
+      />
+      <path
+        d="M51 160 L61 165 M149 160 L139 165"
+        fill="none"
+        stroke="var(--color-gold)"
+        strokeWidth="4"
+      />
+      <rect x="89" y="112" width="22" height="26" rx="8" fill={SKIN_SHADE} />
+      <path
+        d="M58 77 Q73 62 101 65 Q124 66 141 77 Q141 96 134 108 Q123 127 100 129 Q77 127 66 108 Q59 96 58 77 Z"
+        fill={SKIN}
+      />
+      <path
+        d="M73 72 Q61 93 65 119 Q69 136 65 151 Q64 168 76 181 Q55 180 51 164 Q48 151 54 133 Q55 116 53 102 Q50 81 73 72 Z M126 71 Q141 92 135 119 Q131 134 139 153 Q147 171 136 182 Q157 181 155 162 Q154 150 149 136 Q147 125 150 104 Q153 82 126 71 Z"
+        fill={HAIR}
+      />
+      <path
+        d="M60 97 Q61 117 58 136 Q54 161 63 172 M141 96 Q144 115 141 129 Q143 149 149 164"
+        fill="none"
+        stroke="#714d38"
+        strokeLinecap="round"
+        strokeWidth="2.5"
+      />
+      <path
+        d="M81 83 Q86 80 92 82 M108 82 Q114 80 119 83"
+        {...stroke}
+        strokeWidth="1.6"
+      />
+      <DotEyes r={4.2} />
+      <ellipse cx="76" cy="100" rx="6" ry="3" fill={CHEEK} opacity="0.75" />
+      <ellipse cx="124" cy="100" rx="6" ry="3" fill={CHEEK} opacity="0.75" />
+      <circle cx="69" cy="112" r="2.7" fill="#f2c14e" />
+      <circle cx="131" cy="112" r="2.7" fill="#f2c14e" />
+      <path
+        d="M90 106 Q100 109 111 105 Q103 118 90 106 Z"
+        fill="#ad5a53"
+        stroke="#834541"
+        strokeWidth="1.2"
+      />
+      <Cap />
+    </svg>
+  );
+}

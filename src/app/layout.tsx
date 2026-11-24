@@ -50,11 +50,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko" className={`${display.variable} ${body.variable}`}>
       <body className="pb-[calc(80px+env(safe-area-inset-bottom))] font-sans sm:pb-0">
-        <SiteHeader />
-        <RecruitTicker />
+        <div className="site-chrome contents">
+          <SiteHeader />
+          <RecruitTicker />
+        </div>
         {children}
-        <SiteFooter />
-        <BottomTabs />
+        <div className="site-chrome contents">
+          <SiteFooter />
+          <BottomTabs />
+        </div>
       </body>
     </html>
   );

@@ -14,9 +14,9 @@ export function HeroVideo({
   mobilePoster,
 }: {
   src: string;
-  mobileSrc: string;
+  mobileSrc?: string;
   poster: string;
-  mobilePoster: string;
+  mobilePoster?: string;
 }) {
   const [video, setVideo] = useState<{ src: string; poster: string } | null>(
     null
@@ -31,9 +31,10 @@ export function HeroVideo({
         .connection?.saveData === true;
     if (reduce || saveData) return;
     const narrow = window.matchMedia(NARROW).matches;
-    setVideo(
-      narrow ? { src: mobileSrc, poster: mobilePoster } : { src, poster }
-    );
+    setVideo({
+      src: narrow && mobileSrc ? mobileSrc : src,
+      poster: narrow && mobilePoster ? mobilePoster : poster,
+    });
   }, [src, mobileSrc, poster, mobilePoster]);
 
   const className = 'absolute inset-0 size-full object-cover';
@@ -41,8 +42,7 @@ export function HeroVideo({
     // 영상 전(또는 영상을 안 틀 때)에는 화면 폭에 맞는 첫 장면 사진.
     return (
       <picture>
-        <source media={NARROW} srcSet={mobilePoster} />
-        {/* biome-ignore lint/performance/noImgElement: 배경 장식 사진. 이미 줄인 파일이라 최적화가 필요 없다 */}
+        {mobilePoster ? <source media={NARROW} srcSet={mobilePoster} /> : null}
         <img src={poster} alt="" className={className} />
       </picture>
     );

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { HeroVideo } from '~components/hero-video';
 import { JsonLd } from '~components/json-ld';
 import { CharacterFace } from '~components/team-character';
 import { ACHIEVEMENTS, ALUMNI } from '~content/history';
@@ -15,7 +16,6 @@ import {
 import { PLACES } from '~content/schedule';
 import { COACH, SITE, STAFF } from '~content/site';
 import { YOUTUBE_CHANNEL } from '~content/youtube';
-import { HeroVideo } from '~features/home/ui/HeroVideo';
 import { ShareButton } from '~features/home/ui/ShareButton';
 import { WeekRail } from '~features/home/ui/WeekRail';
 import { absoluteUrl } from '~lib/seo';

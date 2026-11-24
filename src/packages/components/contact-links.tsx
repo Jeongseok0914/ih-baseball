@@ -1,5 +1,4 @@
 import { KAKAO_CHANNEL } from '~content/recruit';
-import { COACH } from '~content/site';
 
 function PhoneIcon() {
   return (
@@ -37,18 +36,18 @@ function MessageIcon() {
 
 // 전화·문자 버튼 한 쌍. 엄지로 누르기 쉽게 높이 56px 이상, 두 칸을 꽉 채운다.
 // tel:/sms: 기본 형식만 써서 아이폰·안드로이드 모두 바로 전화·문자 앱이 열린다.
-export function ContactButtons() {
+export function ContactButtons({ phone }: { phone: string }) {
   return (
     <div className="grid grid-cols-2 gap-2.5">
       <a
-        href={`tel:${COACH.phone}`}
+        href={`tel:${phone}`}
         className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white font-display text-grass text-lg shadow-[0_4px_0_#1d4529] active:translate-y-0.5 active:shadow-[0_2px_0_#1d4529]"
       >
         <PhoneIcon />
         전화하기
       </a>
       <a
-        href={`sms:${COACH.phone}`}
+        href={`sms:${phone}`}
         className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-sun font-display text-ink text-lg shadow-[0_4px_0_#a07a1e] active:translate-y-0.5 active:shadow-[0_2px_0_#a07a1e]"
       >
         <MessageIcon />

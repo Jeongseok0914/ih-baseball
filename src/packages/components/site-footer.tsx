@@ -30,7 +30,7 @@ export function SiteFooter() {
         </div>
         {COACH.phone ? (
           <div className="mt-4 hidden pointer-coarse:block">
-            <ContactButtons />
+            <ContactButtons phone={COACH.phone} />
           </div>
         ) : null}
         {/* 카카오톡은 휴대폰·PC 모두 쓰므로 항상 보인다. 주소가 없으면 자리만 잡아 둔다. */}
