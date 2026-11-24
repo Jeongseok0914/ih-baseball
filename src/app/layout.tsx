@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { Gowun_Dodum, Jua } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { InvitationNavigation } from '~components/invitation-navigation';
 import { RecruitTicker } from '~components/recruit-ticker';
 import { SiteFooter } from '~components/site-footer';
 import { SiteHeader } from '~components/site-header';
 import { BottomTabs } from '~components/site-nav';
+import { NIGHT } from '~content/night';
 import { SEARCH_VERIFICATION, SITE } from '~content/site';
 import { OG_IMAGES } from '~lib/seo';
 import './globals.css';
@@ -59,6 +61,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteFooter />
           <BottomTabs />
         </div>
+        <InvitationNavigation
+          invitationPath={NIGHT.path}
+          invitationLabel={NIGHT.invitationLinkLabel}
+          homeLabel={NIGHT.homeLinkLabel}
+        />
       </body>
     </html>
   );

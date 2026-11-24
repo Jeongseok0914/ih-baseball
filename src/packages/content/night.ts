@@ -31,6 +31,8 @@ function mapLinks(name: string, address: string, coordinates: string) {
 
 export const NIGHT = {
   path: '/night/',
+  homeLinkLabel: '우리 사이트 둘러보기',
+  invitationLinkLabel: '인헌의 밤 초대장',
   team: '인헌초등학교 야구부',
   title: '인헌의 밤',
   shareTitle: '인헌의 밤에 초대합니다',

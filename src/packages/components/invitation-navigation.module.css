@@ -1,0 +1,35 @@
+.link {
+  position: fixed;
+  z-index: 20;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 15px;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-sun);
+  color: var(--color-ink);
+  font: 400 1rem / 1.25 var(--font-display);
+  box-shadow: 0 3px 0 var(--color-ink);
+}
+
+.aboveTabs {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+:global(body):has(.aboveTabs) {
+  padding-bottom: calc(144px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .aboveTabs {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  :global(body):has(.aboveTabs) {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+}

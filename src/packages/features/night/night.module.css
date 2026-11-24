@@ -167,7 +167,7 @@
 }
 
 .president {
-  padding: 12px clamp(28px, 9vw, 60px) 20px;
+  padding: 12px clamp(28px, 9vw, 60px) calc(80px + env(safe-area-inset-bottom));
   color: var(--night-gold);
   background: var(--night-green);
 }
