@@ -1,6 +1,6 @@
 import emblem from '~content/images/emblem.jpg';
 import shareImage from '~content/images/inheon-night-og.jpg';
-import coverPoster from '~content/images/inheon-night-video.jpg';
+import coverPhoto from '~content/images/inheon-night-team.jpg';
 
 const venue = {
   name: '사당 파티룸 우디',
@@ -70,9 +70,8 @@ export const NIGHT = {
   },
   president: { title: '회장', phone: '01071720914' },
   cover: {
-    src: `${process.env.PAGES_BASE_PATH ?? ''}/videos/inheon-night.mp4`,
-    poster: coverPoster,
-    label: '인헌초 야구부 선수들이 함께하는 단체 영상',
+    src: coverPhoto,
+    alt: '야구장에서 졸업 축하 현수막 앞에 모인 인헌초 야구부 선수들',
   },
   emblem,
   shareImage,

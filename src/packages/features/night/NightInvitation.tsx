@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { ContactButtons } from '~components/contact-links';
-import { HeroVideo } from '~components/hero-video';
 import { PresidentCharacter } from '~components/team-character';
 import { NIGHT } from '~content/night';
 import { CopyAddressButton } from '~features/night/CopyAddressButton';
@@ -102,13 +101,7 @@ export function NightInvitation() {
         <h1>{NIGHT.title}</h1>
         <p>{NIGHT.message}</p>
         <div className={styles.coverMedia}>
-          <div
-            className={styles.coverFrame}
-            role="img"
-            aria-label={NIGHT.cover.label}
-          >
-            <HeroVideo src={NIGHT.cover.src} poster={NIGHT.cover.poster.src} />
-          </div>
+          <Image src={NIGHT.cover.src} alt={NIGHT.cover.alt} preload />
         </div>
         <time dateTime={NIGHT.dateTime}>
           {NIGHT.date} · {NIGHT.time}
